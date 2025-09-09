@@ -120,7 +120,7 @@ export default function Home() {
       </div>
 
       {/* Desktop Icons */}
-      <div className="absolute top-8 left-8 space-y-6 z-10">
+      <div className="absolute top-8 left-8 space-y-6 z-30">
         {/* Agency Info Icon */}
         <div
           onClick={() => openWindow('about')}
@@ -181,7 +181,7 @@ export default function Home() {
       </div>
 
       {/* Welcome Message */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-5">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-10">
         <div className="bg-pixel-window-bg bg-opacity-95 border-2 border-pixel-window-border shadow-retro p-8 max-w-md">
           <h1 className="font-pixel-title text-pixel-blue-win mb-4">
             🚀 AGENCY OS v1.0
