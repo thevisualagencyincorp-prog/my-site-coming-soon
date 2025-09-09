@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+/* Import pixel-perfect fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  /* Pixel art color palette */
+  --pixel-primary: #0078D4;
+  --pixel-secondary: #C0C0C0;
+  --pixel-accent: #FFD700;
+  --pixel-background: #008080;
+  --pixel-text: #000000;
+  --pixel-white: #FFFFFF;
+  
+  /* Day theme colors */
+  --day-sky: #87CEEB;
+  --day-sun: #FFD700;
+  --day-grass: #228B22;
+  
+  /* Night theme colors */
+  --night-sky: #1e1e3f;
+  --night-moon: #FFFACD;
+  --night-stars: #FFFFFF;
+}
+
+/* Global pixel art styling */
+* {
+  /* Disable font smoothing for crisp pixel fonts */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent scrolling for desktop OS feel */
+  font-family: 'Courier New', monospace;
+  background: var(--pixel-background);
+  color: var(--pixel-text);
+  /* Pixel-perfect rendering */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Pixel font classes */
+.font-pixel {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+}
+
+.font-pixel-title {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+/* Retro button styling */
+.btn-retro {
+  border: 2px solid;
+  border-color: #DFDFDF #404040 #404040 #DFDFDF;
+  background: #C0C0C0;
+  color: #000000;
+  padding: 4px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: none; /* No smooth transitions for authentic feel */
+}
+
+.btn-retro:hover {
+  background: #E0E0E0;
+}
+
+.btn-retro:active {
+  border-color: #404040 #DFDFDF #DFDFDF #404040;
+  background: #A0A0A0;
+}
+
+/* Window styling */
+.window-retro {
+  border: 2px solid;
+  border-color: #DFDFDF #404040 #404040 #DFDFDF;
+  background: #C0C0C0;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Desktop background animation */
+.desktop-bg {
+  transition: background-image 1s ease-in-out;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+/* Custom scrollbar for retro feel */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #C0C0C0;
+  border: 1px inset #C0C0C0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #808080;
+  border: 1px outset #808080;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #606060;
+}
+
+::-webkit-scrollbar-corner {
+  background: #C0C0C0;
+}
+
+/* Pixel-perfect borders and shadows */
+.pixel-border {
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #808080;
+}
+
+.pixel-inset {
+  border: 2px inset #C0C0C0;
+}
+
+.pixel-outset {
+  border: 2px outset #C0C0C0;
+}
+
+/* Cursor styles for retro feel */
+.cursor-pointer {
+  cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFVSURBVCiRpZM9SwNBEIafgwQSG1sLwcJCG2uxsLBQsLGwsLBQsLGwsLBQsLGwsLBQsLGwsLBQsLGwsLBQsLGwsLBQsLGwsLBQsLGwsLBQsLGwsLBQ'), auto;
+}
+
+/* Disable text selection on UI elements */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Retro loading animation */
+@keyframes pixel-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.pixel-blink {
+  animation: pixel-blink 1s infinite;
+}
+
+/* Screen CRT effect (optional) */
+.crt-effect {
+  position: relative;
+}
+
+.crt-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    transparent 0%,
+    rgba(0,255,0,0.03) 50%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+  z-index: 1000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .font-pixel {
+    font-size: 10px;
+  }
+  
+  .btn-retro {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
