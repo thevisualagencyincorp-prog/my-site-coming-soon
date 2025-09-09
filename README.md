@@ -1,36 +1,267 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Agency - Coming Soon Landing Page
 
-## Getting Started
+A beautiful, interactive coming soon page built with Next.js, featuring live weather data, a digital clock, and stunning visual effects inspired by Windows Bliss and modern web design.
 
-First, run the development server:
+![Landing Page](https://github.com/user-attachments/assets/4b4723fc-ede2-4e02-a523-6e72dfb60d8d)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- **🌈 Windows Bliss-Inspired Design**: Beautiful gradient backgrounds with rolling hills and cloud effects
+- **🕒 Live Digital Clock**: Real-time clock display in 12-hour format with date and timezone
+- **🌤️ Weather Widget**: Live weather data based on user's geolocation
+- **📱 Responsive Design**: Optimized for all screen sizes
+- **🎬 Animated Loading Screen**: Engaging loading experience with progress animation
+- **🎨 Modern UI**: Glass morphism effects and smooth animations
+- **♿ Accessibility**: Proper semantic HTML and keyboard navigation
+- **🔒 Privacy-First**: Geolocation permission handling with fallback options
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ installed
+- npm or yarn package manager
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/thevisualagencyincorp-prog/my-site-coming-soon.git
+   cd my-site-coming-soon
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Set up environment variables (Optional)**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edit `.env.local` and add your OpenWeatherMap API key:
+   ```
+   NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── layout.tsx         # Root layout component
+│   ├── page.tsx           # Main landing page
+│   └── globals.css        # Global styles
+├── components/            # Reusable components
+│   ├── DigitalClock.tsx   # Live clock component
+│   ├── WeatherWidget.tsx  # Weather display component
+│   ├── LoadingScreen.tsx  # Animated loading screen
+│   └── index.ts          # Component exports
+├── hooks/                # Custom React hooks
+│   └── useGeolocation.ts # Geolocation management
+├── lib/                  # Utility functions
+│   └── weather.ts        # Weather API integration
+└── types/                # TypeScript type definitions
+    └── index.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Available Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Customization
 
-## Learn More
+#### Changing Colors and Styling
 
-To learn more about Next.js, take a look at the following resources:
+The main design uses Tailwind CSS classes. Key areas to customize:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Background Gradient** (in `src/app/page.tsx`):
+```tsx
+<div className="bg-gradient-to-br from-green-400 via-blue-500 to-purple-600">
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Glass Effect Cards**:
+```tsx
+<div className="bg-black/20 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
+```
 
-## Deploy on Vercel
+#### Updating Content
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Main Title** (in `src/app/page.tsx`):
+```tsx
+<h1 className="text-6xl md:text-8xl font-bold text-white mb-4">
+  The Agency
+</h1>
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Subtitle and Description**:
+```tsx
+<p className="text-white/80 text-lg md:text-xl leading-relaxed">
+  Experience the future of digital innovation.
+</p>
+```
+
+### Weather API Setup
+
+#### Getting an API Key
+
+1. Visit [OpenWeatherMap](https://openweathermap.org/api)
+2. Sign up for a free account
+3. Generate an API key
+4. Add it to your `.env.local` file
+
+#### Without API Key
+
+The app works without an API key by showing demo weather data. Users can still interact with all other features.
+
+## 🌐 Deployment
+
+### Vercel (Recommended)
+
+1. **Connect your repository to Vercel**
+   ```bash
+   npm i -g vercel
+   vercel
+   ```
+
+2. **Add environment variables in Vercel dashboard**
+   - Go to your project settings
+   - Add `NEXT_PUBLIC_OPENWEATHER_API_KEY`
+
+3. **Deploy**
+   ```bash
+   vercel --prod
+   ```
+
+### Netlify
+
+1. **Build the project**
+   ```bash
+   npm run build
+   ```
+
+2. **Deploy the `out` folder**
+   - Connect your repository to Netlify
+   - Set build command: `npm run build`
+   - Set publish directory: `.next`
+   - Add environment variables in Netlify settings
+
+### Other Platforms
+
+The app is a standard Next.js application and can be deployed to any platform that supports Node.js:
+
+- **AWS Amplify**: Connect repository and deploy
+- **Railway**: `railway login` → `railway deploy`
+- **Heroku**: Add `heroku/nodejs` buildpack
+- **DigitalOcean App Platform**: Connect and deploy
+
+## 🎨 Visual Studio Code Setup
+
+### Recommended Extensions
+
+```json
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-eslint",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense"
+  ]
+}
+```
+
+### Settings for Optimal Development
+
+Add to your `.vscode/settings.json`:
+
+```json
+{
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
+}
+```
+
+## 🔧 Technical Details
+
+### Technologies Used
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS v4
+- **Weather API**: OpenWeatherMap
+- **Deployment**: Vercel (recommended)
+- **Development**: ESLint, Prettier
+
+### Browser Support
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+### Performance Features
+
+- **Static Site Generation**: Pre-built at build time
+- **Image Optimization**: Next.js automatic image optimization
+- **Code Splitting**: Automatic code splitting by Next.js
+- **Caching**: Aggressive caching for static assets
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Weather not loading?**
+- Check if you have a valid API key in `.env.local`
+- Ensure you've allowed location permissions
+- Check browser console for errors
+
+**Build failing?**
+- Delete `node_modules` and `.next` folders
+- Run `npm install` again
+- Check for TypeScript errors with `npm run lint`
+
+**Styles not applying?**
+- Ensure Tailwind CSS is properly configured
+- Check if custom styles conflict with Tailwind
+- Verify class names are spelled correctly
+
+### Getting Help
+
+1. Check the browser console for errors
+2. Verify all environment variables are set correctly
+3. Ensure Node.js version is 18 or higher
+4. Try clearing browser cache and hard refresh
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues).
+
+---
+
+**Made with ❤️ by The Agency**
