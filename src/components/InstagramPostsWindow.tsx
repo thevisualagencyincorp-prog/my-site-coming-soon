@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface InstagramPost {
   id: string;
@@ -9,73 +10,91 @@ interface InstagramPost {
   comments: number;
   timestamp: string;
   type: "image" | "video" | "carousel";
+  permalink?: string;
 }
+
+// Realistic Instagram posts mockup data
+const mockPosts: InstagramPost[] = [
+  {
+    id: "1",
+    image: "/images/instagram-placeholder.svg",
+    caption:
+      "🚀 Just launched an incredible brand identity for a tech startup! From concept to execution, we transformed their vision into a cohesive visual story that captures their innovative spirit. The color palette reflects their forward-thinking approach, while the typography conveys trust and modernity.\n\nWhat do you think makes a brand identity truly memorable? Share below! 👇\n\n#BrandIdentity #GraphicDesign #CreativeAgency #StartupLife #VisualStorytelling",
+    likes: 247,
+    comments: 34,
+    timestamp: "3h ago",
+    type: "carousel",
+    permalink: "#",
+  },
+  {
+    id: "2",
+    image: "/images/instagram-placeholder.svg",
+    caption:
+      "🎨 EDUCATIONAL THREAD: The Psychology of Color in Web Design\n\nDid you know that 90% of snap judgments about products are based on color alone? Here's what different colors communicate:\n\n🔴 RED = Energy, passion, urgency\n🔵 BLUE = Trust, stability, professionalism\n🟢 GREEN = Growth, harmony, health\n🟡 YELLOW = Optimism, creativity, warmth\n🟣 PURPLE = Luxury, creativity, wisdom\n🟠 ORANGE = Confidence, friendliness, success\n\nWhat's your brand's color personality? 🎯\n\n#WebDesign #ColorPsychology #UXDesign #DigitalMarketing #CreativeTips",
+    likes: 189,
+    comments: 28,
+    timestamp: "8h ago",
+    type: "image",
+    permalink: "#",
+  },
+  {
+    id: "3",
+    image: "/images/instagram-placeholder.svg",
+    caption:
+      "✨ \"The best way to predict the future is to create it.\" - Peter Drucker\n\nIn a world that's constantly changing, remember that you have the power to shape your own destiny. Whether you're an entrepreneur, creative, or just someone chasing their dreams - your vision matters.\n\nTake that first step today. Your future self will thank you. 🌟\n\n#Motivation #Entrepreneurship #SelfCare #CreativeLife #Inspiration #Mindfulness",
+    likes: 312,
+    comments: 45,
+    timestamp: "1d ago",
+    type: "image",
+    permalink: "#",
+  },
+  {
+    id: "4",
+    image: "/images/instagram-placeholder.svg",
+    caption:
+      "🎬 BEHIND THE SCENES: Creating a viral social media campaign for our client! Watch how we transformed their product launch into an engaging story that drove 300% engagement increase.\n\nFrom strategy to execution, here's the full creative process:\n• Research & insights gathering\n• Content strategy development\n• Visual concept creation\n• Copywriting & messaging\n• Multi-platform distribution\n• Performance tracking & optimization\n\nThe results? 📈 50K+ impressions, 8K+ engagements, and a 25% conversion rate!\n\n#SocialMediaMarketing #ContentCreation #DigitalStrategy #CampaignSuccess #MarketingTips",
+    likes: 156,
+    comments: 22,
+    timestamp: "2d ago",
+    type: "video",
+    permalink: "#",
+  },
+  {
+    id: "5",
+    image: "/images/instagram-placeholder.svg",
+    caption:
+      "💡 QUICK TIP: The 5-Second Rule for Creative Blocks\n\nEver feel stuck in a creative rut? Try this:\n\n1️⃣ Set a 5-second timer\n2️⃣ Brain dump EVERY idea (no judgment)\n3️⃣ Pick the most interesting one\n4️⃣ Start creating immediately\n5️⃣ Refine as you go\n\nCreativity isn't about perfection - it's about momentum! Sometimes you just need to start to find your flow. 🎨✨\n\nWhat's your go-to technique for overcoming creative blocks? Share in the comments!\n\n#CreativeTips #DesignTips #Productivity #CreativeProcess #EntrepreneurTips",
+    likes: 278,
+    comments: 41,
+    timestamp: "3d ago",
+    type: "image",
+    permalink: "#",
+  },
+];
 
 export function InstagramPostsWindow() {
   const [posts, setPosts] = useState<InstagramPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock Instagram posts data (in a real app, this would fetch from Instagram API)
-  const mockPosts: InstagramPost[] = [
-    {
-      id: "1",
-      image: "📸",
-      caption:
-        "Behind the scenes of our latest creative project! 🎨✨ #DigitalAgency #CreativeProcess",
-      likes: 127,
-      comments: 23,
-      timestamp: "2h ago",
-      type: "image",
-    },
-    {
-      id: "2",
-      image: "🎬",
-      caption:
-        "New video content dropping soon! Stay tuned for our agency culture series 📹 #AgencyLife #ComingSoon",
-      likes: 89,
-      comments: 15,
-      timestamp: "5h ago",
-      type: "video",
-    },
-    {
-      id: "3",
-      image: "💻",
-      caption:
-        "Web development magic happening in our studio! 🚀 #WebDev #TechLife",
-      likes: 156,
-      comments: 31,
-      timestamp: "1d ago",
-      type: "image",
-    },
-    {
-      id: "4",
-      image: "🎨",
-      caption:
-        "Brand identity work for an exciting new client! Can't wait to share the results 🎯 #Branding #Design",
-      likes: 203,
-      comments: 45,
-      timestamp: "2d ago",
-      type: "carousel",
-    },
-    {
-      id: "5",
-      image: "☕",
-      caption:
-        "Coffee-fueled brainstorming session! What's your go-to productivity hack? 💡 #WorkLife #Creativity",
-      likes: 94,
-      comments: 28,
-      timestamp: "3d ago",
-      type: "image",
-    },
-  ];
-
   useEffect(() => {
-    // Simulate API call
+    // Fetch real Instagram posts
     const loadPosts = async () => {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setPosts(mockPosts);
-      setLoading(false);
+      try {
+        const response = await fetch("/api/instagram");
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data);
+        } else {
+          // Fallback to mock data if API fails
+          setPosts(mockPosts);
+        }
+      } catch (error) {
+        console.error("Error fetching Instagram posts:", error);
+        setPosts(mockPosts);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadPosts();
@@ -137,7 +156,7 @@ export function InstagramPostsWindow() {
         </div>
         <div>
           <div style={{ fontWeight: "bold", color: "#1e2a4a" }}>
-            @TheAgencyOS
+            @meet_the_agency
           </div>
           <div style={{ fontSize: "12px", color: "#6c7c9b" }}>
             The Agency OS™ • Digital Agency
@@ -233,7 +252,7 @@ export function InstagramPostsWindow() {
                         color: "#1e2a4a",
                       }}
                     >
-                      The Agency OS™
+                      meet_the_agency
                     </div>
                     <div style={{ fontSize: "11px", color: "#6c7c9b" }}>
                       {post.timestamp}
@@ -250,11 +269,26 @@ export function InstagramPostsWindow() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "60px",
                     position: "relative",
+                    overflow: "hidden",
                   }}
                 >
-                  {post.image}
+                  <Image
+                    src={post.image}
+                    alt="Instagram post"
+                    width={400}
+                    height={300}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      (e.target as HTMLImageElement).src =
+                        "/images/instagram-placeholder.svg";
+                    }}
+                  />
                   {post.type === "video" && (
                     <div
                       style={{
