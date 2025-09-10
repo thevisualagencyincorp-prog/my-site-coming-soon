@@ -41,10 +41,30 @@ A beautiful, interactive coming soon page built with Next.js, featuring live wea
    ```bash
    cp .env.example .env.local
    ```
-   Edit `.env.local` and add your OpenWeatherMap API key:
+   Edit `.env.local` and add your API keys:
    ```
-   NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
+   NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
+   INSTAGRAM_ACCESS_TOKEN=your_instagram_access_token_here
+   INSTAGRAM_USER_ID=your_instagram_user_id_here
    ```
+
+   #### Instagram API Setup (Optional)
+   To display real Instagram posts from @meet_the_agency:
+
+   1. **Create Facebook Developer Account**
+      - Go to [Facebook Developers](https://developers.facebook.com/)
+      - Create a new app or use existing one
+
+   2. **Set up Instagram Basic Display**
+      - Add Instagram Basic Display product to your app
+      - Configure OAuth redirect URIs
+      - Generate access token for @meet_the_agency account
+
+   3. **Environment Variables**
+      - `INSTAGRAM_ACCESS_TOKEN`: Your Instagram access token
+      - `INSTAGRAM_USER_ID`: The Instagram user ID for @meet_the_agency
+
+   **Note**: You can only access posts from the Instagram account that owns the access token. For @meet_the_agency, you'll need access to that account's credentials.
 
 4. **Start the development server**
    ```bash
