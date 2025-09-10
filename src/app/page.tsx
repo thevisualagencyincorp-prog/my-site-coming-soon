@@ -27,6 +27,7 @@ import {
   CreativeWizard,
   LoadingScreen,
 } from "@/components";
+import { TopBar } from "@/components/TopBar";
 
 type WindowKey =
   | "mash"
@@ -49,37 +50,139 @@ type WindowKey =
   | "newsletter"
   | "mysteryClub"
   | "coffeeClub";
-const taskbarWindows: { key: WindowKey; icon: string; label: string }[] = [
-  { key: "mash", icon: "/images/cd.webp", label: "MASH Game" },
-  { key: "aol", icon: "/images/ai.webp", label: "AOL Messenger" },
-  { key: "instagram", icon: "/images/battery.webp", label: "Instagram" },
-  { key: "ads", icon: "/images/blutooth.webp", label: "Ads" },
-  { key: "contact", icon: "/images/ai.webp", label: "Contact" },
-  { key: "faq", icon: "/images/ai.webp", label: "FAQ" },
-  { key: "about", icon: "/images/ai.webp", label: "About Us" },
-  { key: "creative", icon: "/images/ai.webp", label: "Creative Wizard" },
-  { key: "metrics", icon: "/images/ai.webp", label: "Agency Metrics" },
-  { key: "skeleton", icon: "/images/ai.webp", label: "Skeleton Dance" },
-  { key: "cat", icon: "/images/ai.webp", label: "Funny Cats" },
-  { key: "virus", icon: "/images/ai.webp", label: "Virus Alert" },
-  { key: "bsod", icon: "/images/ai.webp", label: "BSOD" },
-  { key: "notes", icon: "/images/ai.webp", label: "Sticky Notes" },
-  { key: "clippy", icon: "/images/ai.webp", label: "Clippy" },
+
+const desktopIcons: {
+  key: WindowKey;
+  icon: string;
+  label: string;
+  x: number;
+  y: number;
+}[] = [
+  {
+    key: "contact",
+    icon: "/images/folder.webp",
+    label: "Contact",
+    x: 50,
+    y: 50,
+  },
+  {
+    key: "faq",
+    icon: "/images/folder.webp",
+    label: "Help & FAQ",
+    x: 50,
+    y: 150,
+  },
+  {
+    key: "about",
+    icon: "/images/folder.webp",
+    label: "About Us",
+    x: 50,
+    y: 250,
+  },
+  {
+    key: "creative",
+    icon: "/images/folder.webp",
+    label: "Creative Wizard",
+    x: 50,
+    y: 350,
+  },
+  {
+    key: "metrics",
+    icon: "/images/folder.webp",
+    label: "Agency Metrics",
+    x: 150,
+    y: 50,
+  },
+  {
+    key: "skeleton",
+    icon: "/images/folder.webp",
+    label: "Skeleton Dance",
+    x: 150,
+    y: 150,
+  },
+  {
+    key: "cat",
+    icon: "/images/folder.webp",
+    label: "Funny Cats",
+    x: 150,
+    y: 250,
+  },
+  {
+    key: "virus",
+    icon: "/images/folder.webp",
+    label: "Virus Alert",
+    x: 150,
+    y: 350,
+  },
+  { key: "bsod", icon: "/images/folder.webp", label: "BSOD", x: 250, y: 50 },
+  {
+    key: "notes",
+    icon: "/images/folder.webp",
+    label: "Sticky Notes",
+    x: 250,
+    y: 150,
+  },
+  {
+    key: "clippy",
+    icon: "/images/folder.webp",
+    label: "Clippy Assistant",
+    x: 250,
+    y: 250,
+  },
   {
     key: "instagramPosts",
-    icon: "/images/battery.webp",
+    icon: "/images/folder.webp",
     label: "Instagram Posts",
+    x: 250,
+    y: 350,
   },
-  { key: "vibeCheck", icon: "/images/ai.webp", label: "Vibe Check" },
-  { key: "newsletter", icon: "/images/ai.webp", label: "Newsletter" },
-  { key: "mysteryClub", icon: "/images/ai.webp", label: "Mystery Club" },
-  { key: "coffeeClub", icon: "/images/ai.webp", label: "Coffee Club" },
+  {
+    key: "vibeCheck",
+    icon: "/images/folder.webp",
+    label: "Vibe Check",
+    x: 350,
+    y: 50,
+  },
+  {
+    key: "newsletter",
+    icon: "/images/folder.webp",
+    label: "Newsletter",
+    x: 350,
+    y: 150,
+  },
+  {
+    key: "mysteryClub",
+    icon: "/images/folder.webp",
+    label: "Mystery Club",
+    x: 350,
+    y: 250,
+  },
+  {
+    key: "coffeeClub",
+    icon: "/images/folder.webp",
+    label: "Coffee Club",
+    x: 350,
+    y: 350,
+  },
 ];
+
+// Taskbar entries will reflect currently open windows
+// and show the same icon/label as their desktop icon.
+type TaskbarItem = { key: WindowKey; icon: string; label: string };
+
+type TaskbarWindow = {
+  key: WindowKey;
+  icon: string;
+  label: string;
+};
 
 export default function Home() {
   const [fadeIn, setFadeIn] = useState(false);
   const [startOpen, setStartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [desktopBackground, setDesktopBackground] = useState(
+    "/images/Background:day.png"
+  );
   const [openWindows, setOpenWindows] = useState<Record<WindowKey, boolean>>({
     mash: false,
     aol: false,
@@ -103,7 +206,9 @@ export default function Home() {
     coffeeClub: false,
   });
 
-  const [minimizedWindows, setMinimizedWindows] = useState<Record<WindowKey, boolean>>({
+  const [minimizedWindows, setMinimizedWindows] = useState<
+    Record<WindowKey, boolean>
+  >({
     mash: false,
     aol: false,
     instagram: false,
@@ -126,7 +231,9 @@ export default function Home() {
     coffeeClub: false,
   });
 
-  const [maximizedWindows, setMaximizedWindows] = useState<Record<WindowKey, boolean>>({
+  const [maximizedWindows, setMaximizedWindows] = useState<
+    Record<WindowKey, boolean>
+  >({
     mash: false,
     aol: false,
     instagram: false,
@@ -148,6 +255,18 @@ export default function Home() {
     mysteryClub: false,
     coffeeClub: false,
   });
+
+  // Build dynamic taskbar list from open windows
+  const desktopIconMap: Record<string, { icon: string; label: string }> = Object.fromEntries(
+    desktopIcons.map((i) => [i.key, { icon: i.icon, label: i.label }])
+  );
+  const taskbarWindows: TaskbarItem[] = Object.entries(openWindows)
+    .filter(([, open]) => open)
+    .map(([key]) => ({
+      key: key as WindowKey,
+      icon: desktopIconMap[key]?.icon ?? "/images/folder.webp",
+      label: desktopIconMap[key]?.label ?? key,
+    }));
 
   const handleOpenWindow = (key: WindowKey) => {
     setOpenWindows((prev) => ({ ...prev, [key]: true }));
@@ -167,6 +286,16 @@ export default function Home() {
   const handleMaximizeWindow = (key: WindowKey) => {
     setMaximizedWindows((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+
+  // Update desktop background based on time of day
+  useEffect(() => {
+    const currentHour = new Date().getHours();
+    // Day time: 6 AM to 6 PM, Night time: 6 PM to 6 AM
+    const isDayTime = currentHour >= 6 && currentHour < 18;
+    setDesktopBackground(
+      isDayTime ? "/images/Background:day.png" : "/images/Background:night.png"
+    );
+  }, []);
 
   useEffect(() => {
     const handleOpenFAQ = () => {
@@ -294,9 +423,22 @@ export default function Home() {
     };
   }, []);
 
+  // Auto-open a couple of windows after boot for a lively desktop
+  useEffect(() => {
+    if (!isLoading) {
+      const t1 = setTimeout(() => handleOpenWindow("aol"), 400);
+      const t2 = setTimeout(() => handleOpenWindow("about"), 900);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [isLoading]);
+
   return (
     <>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+      {!isLoading && <TopBar />}
       <Head>
         <title>
           The Agency OS™ | Digital Agency, Web Development, Branding, Creative,
@@ -315,14 +457,38 @@ export default function Home() {
           content="digital agency, web development, branding, creative agency, marketing, SEO, social media, Instagram, AOL, MASH, retro web design, Y2K, Windows 98, coming soon, contact, advertising, FAQ, help, best digital agency, top creative agency, web design, UI/UX, interactive, immersive, mobile optimized, responsive, modern, innovative, The Agency OS"
         />
       </Head>
-      <div className="min-h-screen relative overflow-hidden bg-black">
+      <div
+        className="min-h-screen relative overflow-hidden bg-black"
+        style={{ paddingTop: isLoading ? 0 : 40 }}
+      >
         {/* Background Image */}
         <img
-          src="/images/Background:day.png"
+          src={desktopBackground}
           alt="Desktop Background"
           className="absolute inset-0 w-full h-full object-cover z-0"
           style={{ pointerEvents: "none" }}
         />
+        {/* Desktop Icons */}
+        <div className="absolute inset-0 z-10">
+          {desktopIcons.map((icon) => (
+            <button
+              key={icon.key}
+              className="absolute flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-white/10 transition-colors group"
+              style={{ left: icon.x, top: icon.y }}
+              onClick={() => handleOpenWindow(icon.key)}
+              onDoubleClick={() => handleOpenWindow(icon.key)}
+            >
+              <img
+                src={icon.icon}
+                alt={icon.label}
+                className="w-12 h-12 drop-shadow-sm group-hover:scale-110 transition-transform"
+              />
+              <span className="text-white text-xs font-medium text-center max-w-20 truncate drop-shadow-sm">
+                {icon.label}
+              </span>
+            </button>
+          ))}
+        </div>
         {/* SEO: Hidden keywords for user search terms */}
         <div style={{ display: "none" }}>
           digital agency, web development, branding, creative agency, marketing,
@@ -341,7 +507,8 @@ export default function Home() {
           >
             <DesktopWindow
               title="MASH Game - Agency Destiny Generator"
-              initialPosition={{ x: 120, y: 80 }}
+              iconSrc="/images/folder.webp"
+              initialPosition={{ x: 100, y: 60 }}
               width={500}
               height={400}
               zIndex={20}
@@ -363,7 +530,8 @@ export default function Home() {
           >
             <DesktopWindow
               title="AOL Instant Messenger"
-              initialPosition={{ x: 600, y: 120 }}
+              iconSrc="/images/ai.webp"
+              initialPosition={{ x: 650, y: 80 }}
               width={800}
               height={500}
               zIndex={21}
@@ -385,7 +553,8 @@ export default function Home() {
           >
             <DesktopWindow
               title="Instagram"
-              initialPosition={{ x: 900, y: 180 }}
+              iconSrc="/images/folder.webp"
+              initialPosition={{ x: 200, y: 120 }}
               width={340}
               height={300}
               zIndex={22}
@@ -417,7 +586,8 @@ export default function Home() {
           >
             <DesktopWindow
               title="Ads"
-              initialPosition={{ x: 320, y: 400 }}
+              iconSrc="/images/folder.webp"
+              initialPosition={{ x: 300, y: 450 }}
               width={320}
               height={180}
               zIndex={23}
@@ -449,7 +619,8 @@ export default function Home() {
           >
             <DesktopWindow
               title="Contact"
-              initialPosition={{ x: 1200, y: 320 }}
+              iconSrc="/images/folder.webp"
+              initialPosition={{ x: 750, y: 300 }}
               width={800}
               height={500}
               zIndex={25}
@@ -471,7 +642,8 @@ export default function Home() {
           >
             <DesktopWindow
               title="Help & FAQ - The Agency OS™"
-              initialPosition={{ x: 800, y: 200 }}
+              iconSrc="/images/folder.webp"
+              initialPosition={{ x: 850, y: 150 }}
               width={500}
               height={450}
               zIndex={26}
@@ -493,6 +665,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="About The Agency OS™"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 150, y: 150 }}
               width={450}
               height={400}
@@ -515,6 +688,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Creative Wizard - Project Setup Assistant"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 250, y: 100 }}
               width={550}
               height={500}
@@ -537,10 +711,16 @@ export default function Home() {
           >
             <DesktopWindow
               title="Agency Metrics Dashboard"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 350, y: 200 }}
               width={500}
               height={450}
               zIndex={29}
+              onClose={() => handleCloseWindow("metrics")}
+              onMinimize={() => handleMinimizeWindow("metrics")}
+              onMaximize={() => handleMaximizeWindow("metrics")}
+              minimized={minimizedWindows.metrics}
+              maximized={maximizedWindows.metrics}
             >
               <MetricsWindow />
             </DesktopWindow>
@@ -554,10 +734,16 @@ export default function Home() {
           >
             <DesktopWindow
               title="Skeleton Dance Party 🎭💀"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 450, y: 250 }}
               width={450}
               height={400}
               zIndex={30}
+              onClose={() => handleCloseWindow("skeleton")}
+              onMinimize={() => handleMinimizeWindow("skeleton")}
+              onMaximize={() => handleMaximizeWindow("skeleton")}
+              minimized={minimizedWindows.skeleton}
+              maximized={maximizedWindows.skeleton}
             >
               <SkeletonDanceWindow />
             </DesktopWindow>
@@ -571,6 +757,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Funny Cat Video Loop 🐱📹"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 550, y: 300 }}
               width={450}
               height={400}
@@ -593,6 +780,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="⚠️ Security Alert - System Compromised"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 650, y: 350 }}
               width={450}
               height={400}
@@ -615,6 +803,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Windows - System Error"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 750, y: 400 }}
               width={600}
               height={400}
@@ -637,6 +826,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Sticky Notes - Digital Notepad"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 850, y: 450 }}
               width={600}
               height={500}
@@ -659,6 +849,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Clippy - Your Digital Assistant"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 950, y: 500 }}
               width={400}
               height={300}
@@ -681,6 +872,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Instagram Posts - Latest Feed"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 200, y: 150 }}
               width={600}
               height={500}
@@ -703,6 +895,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Vibe Check - Creative Energy Assessment"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 300, y: 200 }}
               width={500}
               height={450}
@@ -725,6 +918,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Monthly Tips & Trends Newsletter"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 400, y: 250 }}
               width={550}
               height={500}
@@ -747,6 +941,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Mystery/Murder Club Waitlist"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 500, y: 300 }}
               width={600}
               height={550}
@@ -769,6 +964,7 @@ export default function Home() {
           >
             <DesktopWindow
               title="Coffee Club Waitlist - Cowork & Network"
+              iconSrc="/images/folder.webp"
               initialPosition={{ x: 600, y: 350 }}
               width={600}
               height={550}
@@ -784,104 +980,118 @@ export default function Home() {
           </div>
         )}
         {/* Windows-style Taskbar */}
-
-        {/* Windows-style Taskbar */}
-        <div
-          className="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-4 py-2"
-          style={{
-            background: "rgba(24, 24, 28, 0.85)",
-            borderTop: "1.5px solid rgba(255,255,255,0.08)",
-            boxShadow: "0 0 16px 0 rgba(0,0,0,0.25)",
-            height: "54px",
-            backdropFilter: "blur(12px)",
-          }}
-        >
-          {/* Start Button */}
-          <button
-            className="flex items-center gap-3 px-6 h-12 rounded-l-xl rounded-r-3xl bg-gradient-to-b from-[#4CAF50] to-[#357A38] border-2 border-[#1B5E20] shadow-xl hover:brightness-110 active:brightness-90 transition-all duration-200 focus:outline-none select-none"
+        {!isLoading && (
+          <div
+            className="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-4 py-2"
             style={{
-              fontFamily: "Tahoma, Geneva, Verdana, sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              letterSpacing: 0.5,
-              boxShadow: "0 4px 12px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
-              background: "linear-gradient(180deg, #4CAF50 0%, #357A38 100%)",
+              background: "rgba(24, 24, 28, 0.85)",
+              borderTop: "1.5px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 0 16px 0 rgba(0,0,0,0.25)",
+              height: "54px",
+              backdropFilter: "blur(12px)",
             }}
-            onClick={() => setStartOpen((v) => !v)}
-            aria-label="Open Start Menu"
           >
-            <img
-              src="/images/ai.webp"
-              alt="Start logo"
-              className="w-7 h-7 drop-shadow"
-              style={{ filter: "drop-shadow(0 1px 0 #fff)" }}
-            />
-            <span
+            {/* Start Button */}
+            <button
+              className="flex items-center gap-3 px-8 h-14 rounded-l-xl rounded-r-3xl bg-gradient-to-b from-[#4CAF50] to-[#357A38] border-2 border-[#1B5E20] shadow-xl hover:brightness-110 active:brightness-90 transition-all duration-200 focus:outline-none select-none"
               style={{
-                color: "#fff",
-                textShadow: "1px 1px 0 #000, 0 1px 0 #000",
-                fontSize: "16px",
+                fontFamily: "Tahoma, Geneva, Verdana, sans-serif",
+                fontWeight: 700,
+                fontSize: 18,
+                letterSpacing: 0.5,
+                boxShadow:
+                  "0 4px 12px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
+                background: "linear-gradient(180deg, #4CAF50 0%, #357A38 100%)",
               }}
+              onClick={() => setStartOpen((v) => !v)}
+              aria-label="Open Start Menu"
             >
-              Start
-            </span>
-          </button>
-          {/* Start Menu */}
-          <StartMenu
-            open={startOpen}
-            onClose={() => setStartOpen(false)}
-            onOpenWindow={handleOpenWindow}
-          />
-          {/* Taskbar Icons */}
-          <div className="flex-1 flex items-center gap-2 ml-4">
-            {/* Use custom icons for each window */}
-            {taskbarWindows.map((item) => (
-              <button
-                key={item.key}
-                className={`w-9 h-9 flex items-center justify-center rounded-lg transition border border-transparent focus:outline-none ${
-                  openWindows[item.key] && !minimizedWindows[item.key]
-                    ? "bg-white/20 border-white/30"
-                    : openWindows[item.key] && minimizedWindows[item.key]
-                    ? "bg-white/10 border-white/20 opacity-60"
-                    : "hover:bg-white/10"
-                }`}
-                aria-label={item.label}
-                onClick={() => {
-                  if (openWindows[item.key]) {
-                    // If window is open, toggle minimize/restore
-                    if (minimizedWindows[item.key]) {
-                      // Restore minimized window
-                      setMinimizedWindows((prev) => ({ ...prev, [item.key]: false }));
-                    } else {
-                      // Minimize window
-                      setMinimizedWindows((prev) => ({ ...prev, [item.key]: true }));
-                    }
-                  } else {
-                    // Open window
-                    handleOpenWindow(item.key);
-                  }
+              <span
+                style={{
+                  color: "#fff",
+                  textShadow: "1px 1px 0 #000, 0 1px 0 #000",
+                  fontSize: "18px",
                 }}
               >
-                <img src={item.icon} alt={item.label} className="w-6 h-6" />
-              </button>
-            ))}
+                Start
+              </span>
+            </button>
+            {/* Start Menu */}
+            <StartMenu
+              open={startOpen}
+              onClose={() => setStartOpen(false)}
+              onOpenWindow={handleOpenWindow}
+            />
+            {/* Taskbar Icons */}
+            <div className="flex-1 flex items-center gap-2 ml-4">
+              {/* Use custom icons for each window */}
+              {taskbarWindows.map((item: TaskbarWindow) => (
+                <button
+                  key={item.key}
+                  className={`w-9 h-9 flex items-center justify-center rounded-lg transition border border-transparent focus:outline-none ${
+                    openWindows[item.key] && !minimizedWindows[item.key]
+                      ? "bg-white/20 border-white/30"
+                      : openWindows[item.key] && minimizedWindows[item.key]
+                      ? "bg-white/10 border-white/20 opacity-60"
+                      : "hover:bg-white/10"
+                  }`}
+                  aria-label={item.label}
+                  onClick={() => {
+                    if (openWindows[item.key]) {
+                      // If window is open, toggle minimize/restore
+                      if (minimizedWindows[item.key]) {
+                        // Restore minimized window
+                        setMinimizedWindows((prev) => ({
+                          ...prev,
+                          [item.key]: false,
+                        }));
+                      } else {
+                        // Minimize window
+                        setMinimizedWindows((prev) => ({
+                          ...prev,
+                          [item.key]: true,
+                        }));
+                      }
+                    } else {
+                      // Open window
+                      handleOpenWindow(item.key);
+                    }
+                  }}
+                >
+                  <img src={item.icon} alt={item.label} className="w-6 h-6" />
+                </button>
+              ))}
+            </div>
+            {/* System Tray: Date, Weather, Time */}
+            <div className="flex items-center gap-4 bg-white/10 rounded-xl px-4 py-1 border border-white/10 shadow-sm">
+              {/* Static Icons */}
+              <div className="flex items-center gap-2 px-2">
+                <img
+                  src="/images/battery.webp"
+                  alt="Battery"
+                  className="w-4 h-4"
+                />
+                <img
+                  src="/images/blutooth.webp"
+                  alt="Bluetooth"
+                  className="w-4 h-4"
+                />
+              </div>
+              {/* Date */}
+              <div className="hidden md:block text-white/90 text-xs font-mono px-2">
+                <DigitalClockOnlyDate />
+              </div>
+              {/* Weather */}
+              <div className="flex items-center gap-1 text-white/90 text-xs px-2">
+                <WeatherWidgetTaskbar />
+              </div>
+              {/* Time */}
+              <div className="text-white/90 text-base font-mono px-2">
+                <DigitalClockOnlyTime />
+              </div>
+            </div>
           </div>
-          {/* System Tray: Date, Weather, Time */}
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl px-4 py-1 border border-white/10 shadow-sm">
-            {/* Date */}
-            <div className="hidden md:block text-white/90 text-xs font-mono px-2">
-              <DigitalClockOnlyDate />
-            </div>
-            {/* Weather */}
-            <div className="flex items-center gap-1 text-white/90 text-xs px-2">
-              <WeatherWidgetTaskbar />
-            </div>
-            {/* Time */}
-            <div className="text-white/90 text-base font-mono px-2">
-              <DigitalClockOnlyTime />
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </>
   );
