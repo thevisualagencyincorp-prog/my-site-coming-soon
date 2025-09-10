@@ -4,3 +4,5 @@ export { LoadingScreen } from "./LoadingScreen";
 export { DigitalClockOnlyDate } from "./DigitalClockOnlyDate";
 export { DigitalClockOnlyTime } from "./DigitalClockOnlyTime";
 export { WeatherWidgetTaskbar } from "./WeatherWidgetTaskbar";
+export { DesktopWindow } from "./DesktopWindow";
+export { StartMenu } from "./StartMenu";

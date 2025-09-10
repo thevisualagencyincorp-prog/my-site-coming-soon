@@ -8,11 +8,29 @@ import {
   DigitalClockOnlyDate,
   DigitalClockOnlyTime,
   WeatherWidgetTaskbar,
+  DesktopWindow,
+  StartMenu,
 } from "@/components";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
+  const [startOpen, setStartOpen] = useState(false);
+  const [openWindows, setOpenWindows] = useState({
+    clock: true,
+    weather: true,
+    about: true,
+    services: true,
+    contact: true,
+    welcome: true,
+  });
+
+  const handleOpenWindow = (key: string) => {
+    setOpenWindows((prev) => ({ ...prev, [key]: true }));
+  };
+  const handleCloseWindow = (key: string) => {
+    setOpenWindows((prev) => ({ ...prev, [key]: false }));
+  };
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -85,60 +103,166 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Main content */}
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="mb-6">
+        {/* Desktop Windows */}
+        {openWindows.welcome && (
+          <DesktopWindow
+            title="Welcome"
+            initialPosition={{ x: 120, y: 80 }}
+            width={420}
+            zIndex={20}
+          >
+            <div className="text-center mb-6">
               <div className="text-8xl mb-4 animate-pulse">🌟</div>
-              <h1 className="text-6xl md:text-8xl font-bold text-white mb-4 drop-shadow-2xl tracking-wide">
+              <h1 className="text-5xl md:text-6xl font-bold text-black dark:text-white mb-4 drop-shadow-2xl tracking-wide">
                 The Agency
               </h1>
-              <p className="text-2xl md:text-3xl text-white/90 font-light tracking-wide drop-shadow-lg">
+              <p className="text-xl md:text-2xl text-black/80 dark:text-white/90 font-light tracking-wide drop-shadow-lg">
                 Coming Soon
               </p>
             </div>
-
-            {/* Subtitle with scumner.world inspired style */}
-            <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-6 border border-white/10 max-w-2xl mx-auto">
-              <p className="text-white/80 text-lg md:text-xl leading-relaxed">
-                Experience the future of digital innovation.
-                <br />
-                <span className="text-white font-medium">
+            <div className="bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 max-w-2xl mx-auto">
+              <p className="text-black/80 dark:text-white/80 text-base md:text-lg leading-relaxed">
+                Experience the future of digital innovation.<br />
+                <span className="text-black dark:text-white font-medium">
                   Something amazing is on the way.
                 </span>
               </p>
             </div>
-          </div>
+          </DesktopWindow>
+        )}
 
-          {/* Time and Weather Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl w-full">
-            {/* Clock Section */}
-            <div className="bg-black/20 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-              <DigitalClock />
+        {openWindows.clock && (
+          <DesktopWindow
+            title="Digital Clock"
+            initialPosition={{ x: 600, y: 120 }}
+            width={340}
+            zIndex={21}
+          >
+            <DigitalClock />
+          </DesktopWindow>
+        )}
+
+        {openWindows.weather && (
+          <DesktopWindow
+            title="Weather"
+            initialPosition={{ x: 980, y: 180 }}
+            width={340}
+            zIndex={22}
+          >
+            <WeatherWidget />
+          </DesktopWindow>
+        )}
+
+        {openWindows.about && (
+          <DesktopWindow
+            title="About The Agency"
+            initialPosition={{ x: 320, y: 400 }}
+            width={420}
+            zIndex={23}
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-black dark:text-white mb-4 drop-shadow-lg">
+              About The Agency
+            </h2>
+            <div className="bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+              <p className="text-black/80 dark:text-white/80 text-base md:text-lg leading-relaxed mb-2">
+                We are a cutting-edge digital agency specializing in innovative solutions for the modern world. Our team combines creativity with technology to deliver exceptional results.
+              </p>
+              <p className="text-black/60 dark:text-white/60 text-sm">
+                From web development to branding, we're here to elevate your digital presence.
+              </p>
             </div>
+          </DesktopWindow>
+        )}
 
-            {/* Weather Section */}
-            <div className="flex items-center justify-center">
-              <WeatherWidget />
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="mt-12 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 inline-block">
-              <p className="text-white/90 mb-4">Stay tuned for updates</p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <button className="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-                  Notify Me
-                </button>
-                <button className="px-6 py-3 bg-gradient-to-r from-purple-500/80 to-pink-500/80 hover:from-purple-600/80 hover:to-pink-600/80 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-                  Learn More
-                </button>
+        {openWindows.services && (
+          <DesktopWindow
+            title="Our Services"
+            initialPosition={{ x: 800, y: 420 }}
+            width={540}
+            zIndex={24}
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-black dark:text-white mb-6 drop-shadow-lg text-center">
+              Our Services
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 flex flex-col items-center">
+                <img
+                  src="/images/ai.webp"
+                  alt="AI Icon"
+                  className="w-12 h-12 mb-2"
+                />
+                <h3 className="text-lg font-semibold text-black dark:text-white mb-1">
+                  Web Development
+                </h3>
+                <p className="text-black/70 dark:text-white/70 text-sm text-center">
+                  Custom websites and apps built with the latest technologies.
+                </p>
+              </div>
+              <div className="bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 flex flex-col items-center">
+                <img
+                  src="/images/battery.webp"
+                  alt="Battery Icon"
+                  className="w-12 h-12 mb-2"
+                />
+                <h3 className="text-lg font-semibold text-black dark:text-white mb-1">
+                  Design & Branding
+                </h3>
+                <p className="text-black/70 dark:text-white/70 text-sm text-center">
+                  Stunning visuals and brand identities that stand out.
+                </p>
+              </div>
+              <div className="bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 flex flex-col items-center">
+                <img
+                  src="/images/blutooth.webp"
+                  alt="Bluetooth Icon"
+                  className="w-12 h-12 mb-2"
+                />
+                <h3 className="text-lg font-semibold text-black dark:text-white mb-1">
+                  Digital Marketing
+                </h3>
+                <p className="text-black/70 dark:text-white/70 text-sm text-center">
+                  Strategies to grow your online presence and reach.
+                </p>
               </div>
             </div>
-          </div>
-        </div>
+          </DesktopWindow>
+        )}
+
+        {openWindows.contact && (
+          <DesktopWindow
+            title="Contact"
+            initialPosition={{ x: 1200, y: 320 }}
+            width={420}
+            zIndex={25}
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-black dark:text-white mb-4 drop-shadow-lg text-center">
+              Get In Touch
+            </h2>
+            <div className="bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+              <p className="text-black/80 dark:text-white/80 text-base mb-4 text-center">
+                Ready to start your project? Let's talk.
+              </p>
+              <form className="space-y-3">
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  className="w-full p-2 rounded-lg bg-white/10 border border-white/20 text-black dark:text-white placeholder-black/50 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <textarea
+                  placeholder="Your Message"
+                  rows={3}
+                  className="w-full p-2 rounded-lg bg-white/10 border border-white/20 text-black dark:text-white placeholder-black/50 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="w-full px-4 py-2 bg-gradient-to-r from-purple-500/80 to-pink-500/80 hover:from-purple-600/80 hover:to-pink-600/80 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </DesktopWindow>
+        )}
 
         {/* Additional Sections for Multi-Page Feel */}
         <div className="relative z-10 w-full px-8 py-16 space-y-16">
@@ -267,6 +391,7 @@ export default function Home() {
           <button
             className="flex items-center justify-center w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 shadow-lg transition-all duration-200 focus:outline-none"
             style={{ boxShadow: "0 2px 8px 0 rgba(0,0,0,0.18)" }}
+            onClick={() => setStartOpen((prev) => !prev)}
           >
             <img src="/images/folder.webp" alt="Start" className="w-6 h-6" />
           </button>
@@ -288,6 +413,14 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Start Menu */}
+        {startOpen && (
+          <StartMenu
+            onClose={() => setStartOpen(false)}
+            onOpenWindow={handleOpenWindow}
+          />
+        )}
       </div>
     </div>
   );
