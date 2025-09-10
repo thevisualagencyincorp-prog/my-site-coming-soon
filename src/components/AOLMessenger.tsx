@@ -9,9 +9,36 @@ export function AOLMessenger() {
       Array<{ who: string; text: string; me: boolean; timestamp: number }>
     >
   >({
-    taylor: [],
-    sabrina: [],
-    tyler: [],
+    taylor: [
+      {
+        who: "Taylor Nation",
+        text: "Welcome to Agency OS — excited to chat ✨",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 30,
+      },
+      {
+        who: "You",
+        text: "Likewise! Sending over a few thoughts.",
+        me: true,
+        timestamp: Date.now() - 1000 * 60 * 29,
+      },
+    ],
+    sabrina: [
+      {
+        who: "Sabrina Team",
+        text: "Dropping moodboard references here.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 45,
+      },
+    ],
+    tyler: [
+      {
+        who: "Tyler",
+        text: "Yo — let’s keep it playful but clean.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 60,
+      },
+    ],
     olivia: [],
     xo: [],
     brief: [],
@@ -45,6 +72,7 @@ export function AOLMessenger() {
   ];
 
   const inputRefs = useRef<Record<string, HTMLInputElement>>({});
+  const endRefs = useRef<Record<string, HTMLDivElement>>({});
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,6 +100,9 @@ export function AOLMessenger() {
       ...prev,
       [chatKey]: [...prev[chatKey], { who, text, me, timestamp: Date.now() }],
     }));
+    setTimeout(() => {
+      endRefs.current[chatKey]?.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const simulateReply = (chatKey: string, who: string) => {
@@ -503,6 +534,7 @@ export function AOLMessenger() {
                           </span>
                         </div>
                       ))}
+                      <div ref={(el) => { if (el) endRefs.current[tab] = el; }} />
                     </div>
 
                     {/* Composer */}
