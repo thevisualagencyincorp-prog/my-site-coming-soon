@@ -8,6 +8,7 @@ interface DesktopWindowProps {
   initialPosition?: { x: number; y: number };
   width?: number | string;
   height?: number | string;
+  iconSrc?: string;
   zIndex?: number;
   onClick?: () => void;
   onClose?: () => void;
@@ -22,7 +23,8 @@ export function DesktopWindow({
   children,
   initialPosition = { x: 100, y: 100 },
   width = 420,
-  height = "auto",
+  height = 320,
+  iconSrc = "/images/folder.webp",
   zIndex = 10,
   onClick,
   onClose,
@@ -33,9 +35,22 @@ export function DesktopWindow({
 }: DesktopWindowProps) {
   const [pos, setPos] = useState(initialPosition);
   const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [isMaximized, setIsMaximized] = useState(maximized);
-  const [isMinimized, setIsMinimized] = useState(minimized);
+  const dragOffset = useRef({ x: 0, y: 0 });
+  const [resizing, setResizing] = useState(false);
+  const resizeRef = useRef({
+    startX: 0,
+    startY: 0,
+    startW: 0,
+    startH: 0,
+    startLeft: 0,
+    startTop: 0,
+    dir: "se" as "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw",
+  });
+  const [size, setSize] = useState({
+    width: typeof width === "number" ? width : 420,
+    height: typeof height === "number" ? height : 320,
+  });
+  // Parent controls min/max state; this component only reports actions
   const [currentZIndex, setCurrentZIndex] = useState(zIndex);
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -47,33 +62,40 @@ export function DesktopWindow({
   };
 
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    if (isMaximized) return; // Don't allow dragging when maximized
-    
+    if (maximized) return; // Don't allow dragging when maximized
+    e.preventDefault();
     setDragging(true);
-    setOffset({
-      x: e.clientX - pos.x,
-      y: e.clientY - pos.y,
-    });
+    dragOffset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
     handleWindowClick(); // Bring to front when starting drag
   };
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!dragging || isMaximized) return;
-    setPos({
-      x: e.clientX - offset.x,
-      y: e.clientY - offset.y,
-    });
+  const handleMouseMove = (_e: MouseEvent<HTMLDivElement>) => {
+    // Movement handled by global listeners while dragging/resizing
   };
 
-  const handleMouseUp = () => setDragging(false);
+  const clampToViewport = (next: { x: number; y: number }) => {
+    const el = windowRef.current;
+    if (!el) return next;
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxX = Math.max(0, vw - rect.width);
+    const maxY = Math.max(0, vh - rect.height);
+    return { x: Math.min(Math.max(0, next.x), maxX), y: Math.min(Math.max(0, next.y), maxY) };
+  };
+
+  const handleMouseUp = () => {
+    if (dragging) {
+      setPos((p) => clampToViewport(p));
+    }
+    setDragging(false);
+  };
 
   const handleMinimize = () => {
-    setIsMinimized(true);
     if (onMinimize) onMinimize();
   };
 
   const handleMaximize = () => {
-    setIsMaximized(!isMaximized);
     if (onMaximize) onMaximize();
   };
 
@@ -83,31 +105,32 @@ export function DesktopWindow({
 
   // Reset position when un-maximizing
   useEffect(() => {
-    if (!isMaximized && maximized) {
+    // When a window is restored from maximized state, reset to initial position
+    if (!maximized) {
       setPos(initialPosition);
     }
-  }, [isMaximized, maximized, initialPosition]);
+  }, [maximized, initialPosition]);
 
-  if (isMinimized) {
+  if (minimized) {
     return null; // Don't render when minimized
   }
 
   return (
     <div
       ref={windowRef}
-      className="fixed select-none border border-gray-700 bg-gray-100 overflow-hidden shadow-[4px_4px_0_#888,8px_8px_0_#ccc]"
+      className="fixed select-none border border-[#1b3a73] bg-[#f2f4fb] overflow-hidden shadow-[0_0_0_2px_#2b5fb8,6px_6px_0_#0b2a5e]"
       style={{
-        left: isMaximized ? 0 : pos.x,
-        top: isMaximized ? 0 : pos.y,
-        width: isMaximized ? "100vw" : width,
-        height: isMaximized ? "100vh" : height,
+        left: maximized ? 0 : pos.x,
+        top: maximized ? 0 : pos.y,
+        width: maximized ? "100vw" : width,
+        height: maximized ? "100vh" : height,
         zIndex: currentZIndex,
         minWidth: 280,
-        maxWidth: isMaximized ? "100vw" : "90vw",
+        maxWidth: maximized ? "100vw" : "90vw",
         minHeight: 120,
         boxShadow: dragging
-          ? "0 0 0 3px #1976d2, 0 8px 32px 0 rgba(0,0,0,0.25)"
-          : "4px 4px 0 #888, 8px 8px 0 #ccc",
+          ? "0 0 0 2px #3b82f6, 0 10px 30px rgba(0,0,0,0.35)"
+          : "0 0 0 2px #2b5fb8, 6px 6px 0 #0b2a5e",
         transition: dragging ? "none" : "box-shadow 0.2s",
         cursor: dragging ? "grabbing" : "default",
         borderRadius: 0,
@@ -119,19 +142,27 @@ export function DesktopWindow({
     >
       {/* Title bar */}
       <div
-        className="flex items-center px-2 py-1 bg-gradient-to-r from-[#1976d2] to-[#63a4ff] border-b-2 border-[#0d47a1] cursor-grab relative"
-        style={{ height: 32 }}
+        className="flex items-center px-2 py-1 cursor-grab relative select-none"
+        style={{
+          height: 30,
+          background: "linear-gradient(180deg, var(--win-title-start), var(--win-title-end))",
+          borderBottom: "2px solid var(--win-border)",
+        }}
         onMouseDown={handleMouseDown}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          handleMaximize();
+        }}
       >
         {/* System icon */}
         <img
-          src="/images/ai.webp"
+          src={iconSrc}
           alt="icon"
           className="w-5 h-5 mr-2"
           style={{ imageRendering: "pixelated" }}
         />
         <span
-          className="font-bold text-white text-sm tracking-wide drop-shadow-sm"
+          className="font-bold text-white text-xs tracking-wide drop-shadow-sm"
           style={{
             fontFamily: "Tahoma, Geneva, Verdana, sans-serif",
             textShadow: "1px 1px 0 #000",
@@ -142,7 +173,7 @@ export function DesktopWindow({
         {/* Window controls */}
         <div className="ml-auto flex gap-1">
           <button
-            className="w-6 h-6 bg-gray-200 border border-gray-700 flex items-center justify-center hover:bg-gray-300 active:bg-gray-400 transition-colors"
+            className="w-6 h-6 bg-[#efeff5] border border-[#1b3a73] flex items-center justify-center hover:bg-white active:bg-gray-200 transition-colors"
             style={{ boxShadow: "inset 1px 1px 0 #fff" }}
             title="Minimize"
             onClick={(e) => {
@@ -153,9 +184,9 @@ export function DesktopWindow({
             <span className="block w-3 h-0.5 bg-gray-700" />
           </button>
           <button
-            className="w-6 h-6 bg-gray-200 border border-gray-700 flex items-center justify-center hover:bg-gray-300 active:bg-gray-400 transition-colors"
+            className="w-6 h-6 bg-[#efeff5] border border-[#1b3a73] flex items-center justify-center hover:bg-white active:bg-gray-200 transition-colors"
             style={{ boxShadow: "inset 1px 1px 0 #fff" }}
-            title={isMaximized ? "Restore" : "Maximize"}
+            title={maximized ? "Restore" : "Maximize"}
             onClick={(e) => {
               e.stopPropagation();
               handleMaximize();
@@ -164,7 +195,7 @@ export function DesktopWindow({
             <span className="block w-3 h-3 border-2 border-gray-700 border-t-0 border-l-0 rotate-45" />
           </button>
           <button
-            className="w-6 h-6 bg-gray-200 border border-gray-700 flex items-center justify-center hover:bg-red-300 active:bg-red-400 transition-colors"
+            className="w-6 h-6 bg-[#ffdad6] border border-[#1b3a73] flex items-center justify-center hover:bg-[#ffc7c0] active:bg-[#ffb2a8] transition-colors"
             style={{ boxShadow: "inset 1px 1px 0 #fff" }}
             title="Close"
             onClick={(e) => {
@@ -179,10 +210,12 @@ export function DesktopWindow({
       {/* Content */}
       <div
         className="p-3 overflow-auto bg-white"
-        style={{ 
-          maxHeight: isMaximized 
-            ? "calc(100vh - 40px)" 
-            : typeof height === "number" ? height - 40 : "60vh" 
+        style={{
+          maxHeight: maximized
+            ? "calc(100vh - 40px)"
+            : typeof height === "number"
+            ? height - 40
+            : "60vh",
         }}
       >
         {children}
