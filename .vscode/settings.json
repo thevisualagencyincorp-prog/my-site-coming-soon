@@ -15,5 +15,6 @@
   "emmet.includeLanguages": {
     "typescript": "html",
     "typescriptreact": "html"
-  }
+  },
+  "chat.agent.maxRequests": 100
 }

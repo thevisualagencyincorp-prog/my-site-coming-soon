@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -11,11 +11,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [currentStep, setCurrentStep] = useState(0);
 
   const loadingSteps = [
-    'Initializing...',
-    'Loading components...',
-    'Connecting to services...',
-    'Preparing your experience...',
-    'Almost ready...',
+    "Initializing...",
+    "Loading components...",
+    "Connecting to services...",
+    "Preparing your experience...",
+    "Almost ready...",
   ];
 
   useEffect(() => {
@@ -26,9 +26,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     const interval = setInterval(() => {
       currentProgress += 2;
       setProgress(currentProgress);
-      
+
       // Update step based on progress
-      const stepIndex = Math.floor((currentProgress / 100) * loadingSteps.length);
+      const stepIndex = Math.floor(
+        (currentProgress / 100) * loadingSteps.length
+      );
       setCurrentStep(Math.min(stepIndex, loadingSteps.length - 1));
 
       if (currentProgress >= 100) {
@@ -66,9 +68,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         <div className="mb-8">
           <div className="w-24 h-24 mx-auto mb-4 relative">
             <div className="absolute inset-0 border-4 border-white/30 rounded-full"></div>
-            <div 
+            <div
               className="absolute inset-0 border-4 border-white border-t-transparent rounded-full animate-spin"
-              style={{ animationDuration: '1s' }}
+              style={{ animationDuration: "1s" }}
             ></div>
             <div className="absolute inset-2 flex items-center justify-center">
               <span className="text-2xl">🌟</span>
@@ -81,8 +83,8 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         {/* Progress bar */}
         <div className="w-80 mx-auto mb-6">
           <div className="bg-white/20 rounded-full h-2 mb-2 overflow-hidden">
-            <div 
-              className="bg-white h-full rounded-full transition-all duration-300 ease-out"
+            <div
+              className="bg-white h-full rounded-full transition-all duration-300 ease-in-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>

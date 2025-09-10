@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { TopBar } from "@/components/TopBar";
 
 export const metadata: Metadata = {
   title: "The Agency Coming Soon",
@@ -14,7 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased font-sans">
-        {children}
+        <TopBar />
+        <div style={{ paddingTop: 40 }}>{children}</div>
       </body>
     </html>
   );

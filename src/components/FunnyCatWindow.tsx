@@ -1,0 +1,351 @@
+"use client";
+import { useState, useEffect } from "react";
+
+export function FunnyCatWindow() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentCat, setCurrentCat] = useState(0);
+  const [likes, setLikes] = useState(0);
+
+  const cats = [
+    {
+      name: "Sir Whiskers",
+      emoji: "🐱",
+      action: "Knocking things off table",
+      description: "Professional chaos agent",
+    },
+    {
+      name: "Princess Fluff",
+      emoji: "😸",
+      action: "Staring into space",
+      description: "Deep philosophical thoughts",
+    },
+    {
+      name: "Captain Zoomies",
+      emoji: "🐈",
+      action: "Sudden energy bursts",
+      description: "Unpredictable energy levels",
+    },
+    {
+      name: "Mister Cuddles",
+      emoji: "😻",
+      action: "Demanding attention",
+      description: "Loves being the center of attention",
+    },
+    {
+      name: "Ninja Paws",
+      emoji: "🐾",
+      action: "Stealth mode activated",
+      description: "Master of surprise attacks",
+    },
+  ];
+
+  useEffect(() => {
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        setCurrentCat((prev) => (prev + 1) % cats.length);
+      }, 3000); // Change cat every 3 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isPlaying]);
+
+  const catFacts = [
+    "Cats sleep for 16 hours a day",
+    "Cats have 230 bones in their body",
+    "Cats can jump up to 6 times their length",
+    "A group of cats is called a clowder",
+    "Cats have 18 toes (5 on each front paw, 4 on each back paw)",
+    "Cats can't taste sweetness",
+    "Cats have a third eyelid called the haw",
+    "Cats can rotate their ears 180 degrees",
+  ];
+
+  const randomFact = catFacts[Math.floor(Math.random() * catFacts.length)];
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#f3f6ff",
+        fontFamily: "Tahoma, Verdana, Segoe UI, Arial, sans-serif",
+        fontSize: "14px",
+        color: "#1e2a4a",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
+      {/* Window Title Bar */}
+      <div
+        style={{
+          padding: "6px 10px",
+          background: "linear-gradient(#5f88d8, #3c67c2)",
+          color: "#fff",
+          fontWeight: "700",
+          borderBottom: "1px solid #254e9a",
+          textShadow: "0 1px 0 rgba(0,0,0,.25)",
+        }}
+      >
+        Funny Cat Video Loop 🐱📹
+      </div>
+
+      {/* Video Player Area */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          padding: "15px",
+        }}
+      >
+        {/* Video Display */}
+        <div
+          style={{
+            flex: 1,
+            background: "#000",
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: "15px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {!isPlaying ? (
+            <div style={{ textAlign: "center", color: "#fff" }}>
+              <div
+                style={{
+                  fontSize: "80px",
+                  marginBottom: "20px",
+                  animation: "wiggle 2s infinite",
+                }}
+              >
+                🐱
+              </div>
+              <div
+                style={{
+                  fontSize: "24px",
+                  marginBottom: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                Cat Video Paradise
+              </div>
+              <div style={{ fontSize: "16px", opacity: "0.8" }}>
+                Endless loop of feline foolishness!
+              </div>
+              <button
+                onClick={() => setIsPlaying(true)}
+                style={{
+                  marginTop: "20px",
+                  padding: "12px 24px",
+                  background: "#ff6b35",
+                  border: "2px solid #e55a2b",
+                  borderRadius: "25px",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  color: "#fff",
+                }}
+              >
+                ▶️ START CAT PARTY
+              </button>
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", color: "#fff", width: "100%" }}>
+              <div
+                style={{
+                  fontSize: "80px",
+                  marginBottom: "20px",
+                  animation: "catDance 1s infinite",
+                }}
+              >
+                {cats[currentCat].emoji}
+              </div>
+              <div
+                style={{
+                  fontSize: "20px",
+                  marginBottom: "5px",
+                  fontWeight: "bold",
+                }}
+              >
+                {cats[currentCat].name}
+              </div>
+              <div
+                style={{
+                  fontSize: "16px",
+                  marginBottom: "10px",
+                  opacity: "0.9",
+                }}
+              >
+                {cats[currentCat].action}
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  opacity: "0.7",
+                  marginBottom: "20px",
+                }}
+              >
+                {cats[currentCat].description}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "20px",
+                }}
+              >
+                <button
+                  onClick={() => setIsPlaying(false)}
+                  style={{
+                    padding: "8px 16px",
+                    background: "#666",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    color: "#fff",
+                  }}
+                >
+                  ⏸️ PAUSE
+                </button>
+                <button
+                  onClick={() => setLikes((prev) => prev + 1)}
+                  style={{
+                    padding: "8px 16px",
+                    background: "#ff4757",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    color: "#fff",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                  }}
+                >
+                  ❤️ {likes}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Cat Info Panel */}
+        <div
+          style={{
+            background: "#fff",
+            padding: "15px",
+            borderRadius: "8px",
+            border: "1px solid #cbd5ea",
+            marginBottom: "15px",
+          }}
+        >
+          <h3
+            style={{
+              margin: "0 0 15px 0",
+              color: "#1e2a4a",
+              fontSize: "16px",
+            }}
+          >
+            🐾 Meet the Cast
+          </h3>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+              gap: "10px",
+            }}
+          >
+            {cats.map((cat, index) => (
+              <div
+                key={index}
+                onClick={() => setCurrentCat(index)}
+                style={{
+                  padding: "8px",
+                  background: currentCat === index ? "#ffcc00" : "#f8f9fa",
+                  borderRadius: "6px",
+                  border: "1px solid #e6ebf7",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                <div style={{ fontSize: "20px", marginBottom: "3px" }}>
+                  {cat.emoji}
+                </div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: "600",
+                    color: "#1e2a4a",
+                  }}
+                >
+                  {cat.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Fun Cat Facts */}
+        <div
+          style={{
+            background: "#e6ebf7",
+            padding: "12px",
+            borderRadius: "6px",
+            border: "1px solid #b8c6e3",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              fontSize: "13px",
+              color: "#6c7c9b",
+            }}
+          >
+            <span>🐱</span>
+            <span>
+              <strong>Cat Fact:</strong> {randomFact}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes wiggle {
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+          25% {
+            transform: rotate(-5deg);
+          }
+          75% {
+            transform: rotate(5deg);
+          }
+        }
+        @keyframes catDance {
+          0%,
+          100% {
+            transform: scale(1) rotate(0deg);
+          }
+          25% {
+            transform: scale(1.1) rotate(5deg);
+          }
+          50% {
+            transform: scale(1.2) rotate(-5deg);
+          }
+          75% {
+            transform: scale(1.1) rotate(3deg);
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
