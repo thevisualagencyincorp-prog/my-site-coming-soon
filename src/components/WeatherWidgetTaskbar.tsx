@@ -13,10 +13,11 @@ export function WeatherWidgetTaskbar() {
         .catch(() => setWeather(getMockWeatherData()));
     }
   }, [geolocation.location]);
-  if (!weather) return <span>--°C</span>;
+  if (!weather) return <span>--°F</span>;
+  const tempFahrenheit = Math.round((weather.temperature * 9) / 5 + 32);
   return (
     <span>
-      <span>{weather.temperature}°C</span>
+      <span>{tempFahrenheit}°F</span>
     </span>
   );
 }
