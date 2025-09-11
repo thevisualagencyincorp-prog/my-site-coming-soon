@@ -19,16 +19,15 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const initialIcons: IconItem[] = [
-    { key: "aol", label: "Messenger", iconSrc: "/images/folder.webp", x: 24, y: 90 },
-    { key: "mash", label: "Fate Machine", iconSrc: "/images/folder.webp", x: 24, y: 170 },
-    { key: "about", label: "About", iconSrc: "/images/folder.webp", x: 24, y: 250 },
-    { key: "faq", label: "Help & Tips", iconSrc: "/images/folder.webp", x: 24, y: 330 },
-    { key: "notes", label: "Sticky Notes", iconSrc: "/images/folder.webp", x: 120, y: 90 },
-    { key: "clippy", label: "Assistant", iconSrc: "/images/folder.webp", x: 120, y: 170 },
-    { key: "virus", label: "Promos/Alerts", iconSrc: "/images/folder.webp", x: 120, y: 250 },
-    { key: "newsletter", label: "Newsletter", iconSrc: "/images/folder.webp", x: 216, y: 90 },
-    { key: "mysteryClub", label: "Mystery Club", iconSrc: "/images/folder.webp", x: 216, y: 170 },
-    { key: "coffeeClub", label: "Coffee Club", iconSrc: "/images/folder.webp", x: 216, y: 250 },
+    { key: "aol", label: "Messenger", iconSrc: "/images/icons/aol.svg", x: 24, y: 90 },
+    { key: "mash", label: "MASH", iconSrc: "/images/icons/mash.svg", x: 24, y: 170 },
+    { key: "about", label: "MEET MARKETING BADDIES", iconSrc: "/images/icons/about.svg", x: 24, y: 250 },
+    { key: "faq", label: "Help & Tips", iconSrc: "/images/icons/faq.svg", x: 24, y: 330 },
+    { key: "notes", label: "Sticky Notes", iconSrc: "/images/icons/notes.svg", x: 120, y: 90 },
+    { key: "virus", label: "Promos/Alerts", iconSrc: "/images/icons/virus.svg", x: 120, y: 250 },
+    { key: "newsletter", label: "Newsletter", iconSrc: "/images/icons/newsletter.svg", x: 216, y: 90 },
+    { key: "mysteryClub", label: "Mystery Club", iconSrc: "/images/icons/mystery.svg", x: 216, y: 170 },
+    { key: "coffeeClub", label: "Coffee Club", iconSrc: "/images/icons/coffee.svg", x: 216, y: 250 },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);

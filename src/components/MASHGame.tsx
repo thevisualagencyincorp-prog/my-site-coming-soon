@@ -27,13 +27,6 @@ export function MASHGame() {
     hobbies: "Photography,Music,Gaming,Travel,Cooking,Fitness",
   });
 
-  const [userInputs, setUserInputs] = useState({
-    projectType: "",
-    budget: "",
-    timeline: "",
-    style: "",
-  });
-
   const mashOptions = {
     house: ["Mansion", "Apartment", "Shack", "House"],
     partners: ["Taylor", "Sabrina", "Tyler", "Myspace Tom"],
@@ -107,7 +100,7 @@ export function MASHGame() {
         (cat) => {
           const e = elimination[cat as string];
           if (!e) return;
-          const label = `${String(cat)}: ${e.winner ?? ''}`;
+          const label = `${String(cat)}: ${e.winner ?? ""}`;
           ctx.fillText(label, P, y);
           y += 40;
         }
@@ -156,29 +149,56 @@ export function MASHGame() {
         // Compute elimination winners per category (using custom + house)
         const dynamicOptions: Record<string, string[]> = {
           house: mashOptions.house,
-          partners: custom.partners.split(",").map((s) => s.trim()).filter(Boolean),
-          careers: custom.careers.split(",").map((s) => s.trim()).filter(Boolean),
-          cars: custom.cars.split(",").map((s) => s.trim()).filter(Boolean),
-          kids: custom.kids.split(",").map((s) => s.trim()).filter(Boolean),
-          pets: custom.pets.split(",").map((s) => s.trim()).filter(Boolean),
-          wealth: custom.wealth.split(",").map((s) => s.trim()).filter(Boolean),
-          cities: custom.cities.split(",").map((s) => s.trim()).filter(Boolean),
-          hobbies: custom.hobbies.split(",").map((s) => s.trim()).filter(Boolean),
+          partners: custom.partners
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          careers: custom.careers
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          cars: custom.cars
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          kids: custom.kids
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          pets: custom.pets
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          wealth: custom.wealth
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          cities: custom.cities
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          hobbies: custom.hobbies
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
         };
-        const build: Record<string, { eliminated: string[]; winner: string | null }> = {};
-        (Object.keys(dynamicOptions) as Array<keyof typeof dynamicOptions>).forEach(
-          (cat) => {
-            const arr = [...dynamicOptions[cat]];
-            const eliminated: string[] = [];
-            let idx = 0;
-            while (arr.length > 1) {
-              idx = (idx + rolled - 1) % arr.length;
-              const [rem] = arr.splice(idx, 1);
-              eliminated.push(rem);
-            }
-            build[cat] = { eliminated, winner: arr[0] ?? null };
+        const build: Record<
+          string,
+          { eliminated: string[]; winner: string | null }
+        > = {};
+        (
+          Object.keys(dynamicOptions) as Array<keyof typeof dynamicOptions>
+        ).forEach((cat) => {
+          const arr = [...dynamicOptions[cat]];
+          const eliminated: string[] = [];
+          let idx = 0;
+          while (arr.length > 1) {
+            idx = (idx + rolled - 1) % arr.length;
+            const [rem] = arr.splice(idx, 1);
+            eliminated.push(rem);
           }
-        );
+          build[cat] = { eliminated, winner: arr[0] ?? null };
+        });
         setElimination(build);
         const summary = `Home: ${build.house.winner}\nPartner: ${build.partners.winner}\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${build.kids.winner}\nPets: ${build.pets.winner}\nWealth: ${build.wealth.winner}\nCity: ${build.cities.winner}\nHobby: ${build.hobbies.winner}`;
         setCurrentResult(summary);
@@ -228,7 +248,15 @@ export function MASHGame() {
       </div>
 
       {/* Game Content */}
-      <div style={{ flex: 1, overflow: "auto", padding: "15px", background: "#fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'#ffffff\'/><path d=\'M0 24 H200\' stroke=\'%23e5e7eb\' stroke-width=\'1\'/><path d=\'M0 48 H200\' stroke=\'%23e5e7eb\' stroke-width=\'1\'/><path d=\'M32 0 V200\' stroke=\'%23fecaca\' stroke-width=\'2\'/></svg>') repeat" }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: "auto",
+          padding: "15px",
+          background:
+            "#fff url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#ffffff'/><path d='M0 24 H200' stroke='%23e5e7eb' stroke-width='1'/><path d='M0 48 H200' stroke='%23e5e7eb' stroke-width='1'/><path d='M32 0 V200' stroke='%23fecaca' stroke-width='2'/></svg>') repeat",
+        }}
+      >
         {gameState === "setup" && (
           <div style={{ textAlign: "center" }}>
             <div
@@ -240,8 +268,16 @@ export function MASHGame() {
             >
               🎯
             </div>
-            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>Classic MASH — Notebook Edition</h2>
-            <p style={{ margin: "0 0 20px 0", lineHeight: "1.6", color: "#6c7c9b" }}>
+            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
+              Classic MASH — Notebook Edition
+            </h2>
+            <p
+              style={{
+                margin: "0 0 20px 0",
+                lineHeight: "1.6",
+                color: "#6c7c9b",
+              }}
+            >
               Fill the options (comma‑separated) then hit ROLL. We’ll eliminate
               items by the dice until one remains in each category.
             </p>
@@ -256,8 +292,11 @@ export function MASHGame() {
               }}
             >
               <h3 style={{ margin: 0, color: "#1e2a4a" }}>Your Options</h3>
-              <p style={{ margin: "6px 0 12px", color: "#6c7c9b", fontSize: 12 }}>
-                Enter comma‑separated values. Each row is a category. On mobile, fields stack vertically.
+              <p
+                style={{ margin: "6px 0 12px", color: "#6c7c9b", fontSize: 12 }}
+              >
+                Enter comma‑separated values. Each row is a category. On mobile,
+                fields stack vertically.
               </p>
               <div
                 style={{
@@ -266,26 +305,48 @@ export function MASHGame() {
                   gap: 12,
                 }}
               >
-              {( [
-                ["partners", "Partners (names)", custom.partners],
-                ["careers", "Careers", custom.careers],
-                ["cars", "Cars", custom.cars],
-                ["kids", "# of Kids", custom.kids],
-                ["pets", "# of Pets", custom.pets],
-                ["wealth", "Wealth (Rich/Comfortable/…)", custom.wealth],
-                ["cities", "Cities", custom.cities],
-                ["hobbies", "Hobbies", custom.hobbies],
-              ] as const).map(([key, label, val]) => (
-                <div key={key}>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: "#1e2a4a" }}>{label}</label>
-                  <input
-                    type="text"
-                    value={val}
-                    onChange={(e) => setCustom((prev) => ({ ...prev, [key]: e.target.value }))}
-                    style={{ width: "100%", marginTop: 6, padding: 10, border: "2px solid #cbd5ea", borderRadius: 6, fontSize: 14 }}
-                  />
-                </div>
-              ))}
+                {(
+                  [
+                    ["partners", "Partners (names)", custom.partners],
+                    ["careers", "Careers", custom.careers],
+                    ["cars", "Cars", custom.cars],
+                    ["kids", "# of Kids", custom.kids],
+                    ["pets", "# of Pets", custom.pets],
+                    ["wealth", "Wealth (Rich/Comfortable/…)", custom.wealth],
+                    ["cities", "Cities", custom.cities],
+                    ["hobbies", "Hobbies", custom.hobbies],
+                  ] as const
+                ).map(([key, label, val]) => (
+                  <div key={key}>
+                    <label
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#1e2a4a",
+                      }}
+                    >
+                      {label}
+                    </label>
+                    <input
+                      type="text"
+                      value={val}
+                      onChange={(e) =>
+                        setCustom((prev) => ({
+                          ...prev,
+                          [key]: e.target.value,
+                        }))
+                      }
+                      style={{
+                        width: "100%",
+                        marginTop: 6,
+                        padding: 10,
+                        border: "2px solid #cbd5ea",
+                        borderRadius: 6,
+                        fontSize: 14,
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -399,16 +460,40 @@ export function MASHGame() {
                 {currentResult}
               </div>
               {/* Elimination lists */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginTop: 16, textAlign: "left" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                  gap: 12,
+                  marginTop: 16,
+                  textAlign: "left",
+                }}
+              >
                 {Object.keys(elimination).map((cat) => {
                   const e = elimination[cat]!;
                   const ordered = e ? [...e.eliminated, e.winner || ""] : [];
                   return (
                     <div key={cat}>
-                      <div style={{ fontWeight: 700, marginBottom: 6 }}>{cat}</div>
+                      <div style={{ fontWeight: 700, marginBottom: 6 }}>
+                        {cat}
+                      </div>
                       <ul style={{ margin: 0, paddingLeft: 18 }}>
                         {ordered.map((opt, i) => (
-                          <li key={i} style={{ textDecoration: i < ordered.length - 1 ? "line-through" : "none", color: i === ordered.length - 1 ? "#059669" : "#9ca3af" }}>{opt}</li>
+                          <li
+                            key={i}
+                            style={{
+                              textDecoration:
+                                i < ordered.length - 1
+                                  ? "line-through"
+                                  : "none",
+                              color:
+                                i === ordered.length - 1
+                                  ? "#059669"
+                                  : "#9ca3af",
+                            }}
+                          >
+                            {opt}
+                          </li>
                         ))}
                       </ul>
                     </div>
@@ -417,15 +502,15 @@ export function MASHGame() {
               </div>
             </div>
 
-              <div
-                style={{
-                  background: "#e6ebf7",
-                  padding: "15px",
-                  borderRadius: "8px",
-                  border: "1px solid #b8c6e3",
-                  margin: "20px 0",
-                }}
-              >
+            <div
+              style={{
+                background: "#e6ebf7",
+                padding: "15px",
+                borderRadius: "8px",
+                border: "1px solid #b8c6e3",
+                margin: "20px 0",
+              }}
+            >
               <p
                 style={{
                   margin: "0 0 10px 0",
@@ -449,7 +534,14 @@ export function MASHGame() {
               </p>
             </div>
 
-            <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
               <button
                 onClick={() =>
                   window.dispatchEvent(new CustomEvent("openAOLWindow"))

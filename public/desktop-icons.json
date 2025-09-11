@@ -2,70 +2,63 @@
   {
     "key": "aol",
     "label": "AOL Chat",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/aol.svg",
     "x": 24,
     "y": 96
   },
   {
     "key": "mash",
     "label": "MASH",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/mash.svg",
     "x": 24,
     "y": 176
   },
   {
     "key": "about",
     "label": "MEET MARKETING BADDIES",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/about.svg",
     "x": 24,
     "y": 256
   },
   {
     "key": "faq",
     "label": "Help & Tips",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/faq.svg",
     "x": 24,
     "y": 336
   },
   {
     "key": "notes",
     "label": "Sticky Notes",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/notes.svg",
     "x": 120,
     "y": 96
   },
   {
-    "key": "clippy",
-    "label": "Assistant",
-    "iconSrc": "/images/icons/clippy-1.png",
-    "x": 120,
-    "y": 176
-  },
-  {
     "key": "virus",
     "label": "Promos/Alerts",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/virus.svg",
     "x": 120,
     "y": 256
   },
   {
     "key": "newsletter",
     "label": "Newsletter",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/newsletter.svg",
     "x": 216,
     "y": 96
   },
   {
     "key": "mysteryClub",
     "label": "Mystery Club",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/mystery.svg",
     "x": 216,
     "y": 176
   },
   {
     "key": "coffeeClub",
     "label": "Coffee Club",
-    "iconSrc": "/images/folder.webp",
+    "iconSrc": "/images/icons/coffee.svg",
     "x": 216,
     "y": 256
   }

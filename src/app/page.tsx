@@ -201,8 +201,9 @@ export default function Page() {
     }));
   };
 
-  // Pop-up cycle manager
+  // Pop-up cycle manager (run after loading is complete)
   useEffect(() => {
+    if (isLoading) return;
     // Copy of the inspo popup pattern: three popups at 2s, 6s, 10s (relative),
     // auto-close after 5s, and repeat the whole sequence every 30s while the user remains idle.
     const sequence: { key: WindowKey; offset: number }[] = [
@@ -276,7 +277,7 @@ export default function Page() {
       window.removeEventListener("mousemove", onUserInteract);
       window.removeEventListener("keydown", onUserInteract);
     };
-  }, []);
+  }, [isLoading]);
 
   // Global menu/open events
   useEffect(() => {

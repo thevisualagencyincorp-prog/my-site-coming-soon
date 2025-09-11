@@ -34,8 +34,8 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         });
       }, 45);
     };
-    // Use site's loading image (uploaded to public/images)
-    img.src = "/images/Loading:boot page.png";
+    // Preload the boot image (file lives at public/Loading:boot page.png)
+    img.src = "/Loading:boot page.png";
 
     return () => {
       if (interval) window.clearInterval(interval);
@@ -46,7 +46,8 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <div
       className="fixed inset-0 z-[3000]"
       style={{
-        backgroundImage: 'url(/images/Loading:boot page.png)',
+        // Quote the path so spaces render correctly
+        backgroundImage: 'url("/Loading:boot page.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         opacity: fading ? 0 : 1,
