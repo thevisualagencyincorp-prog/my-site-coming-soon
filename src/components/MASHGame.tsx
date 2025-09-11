@@ -18,10 +18,11 @@ export function MASHGame() {
   const [custom, setCustom] = useState({
     partners: "Taylor,Sabrina,Tyler,Myspace Tom",
     careers:
-      "Designer,Developer,Photographer,Director,Producer,Marketer,Writer,Artist",
+      "Founder,Creator,Influencer,Designer,Developer,Photographer,Director,Producer,Marketer,Writer,Artist",
     cars: "Jeep,Mercedes,Range Rover,Porsche,Tesla,Honda,Subaru,Volkswagen",
     kids: "0,1,2,3,4",
     pets: "0,1,2,3",
+    petKinds: "Cat,Dog,Bird,Reptile,Fish",
     wealth: "Rich,Comfortable,Modest,Struggling",
     cities: "New York,Los Angeles,London,Tokyo,Paris,Austin",
     hobbies: "Photography,Music,Gaming,Travel,Cooking,Fitness",
@@ -169,6 +170,10 @@ export function MASHGame() {
             .split(",")
             .map((s) => s.trim())
             .filter(Boolean),
+          petKinds: custom.petKinds
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
           wealth: custom.wealth
             .split(",")
             .map((s) => s.trim())
@@ -200,7 +205,7 @@ export function MASHGame() {
           build[cat] = { eliminated, winner: arr[0] ?? null };
         });
         setElimination(build);
-        const summary = `Home: ${build.house.winner}\nPartner: ${build.partners.winner}\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${build.kids.winner}\nPets: ${build.pets.winner}\nWealth: ${build.wealth.winner}\nCity: ${build.cities.winner}\nHobby: ${build.hobbies.winner}`;
+        const summary = `Home: ${build.house.winner}\nPartner: ${build.partners.winner}\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${build.kids.winner}\nPets: ${build.pets.winner} (${build.petKinds?.winner ?? 'Pet'})\nWealth: ${build.wealth.winner}\nCity: ${build.cities.winner}\nHobby: ${build.hobbies.winner}`;
         setCurrentResult(summary);
         setGameState("result");
       }
@@ -211,12 +216,7 @@ export function MASHGame() {
     setGameState("setup");
     setSpinCount(0);
     setCurrentResult("");
-    setUserInputs({
-      projectType: "",
-      budget: "",
-      timeline: "",
-      style: "",
-    });
+    setElimination({});
   };
 
   return (
@@ -233,19 +233,7 @@ export function MASHGame() {
         overflow: "hidden",
       }}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8, #3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        MASH Game - Agency Destiny Generator
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Game Content */}
       <div
@@ -308,10 +296,11 @@ export function MASHGame() {
                 {(
                   [
                     ["partners", "Partners (names)", custom.partners],
-                    ["careers", "Careers", custom.careers],
+                    ["careers", "Careers (for our audience)", custom.careers],
                     ["cars", "Cars", custom.cars],
                     ["kids", "# of Kids", custom.kids],
                     ["pets", "# of Pets", custom.pets],
+                    ["petKinds", "Kind of Pet (Cat, Dog…)", custom.petKinds],
                     ["wealth", "Wealth (Rich/Comfortable/…)", custom.wealth],
                     ["cities", "Cities", custom.cities],
                     ["hobbies", "Hobbies", custom.hobbies],

@@ -5,7 +5,15 @@ export function ClippyWindow() {
   const [isVisible, setIsVisible] = useState(true);
   const [currentMessage, setCurrentMessage] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [typedIndex, setTypedIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [position, setPosition] = useState({ x: 50, y: 70 });
+  const [showBubble, setShowBubble] = useState(true);
+  const [hasOnboarded, setHasOnboarded] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("clippy_onboarded_v1") === "1";
+  });
+  const idleRef = useState({ last: Date.now() })[0];
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [clippySrc, setClippySrc] = useState<string | null>(null);
@@ -24,34 +32,68 @@ export function ClippyWindow() {
   const SHOW_CONTROLS = process.env.NEXT_PUBLIC_CLIPPY_CONTROLS === "1";
 
   const messages = [
-    { text: "Hey friend — I’m Clippy! 👋 I’ll be your gentle guide to The Agency OS™.", type: "greeting" },
-    { text: "Start opens the menu. Desktop icons open windows. Everything’s draggable — go play! ✨", type: "tip" },
-    { text: "Try MASH to manifest your future: home, partner, career, car, kids, pets, wealth. It saves a cute share card. #theagencyMASH", type: "suggestion" },
-    { text: "Need us? Pop open AOL Chat — we’re basically besties around here. 💬", type: "contact" },
-    { text: "Quick tip: Put the promise in the first 3 words of your headline. Hooks win hearts. 💡", type: "tip" },
-    { text: "Another tip: Make the CTA specific — ‘Get the playlist’ > ‘Learn more’. 🎯", type: "tip" },
-    { text: "Joke break: I tried to design a logo with no curves… too many edgy comments. 😅", type: "fun" },
-    { text: "Want an overview? The Help/FAQ has bite‑size answers. I can open it.", type: "help" },
-    { text: "We love cozy cowork vibes. Check Coffee Club — open to all careers, good energy only. ☕", type: "suggestion" },
-    { text: "Pro move: Share your MASH card and tag us. We’ll hype you up. 📣", type: "suggestion" },
+    { text: "Hey there — I’m Clippy. Looks like you stumbled onto our desktop. Welcome to The Agency OS™! Up top: File / Edit / Help. Bottom left: Start. You can drag windows and click the icons.", type: "greeting" },
+    { text: "Quick tour: open ‘Start’ for apps; File / Edit / Help open fun windows; the icons on the desktop work too. Everything’s draggable.", type: "tip" },
+    { text: "Warm note: You’re doing great. Building a business or art isn’t easy — we’re in your corner.", type: "tip" },
+    { text: "Try MASH to manifest your future: home, partner, career, car, kids, pets. It gives you a cute share card. #theagencyMASH", type: "suggestion" },
+    { text: "Why us? We blend taste + strategy. We’ll help you look iconic and convert gently — like a best friend hyping you up.", type: "tip" },
+    { text: "Marketing tip: Put the promise in your first 3 words. Hooks win hearts. 💡", type: "tip" },
+    { text: "CTA tip: Make it specific — ‘Get the playlist’ > ‘Learn more’. 🎯", type: "tip" },
+    { text: "Need us? Pop open AOL Chat — let’s talk vibes, goals, and timing. 💬", type: "contact" },
+    { text: "Want a quick overview? I can open the FAQ for you.", type: "help" },
+    { text: "Self‑care: open Notes for tiny mindset boosts tailored to founders + artists. You got this. ☀️", type: "suggestion" },
   ];
 
   // Slow down message cadence a bit so Clippy feels chill
-  const TYPE_DURATION = 3500; // ms that simulated typing runs
-  const MESSAGE_INTERVAL = 12000; // ms between message cycles
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isTyping) {
-        setIsTyping(true);
-        setTimeout(() => {
-          setCurrentMessage((prev) => (prev + 1) % messages.length);
-          setIsTyping(false);
-        }, TYPE_DURATION);
-      }
-    }, MESSAGE_INTERVAL);
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [isTyping]);
+  // Start near the top-center so Clippy is visible but out of the way
+  useEffect(() => {
+    const clippyW = isMobile ? 96 : 120;
+    const w = window.innerWidth || 1200;
+    setPosition({ x: Math.max(12, Math.floor((w - clippyW) / 2)), y: 64 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // natural typing: type per char with slight jitter; hold after complete based on length
+  useEffect(() => {
+    if (!showBubble) return; // don't type when hidden
+    setTypedIndex(0);
+    setIsTyping(true);
+    const text = messages[currentMessage].text;
+    let cancelled = false;
+    const typeNext = () => {
+      if (cancelled) return;
+      setTypedIndex((i) => {
+        if (i >= text.length) {
+          setIsTyping(false);
+          // Hold longer for the first (welcome) bubble so folks can read
+          const baseHold = currentMessage === 0 ? 10000 : 6000;
+          const hold = Math.min(16000, Math.max(baseHold, text.length * 70));
+          setTimeout(() => {
+            if (cancelled) return;
+            // After holding, close the bubble and advance lazily
+            setShowBubble(false);
+            setCurrentMessage((p) => (p + 1) % messages.length);
+          }, hold);
+          return i;
+        }
+        // Slow, retro typing speed
+        setTimeout(typeNext, 70 + Math.random() * 70);
+        return i + 1;
+      });
+    };
+    setTimeout(typeNext, 400);
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMessage, showBubble]);
 
   const processImage = (src: string) => {
     const img = new Image();
@@ -138,7 +180,7 @@ export function ClippyWindow() {
         setClippySrc(src);
       }
     };
-    img.onerror = () => setClippySrc(src);
+    img.onerror = () => setClippySrc(null);
     img.src = src;
   };
 
@@ -152,6 +194,8 @@ export function ClippyWindow() {
     }
     // Try preferred candidates in order
     const candidates = [
+      "/brand/clippy.png",
+      "/brand/icons/clippy.png",
       "/images/Clippy-1.png",
       "/images/clippy.png",
       "/images/icons/Clippy-1.png",
@@ -192,6 +236,7 @@ export function ClippyWindow() {
       x: e.clientX - position.x,
       y: e.clientY - position.y,
     });
+    setShowBubble(true);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -208,6 +253,43 @@ export function ClippyWindow() {
   };
 
   const currentMsg = messages[currentMessage];
+
+  // Idle detection: hide bubble during activity, show after idle
+  useEffect(() => {
+    const onActive = () => {
+      idleRef.last = Date.now();
+      if (hasOnboarded) setShowBubble(false);
+    };
+    window.addEventListener("mousemove", onActive, { passive: true });
+    window.addEventListener("keydown", onActive);
+    window.addEventListener("touchstart", onActive, { passive: true });
+    // Cooldown between tips so Clippy doesn't talk all the time
+    let nextAllowed = Date.now() + 15000; // allow after initial load
+    const timer = setInterval(() => {
+      const now = Date.now();
+      const idleMs = now - idleRef.last;
+      const threshold = isMobile ? 30000 : 30000; // ~30s idle
+      if (!showBubble && idleMs > threshold && now >= nextAllowed) {
+        setShowBubble(true);
+        // Next allowance in 40–70s
+        nextAllowed = now + (40000 + Math.random() * 30000);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("mousemove", onActive);
+      window.removeEventListener("keydown", onActive);
+      window.removeEventListener("touchstart", onActive);
+    };
+  }, [idleRef, isMobile, hasOnboarded, showBubble]);
+
+  // Finish onboarding after the first full message cycle
+  useEffect(() => {
+    if (!hasOnboarded && !isTyping && typedIndex >= currentMsg.text.length) {
+      localStorage.setItem("clippy_onboarded_v1", "1");
+      setHasOnboarded(true);
+    }
+  }, [hasOnboarded, isTyping, typedIndex, currentMsg.text.length]);
 
   return (
     <div
@@ -230,28 +312,29 @@ export function ClippyWindow() {
               position: "absolute",
               left: position.x,
               top: position.y,
-              width: "120px",
-              height: "120px",
+              width: isMobile ? "96px" : "120px",
+              height: isMobile ? "96px" : "120px",
               cursor: isDragging ? "grabbing" : "grab",
               zIndex: 1000,
               pointerEvents: "auto",
             }}
             onMouseDown={handleMouseDown}
+            onClick={() => setShowBubble((v) => !v)}
           >
             {/* Processed Clippy image with transparent background */}
             {clippySrc ? (
               <img
                 src={clippySrc}
                 alt="Clippy Assistant"
-                width={120}
-                height={120}
+                width={isMobile ? 96 : 120}
+                height={isMobile ? 96 : 120}
                 style={{
-                  width: 120,
-                  height: 120,
+                  width: isMobile ? 96 : 120,
+                  height: isMobile ? 96 : 120,
                   filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))",
                   animation:
                     (visibleOnce ? "" : "bounceIn 500ms ease-out both, ") +
-                    "float 3s ease-in-out infinite, wave 2s ease-in-out infinite",
+                    "float 6s ease-in-out infinite, wave 4s ease-in-out infinite",
                   imageRendering: "auto",
                   pointerEvents: "none",
                 }}
@@ -263,16 +346,17 @@ export function ClippyWindow() {
           </div>
 
           {/* Speech Bubble */}
+          {showBubble && (
           <div
             style={{
               position: "absolute",
-              left: position.x + 130,
-              top: position.y - 10,
+              left: position.x + (isMobile ? 110 : 130),
+              top: position.y + 10,
               background: "#fff",
               border: "2px solid #0078d4",
               borderRadius: "10px",
               padding: "12px",
-              maxWidth: "250px",
+              maxWidth: isMobile ? "220px" : "250px",
               boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
               zIndex: 999,
               animation: "bubble 0.3s ease-out",
@@ -305,20 +389,9 @@ export function ClippyWindow() {
               }}
             />
 
-            <div
-              style={{ fontSize: "13px", color: "#1e2a4a", lineHeight: "1.4" }}
-            >
-              {isTyping ? (
-                <span>
-                  {currentMsg.text.substring(
-                    0,
-                    Math.floor(Date.now() / 100) % (currentMsg.text.length + 1)
-                  )}
-                  <span style={{ animation: "blink 1s infinite" }}>▊</span>
-                </span>
-              ) : (
-                currentMsg.text
-              )}
+            <div style={{ fontSize: "13px", color: "#1e2a4a", lineHeight: "1.4" }}>
+              <span>{currentMsg.text.slice(0, typedIndex)}</span>
+              {isTyping && <span style={{ animation: "blink 1s infinite" }}>▊</span>}
             </div>
 
             {/* Action Buttons */}
@@ -397,6 +470,7 @@ export function ClippyWindow() {
               )}
             </div>
           </div>
+          )}
 
           {/* Control Panel (hidden unless NEXT_PUBLIC_CLIPPY_CONTROLS=1) */}
           {SHOW_CONTROLS && (

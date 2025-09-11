@@ -73,7 +73,7 @@ export function FAQWindow() {
       {
         question: "Do you offer free consultations?",
         answer:
-          "Yes! We offer free 30-minute discovery calls to discuss your project and see if we're a good fit for each other.",
+          "Yes! We offer a free 15-minute discovery call to discuss your project and see if we're a good fit for each other.",
       },
       {
         question: "What's your response time?",
@@ -97,29 +97,19 @@ export function FAQWindow() {
         overflow: "hidden",
       }}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8, #3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        Help & FAQ - The Agency OS™
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Category Tabs */}
       <div
         style={{
           display: "flex",
-          gap: "4px",
+          gap: "8px",
           padding: "8px 10px",
           borderBottom: "1px solid #b8c6e3",
           background: "#e6ebf7",
-          flexWrap: "wrap",
+          flexWrap: "nowrap",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {categories.map((category) => (

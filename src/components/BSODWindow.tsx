@@ -21,27 +21,38 @@ export function BSODWindow() {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
-          setTimeout(() => {
-            // Auto-close after completion
-            window.dispatchEvent(new CustomEvent("closeBSODWindow"));
-          }, 2000);
-          return 100;
-        }
+        if (prev >= 100) return 100;
         const newProgress = prev + Math.random() * 8;
         setCurrentStep(Math.floor((newProgress / 100) * bsodSteps.length));
         return newProgress;
       });
     }, 300);
 
-    return () => clearInterval(interval);
+    const onKey = (_e: KeyboardEvent) => {
+      // Any key exits BSOD (more faithful to the prompt)
+      window.dispatchEvent(new CustomEvent("closeBSODWindow"));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("keydown", onKey);
+    };
   }, []);
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Blue Screen Prank"
       style={{
-        width: "100%",
-        height: "100%",
+        position: "fixed",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 10000,
         background: "#0000aa",
         color: "#fff",
         fontFamily: "Courier New, monospace",
@@ -52,6 +63,8 @@ export function BSODWindow() {
         overflow: "hidden",
       }}
     >
+      {/* CRT scanline overlay (lightweight + gated) */}
+      <div className="bsod-scanlines" aria-hidden />
       {/* BSOD Header */}
       <div
         style={{
@@ -77,8 +90,10 @@ export function BSODWindow() {
             marginBottom: "20px",
           }}
         >
-          A fatal exception 0E has occurred at 0028:C0011E36 in VxD VMM(01) +
-          00010E36. The current application will be terminated.
+          <span className="bsod-flicker">
+            A fatal exception 0E has occurred at 0028:C0011E36 in VxD VMM(01) +
+            00010E36. The current application will be terminated.
+          </span>
         </div>
         <div
           style={{
@@ -86,9 +101,60 @@ export function BSODWindow() {
             fontWeight: "bold",
           }}
         >
-          * Press any key to terminate the current application.
+          * Press any key to terminate the current application
+          <span className="bsod-blink" style={{ marginLeft: 4 }}>_</span>
           <br />* Press CTRL+ALT+DEL again to restart your computer. You will
           lose any unsaved information in all applications.
+        </div>
+      </div>
+
+      {/* Progress Section (moved under the press-any-key message) */}
+      <div
+        style={{
+          background: "#000055",
+          padding: "15px",
+          border: "1px solid #fff",
+          marginBottom: "20px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "13px",
+            marginBottom: "10px",
+            fontWeight: "bold",
+          }}
+        >
+          System Recovery in Progress...
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "8px",
+            fontSize: "12px",
+          }}
+        >
+          <span>{bsodSteps[currentStep] || bsodSteps[0]}</span>
+          <span>{Math.floor(progress)}%</span>
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            height: "12px",
+            background: "#000",
+            border: "1px solid #fff",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            className="bsod-barber bsod-progressInner"
+            style={{
+              width: `${Math.min(100, Math.max(0, progress))}%`,
+              height: "100%",
+            }}
+          />
         </div>
       </div>
 
@@ -123,56 +189,6 @@ export function BSODWindow() {
           <br />
           The memory could not be &quot;read&quot;.
           <br />
-        </div>
-
-        {/* Progress Section */}
-        <div
-          style={{
-            background: "#000055",
-            padding: "15px",
-            border: "1px solid #fff",
-            marginBottom: "20px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "13px",
-              marginBottom: "10px",
-              fontWeight: "bold",
-            }}
-          >
-            System Recovery in Progress...
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "8px",
-              fontSize: "12px",
-            }}
-          >
-            <span>{bsodSteps[currentStep] || bsodSteps[0]}</span>
-            <span>{Math.floor(progress)}%</span>
-          </div>
-
-          <div
-            style={{
-              width: "100%",
-              height: "12px",
-              background: "#000",
-              border: "1px solid #fff",
-            }}
-          >
-            <div
-              style={{
-                width: `${progress}%`,
-                height: "100%",
-                background: "#fff",
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
         </div>
 
         {/* Technical Info */}
@@ -241,8 +257,51 @@ export function BSODWindow() {
         Copyright © 2024 The Visual Agency Inc. All rights reserved.
         <br />
         <br />
-        Press ESC to exit BSOD mode
+        Press any key to return to desktop
+        <br />
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("closeBSODWindow"))}
+          style={{
+            marginTop: 12,
+            padding: "8px 14px",
+            color: "#0000aa",
+            background: "#fff",
+            border: "2px solid #fff",
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          Return to Desktop
+        </button>
       </div>
+
+      {/* Completion CTA overlay */}
+      {progress >= 100 && (
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 80,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("closeBSODWindow"))}
+            style={{
+              padding: "12px 18px",
+              color: "#0000aa",
+              background: "#fff",
+              border: "2px solid #fff",
+              fontWeight: 800,
+              cursor: "pointer",
+            }}
+          >
+            Recovery complete — Return to Desktop
+          </button>
+        </div>
+      )}
 
       {/* Fun Easter Egg */}
       <div

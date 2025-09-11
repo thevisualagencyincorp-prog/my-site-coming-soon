@@ -2,42 +2,16 @@
 import { useState, useEffect } from "react";
 
 export function FunnyCatWindow() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [currentCat, setCurrentCat] = useState(0);
   const [likes, setLikes] = useState(0);
   const [muted, setMuted] = useState(true);
 
   const cats = [
-    {
-      name: "Sir Whiskers",
-      emoji: "🐱",
-      action: "Knocking things off table",
-      description: "Professional chaos agent",
-    },
-    {
-      name: "Princess Fluff",
-      emoji: "😸",
-      action: "Staring into space",
-      description: "Deep philosophical thoughts",
-    },
-    {
-      name: "Captain Zoomies",
-      emoji: "🐈",
-      action: "Sudden energy bursts",
-      description: "Unpredictable energy levels",
-    },
-    {
-      name: "Mister Cuddles",
-      emoji: "😻",
-      action: "Demanding attention",
-      description: "Loves being the center of attention",
-    },
-    {
-      name: "Ninja Paws",
-      emoji: "🐾",
-      action: "Stealth mode activated",
-      description: "Master of surprise attacks",
-    },
+    { name: "Raven", emoji: "🐈‍⬛", action: "Elegant prowls", description: "Black cat" },
+    { name: "Juniper", emoji: "🐈", action: "Window naps", description: "Gray/white cat" },
+    { name: "Huck", emoji: "🐾", action: "Cozy zoomies", description: "Brown cat" },
+    { name: "Billy", emoji: "😺", action: "Snack patrol", description: "Gray cat" },
   ];
 
   useEffect(() => {
@@ -77,19 +51,7 @@ export function FunnyCatWindow() {
         overflow: "hidden",
       }}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8, #3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        Funny Cat Video Loop 🐱📹
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Video Player Area */}
       <div
@@ -132,7 +94,7 @@ export function FunnyCatWindow() {
                   fontWeight: "bold",
                 }}
               >
-                Cat Video Paradise
+                The Agency Kitties
               </div>
               <div style={{ fontSize: "16px", opacity: "0.8" }}>
                 Endless loop of feline foolishness!
@@ -257,7 +219,7 @@ export function FunnyCatWindow() {
               fontSize: "16px",
             }}
           >
-            🐾 Meet the Cast
+            🐾 The Agency Kitties
           </h3>
           <div
             style={{

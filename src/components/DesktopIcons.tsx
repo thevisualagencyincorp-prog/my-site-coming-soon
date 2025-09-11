@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import type { WindowKey } from "./StartMenu";
+import { assetPath } from "@/lib/assetPath";
 
 type IconItem = {
   key: WindowKey;
@@ -19,15 +20,15 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const initialIcons: IconItem[] = [
-    { key: "aol", label: "Messenger", iconSrc: "/images/icons/aol.svg", x: 24, y: 90 },
-    { key: "mash", label: "MASH", iconSrc: "/images/icons/mash.svg", x: 24, y: 170 },
-    { key: "about", label: "MEET MARKETING BADDIES", iconSrc: "/images/icons/about.svg", x: 24, y: 250 },
-    { key: "faq", label: "Help & Tips", iconSrc: "/images/icons/faq.svg", x: 24, y: 330 },
-    { key: "notes", label: "Sticky Notes", iconSrc: "/images/icons/notes.svg", x: 120, y: 90 },
-    { key: "virus", label: "Promos/Alerts", iconSrc: "/images/icons/virus.svg", x: 120, y: 250 },
-    { key: "newsletter", label: "Newsletter", iconSrc: "/images/icons/newsletter.svg", x: 216, y: 90 },
-    { key: "mysteryClub", label: "Mystery Club", iconSrc: "/images/icons/mystery.svg", x: 216, y: 170 },
-    { key: "coffeeClub", label: "Coffee Club", iconSrc: "/images/icons/coffee.svg", x: 216, y: 250 },
+    { key: "aol", label: "Messenger", iconSrc: "/images/icons/aol.svg", x: 24, y: 96 },
+    { key: "mash", label: "MASH", iconSrc: "/images/icons/mash.svg", x: 24, y: 176 },
+    { key: "about", label: "MEET MARKETING BADDIES", iconSrc: "/images/icons/about.svg", x: 24, y: 256 },
+    { key: "faq", label: "Help & Tips", iconSrc: "/images/icons/faq.svg", x: 24, y: 336 },
+    { key: "notes", label: "Sticky Notes", iconSrc: "/images/icons/notes.svg", x: 120, y: 96 },
+    { key: "mysteryClub", label: "Mystery Club", iconSrc: "/images/icons/mystery.svg", x: 120, y: 176 },
+    { key: "coffeeClub", label: "Coffee Club", iconSrc: "/images/icons/coffee.svg", x: 120, y: 256 },
+    { key: "portfolio", label: "Portfolio", iconSrc: "/globe.svg", x: 216, y: 96 },
+    { key: "trash", label: "Trash", iconSrc: "/window.svg", x: 216, y: 176 },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -168,10 +169,12 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       className="pointer-events-none select-none"
       style={{ position: "relative", width: "100%", height: 0 }}
     >
-      {items.map((item) => {
-        const pos = { x: item.x, y: item.y };
-        return (
-          <button
+      {items
+        .filter((item) => item.key !== ("faq" as WindowKey) && item.key !== ("ads" as WindowKey))
+        .map((item) => {
+          const pos = { x: item.x, y: item.y };
+          return (
+            <button
             key={item.key}
             data-win-key={item.key}
             onClick={() => onOpen(item.key)}
@@ -190,7 +193,7 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
               className="w-12 h-12 rounded-lg bg-white/15 border border-white/20 backdrop-blur-sm flex items-center justify-center shadow-md group-hover:bg-white/25 transition-colors"
               style={{ imageRendering: "pixelated" }}
             >
-              <TransparentIcon keyId={item.key} src={item.iconSrc} />
+              <TransparentIcon keyId={item.key} src={assetPath(item.iconSrc)} />
             </div>
             <span className="mt-1 text-[11px] leading-tight text-white/90 text-center drop-shadow">
               {item.label}

@@ -2,8 +2,9 @@
 import { useState, useRef } from "react";
 
 export function SkeletonDanceWindow() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [volume, setVolume] = useState(50);
+  const [muted, setMuted] = useState(true);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [showPlaylist, setShowPlaylist] = useState(false);
 
@@ -44,6 +45,15 @@ export function SkeletonDanceWindow() {
   const currentVideoData = videoLibrary[currentVideo];
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Nudge autoplay on mount in case the browser hesitates
+  // (allowed because we start muted)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try { videoRef.current?.play().catch(() => {}); } catch {}
+    }, 200);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <div
       style={{
@@ -58,19 +68,7 @@ export function SkeletonDanceWindow() {
         overflow: "hidden",
       }}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8, #3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        The Agency Video Previewer 🎬
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Toolbar */}
       <div
@@ -175,24 +173,42 @@ export function SkeletonDanceWindow() {
                 </button>
               </div>
             ) : (
-              <div style={{ width: "100%", height: "100%" }}>
+              <div style={{ width: "100%", height: "100%", position: "relative" }}>
                 <video
                   ref={videoRef}
+                  autoPlay
                   controls
+                  muted={muted}
+                  playsInline
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   poster="/images/Background:night.png"
                   onPause={() => setIsPlaying(false)}
                   onPlay={() => setIsPlaying(true)}
                 >
-                  {/* Replace the src below with an actual open-source/public-domain skeleton clip URL */}
                   <source
                     src={
                       process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
-                      "https://archive.org/download/TheSkeletonDance1929/TheSkeletonDance1929_512kb.mp4"
+                      "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
                     }
                     type="video/mp4"
                   />
                 </video>
+                <div style={{ position: "absolute", bottom: 10, left: 10 }}>
+                  <button
+                    onClick={() => setMuted((m) => !m)}
+                    style={{
+                      padding: "6px 10px",
+                      background: "#ffffffcc",
+                      border: "1px solid #cbd5ea",
+                      borderRadius: 6,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      color: "#1e2a4a",
+                    }}
+                  >
+                    {muted ? "Unmute" : "Mute"}
+                  </button>
+                </div>
               </div>
             )}
           </div>

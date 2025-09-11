@@ -27,6 +27,11 @@ import {
   NewsletterWindow,
   MysteryMurderClubWaitlistWindow,
   CoffeeClubWaitlistWindow,
+  RetroAdWindow,
+  InstagramAdWindow,
+  ArchiveWindow,
+  MTVWindow,
+  BookWindow,
 } from "@/components";
 import type { WindowKey } from "@/components/StartMenu";
 
@@ -60,8 +65,10 @@ export default function Page() {
       minimized: false,
       maximized: false,
       z: 0,
-      pos: { x: 160, y: 160 },
-      size: { w: 420, h: 320 },
+      // start roughly centered; openWindow will also center
+      pos: { x: 200, y: 160 },
+      // larger, chat-friendly default size
+      size: { w: 720, h: 520 },
     },
     ads: {
       open: false,
@@ -191,6 +198,46 @@ export default function Page() {
       pos: { x: 300, y: 160 },
       size: { w: 380, h: 260 },
     },
+    trash: {
+      open: false,
+      minimized: false,
+      maximized: false,
+      z: 0,
+      pos: { x: 320, y: 200 },
+      size: { w: 480, h: 360 },
+    },
+    portfolio: {
+      open: false,
+      minimized: false,
+      maximized: false,
+      z: 0,
+      pos: { x: 240, y: 180 },
+      size: { w: 640, h: 420 },
+    },
+    instaAd: {
+      open: false,
+      minimized: false,
+      maximized: false,
+      z: 0,
+      pos: { x: 200, y: 140 },
+      size: { w: 360, h: 320 },
+    },
+    book: {
+      open: false,
+      minimized: false,
+      maximized: false,
+      z: 0,
+      pos: { x: 220, y: 160 },
+      size: { w: 520, h: 380 },
+    },
+      mtv: {
+      open: false,
+      minimized: false,
+      maximized: false,
+      z: 0,
+      pos: { x: 220, y: 220 },
+      size: { w: 560, h: 360 },
+    },
   }));
 
   const bringToFront = (key: WindowKey) => {
@@ -208,7 +255,7 @@ export default function Page() {
     // auto-close after 5s, and repeat the whole sequence every 30s while the user remains idle.
     const sequence: { key: WindowKey; offset: number }[] = [
       { key: "ads", offset: 2000 },
-      { key: "virus", offset: 6000 },
+      { key: "instaAd", offset: 6000 },
       { key: "newsletter", offset: 10000 },
     ];
 
@@ -283,23 +330,29 @@ export default function Page() {
   useEffect(() => {
     const openFAQ = () => openWindow("faq");
     const openBSOD = () => openWindow("bsod");
+    const closeBSOD = () => closeWindow("bsod");
     const openSkeleton = () => openWindow("skeleton");
     const openAOL = () => openWindow("aol");
     const openMASH = () => openWindow("mash");
     const openNewsletter = () => openWindow("newsletter");
+    const openBook = () => openWindow("book");
     window.addEventListener("openFAQWindow", openFAQ);
     window.addEventListener("openBSODWindow", openBSOD);
+    window.addEventListener("closeBSODWindow", closeBSOD);
     window.addEventListener("openSkeletonWindow", openSkeleton);
     window.addEventListener("openAOLWindow", openAOL);
     window.addEventListener("openMASHWindow", openMASH);
     window.addEventListener("openNewsletterWindow", openNewsletter);
+    window.addEventListener("openBookWindow", openBook);
     return () => {
       window.removeEventListener("openFAQWindow", openFAQ);
       window.removeEventListener("openBSODWindow", openBSOD);
+      window.removeEventListener("closeBSODWindow", closeBSOD);
       window.removeEventListener("openSkeletonWindow", openSkeleton);
       window.removeEventListener("openAOLWindow", openAOL);
       window.removeEventListener("openMASHWindow", openMASH);
       window.removeEventListener("openNewsletterWindow", openNewsletter);
+      window.removeEventListener("openBookWindow", openBook);
     };
   }, []);
 
@@ -316,9 +369,16 @@ export default function Page() {
       const alreadyOpenCount = Object.values(w).filter((v) => v.open).length;
       const offset = cascadeOffsets[alreadyOpenCount % cascadeOffsets.length];
       const base = w[key].pos || { x: 100, y: 100 };
-      const desired = { x: base.x + offset.x, y: base.y + offset.y };
+      let desired = { x: base.x + offset.x, y: base.y + offset.y };
       const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
       const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+      // Center the AOL window on open for better visibility
+      if (key === "aol") {
+        desired = {
+          x: Math.max(0, Math.floor((vw - w[key].size.w) / 2)),
+          y: Math.max(0, Math.floor((vh - TASKBAR_HEIGHT - w[key].size.h) / 2)),
+        };
+      }
       const maxX = Math.max(0, vw - w[key].size.w);
       const maxY = Math.max(0, vh - TASKBAR_HEIGHT - w[key].size.h);
       const clamped = {
@@ -379,6 +439,15 @@ export default function Page() {
     return () => window.removeEventListener("resize", updateIsMobile);
   }, []);
 
+  // Show Clippy shortly after the desktop loads
+  useEffect(() => {
+    if (isLoading) return;
+    const t = window.setTimeout(() => {
+      openWindow("clippy");
+    }, 900);
+    return () => window.clearTimeout(t);
+  }, [isLoading]);
+
   
 
   // Auto day/night background selection
@@ -431,6 +500,10 @@ export default function Page() {
                 ? "Skeleton Dance Clip"
                 : key === "faq"
                 ? "FAQ"
+                : key === "notes"
+                ? "Notes"
+                : key === "aol"
+                ? "AOL Instant Messenger"
                 : key,
             iconSrc: "/images/folder.webp",
             initialPosition: w.pos,
@@ -444,7 +517,8 @@ export default function Page() {
             onMinimize: () => toggleMinimize(key),
             onMaximize: () => toggleMaximize(key),
             onLayoutChange: (layout: WindowLayout) => updateLayout(key, layout),
-            autoDock: key === "aol",
+            // No auto-dock for popups
+            autoDock: false,
           };
 
           let content = null;
@@ -456,6 +530,8 @@ export default function Page() {
               content = <AOLMessenger />;
               break;
             case "ads":
+              content = <RetroAdWindow />;
+              break;
             case "virus":
               content = <VirusAlertWindow />;
               break;
@@ -493,11 +569,38 @@ export default function Page() {
             case "newsletter":
               content = <NewsletterWindow />;
               break;
+            case "book":
+              content = <BookWindow />;
+              break;
+            case "mtv":
+              content = <MTVWindow />;
+              break;
             case "mysteryClub":
               content = <MysteryMurderClubWaitlistWindow />;
               break;
             case "coffeeClub":
               content = <CoffeeClubWaitlistWindow />;
+              break;
+            case "instaAd":
+              content = <InstagramAdWindow />;
+              break;
+            case "portfolio":
+              content = (
+                <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+                  <div style={{ padding: 8, background: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontSize: 12, color: "#374151" }}>
+                    If the portfolio doesn’t load in this window, open it in a new tab: {" "}
+                    <a href="https://www.the-visual-archive.com" target="_blank" rel="noreferrer" style={{ color: "#2563eb", fontWeight: 600 }}>the-visual-archive.com ↗</a>
+                  </div>
+                  <iframe
+                    src="https://www.the-visual-archive.com"
+                    style={{ width: "100%", height: "100%", border: 0 }}
+                    title="The Visual Archive"
+                  />
+                </div>
+              );
+              break;
+            case "trash":
+              content = <ArchiveWindow />;
               break;
             default:
               content = <div style={{ padding: 12 }}>Nothing here yet.</div>;
@@ -506,6 +609,11 @@ export default function Page() {
           if (key === "clippy") {
             // Render Clippy as overlay assistant without a window
             return <ClippyWindow key="clippy" />;
+          }
+
+          if (key === "bsod") {
+            // Render Blue Screen Prank as fullscreen overlay (not a window)
+            return <BSODWindow key="bsod" />;
           }
 
           return (
@@ -548,22 +656,9 @@ export default function Page() {
               </button>
             </div>
             <div className="flex items-center gap-3">
-              {/* inert indicators: clock, date, battery, bluetooth, weather */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-md border border-white/5 text-white text-sm">
-                <span className="font-mono mr-2">
-                  <DigitalClockOnlyTime />
-                </span>
-                <span className="hidden sm:inline mr-2">
-                  <DigitalClockOnlyDate />
-                </span>
-                {/* Weather in taskbar */}
-                <span className="flex items-center gap-1 mr-2">
-                  <WeatherWidgetTaskbar />
-                </span>
-                {/* Bluetooth icon removed per request */}
-              </div>
+              {/* Minimized/open windows first, tray at the far right */}
               <div className="flex items-center gap-2">
-                {Object.keys(windows).map((k) => {
+                {Object.keys(windows).filter((k) => !["ads","instaAd","newsletter"].includes(k)).map((k) => {
                   const key = k as WindowKey;
                   const w = windows[key];
                   if (!w.open) return null;
@@ -581,6 +676,19 @@ export default function Page() {
                     </button>
                   );
                 })}
+              </div>
+              {/* Indicators tray (clock/date/weather) pinned to the right */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-md border border-white/5 text-white text-sm">
+                <span className="font-mono mr-2">
+                  <DigitalClockOnlyTime />
+                </span>
+                <span className="hidden sm:inline mr-2">
+                  <DigitalClockOnlyDate />
+                </span>
+                {/* Weather in taskbar */}
+                <span className="flex items-center gap-1 mr-2">
+                  <WeatherWidgetTaskbar />
+                </span>
               </div>
             </div>
           </div>

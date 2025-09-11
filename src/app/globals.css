@@ -130,3 +130,71 @@ div {
 .animate-bounce-dino {
   animation: bounce-dino 1.8s infinite;
 }
+
+/* BSOD lightweight animations and classes */
+@keyframes bsod-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes bsod-flicker {
+  0%, 100% { opacity: 0.98; }
+  10% { opacity: 1; }
+  20% { opacity: 0.97; }
+  30% { opacity: 1; }
+  40% { opacity: 0.99; }
+  50% { opacity: 1; }
+  60% { opacity: 0.98; }
+  70% { opacity: 1; }
+  80% { opacity: 0.97; }
+  90% { opacity: 1; }
+}
+@keyframes bsod-scan {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 200px; }
+}
+@keyframes bsod-barberpole {
+  0% { background-position: 0 0; }
+  100% { background-position: 24px 0; }
+}
+
+.bsod-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.5) 0px,
+    rgba(255,255,255,0.5) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: bsod-scan 6s linear infinite;
+  will-change: background-position;
+}
+.bsod-blink { animation: bsod-blink 1.2s steps(2, end) infinite; }
+.bsod-flicker { animation: bsod-flicker 8s infinite; }
+.bsod-barber {
+  background: repeating-linear-gradient(
+    45deg,
+    #fff 0,
+    #fff 6px,
+    #cfd2ff 6px,
+    #cfd2ff 12px
+  );
+  animation: bsod-barberpole 1s linear infinite;
+  background-size: 24px 24px;
+  will-change: background-position, transform;
+}
+.bsod-progressInner { transition: width 0.3s ease; }
+
+/* Keep it light on mobile */
+@media (max-width: 640px) {
+  .bsod-scanlines { display: none; }
+  .bsod-flicker { animation: none; }
+}
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bsod-blink, .bsod-flicker, .bsod-barber { animation: none !important; }
+  .bsod-progressInner { transition: none; }
+}

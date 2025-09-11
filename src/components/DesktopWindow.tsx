@@ -342,12 +342,9 @@ export function DesktopWindow({
     >
       {/* Title bar */}
       <div
-        className="flex items-center px-2 py-1 cursor-grab relative select-none"
+        className="flex items-center px-2 py-1 cursor-grab relative select-none bg-gradient-to-br from-indigo-800/30 to-purple-600/30 border-b border-white/20 backdrop-blur-sm text-white"
         style={{
           height: 30,
-          background:
-            "linear-gradient(180deg, var(--win-title-start), var(--win-title-mid), var(--win-title-end))",
-          borderBottom: "2px solid var(--win-border)",
           boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.12)",
         }}
         onMouseDown={handleMouseDown}

@@ -88,19 +88,7 @@ export function VirusAlertWindow() {
         overflow: "hidden",
       }}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#dc3545, #b02a37)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #8b1d2a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        ⚠️ Security Alert - System Compromised
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Alert Content */}
       <div style={{ flex: 1, overflow: "auto", padding: "15px" }}>

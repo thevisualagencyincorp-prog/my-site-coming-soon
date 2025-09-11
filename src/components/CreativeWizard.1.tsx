@@ -101,19 +101,7 @@ export function CreativeWizard() {
         overflow: "hidden",
       }}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8, #3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        Creative Wizard - Project Setup Assistant
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Progress Bar */}
       <div

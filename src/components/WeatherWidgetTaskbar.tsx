@@ -6,6 +6,7 @@ import { fetchWeatherData, getMockWeatherData } from "@/lib/weather";
 export function WeatherWidgetTaskbar() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const geolocation = useGeolocation();
+  const [waited, setWaited] = useState(false);
 
   useEffect(() => {
     if (geolocation.location) {
@@ -14,6 +15,17 @@ export function WeatherWidgetTaskbar() {
         .catch(() => setWeather(getMockWeatherData()));
     }
   }, [geolocation.location]);
+
+  // Fallback if geolocation is blocked or too slow
+  useEffect(() => {
+    const t = setTimeout(() => setWaited(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+  useEffect(() => {
+    if (!weather && waited) {
+      setWeather(getMockWeatherData());
+    }
+  }, [waited, weather]);
 
   if (!weather) {
     return (

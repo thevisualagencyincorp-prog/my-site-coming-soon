@@ -18,7 +18,12 @@ export type WindowKey =
   | "vibeCheck"
   | "newsletter"
   | "mysteryClub"
-  | "coffeeClub";
+  | "coffeeClub"
+  | "portfolio"
+  | "trash"
+  | "instaAd"
+  | "mtv"
+  | "book";
 
 interface StartMenuProps {
   open: boolean;
@@ -35,8 +40,7 @@ const menuItems: {
 }[] = [
   { key: "mash", label: "Fate Machine", icon: "🎯", category: "Fun" },
   { key: "aol", label: "Retro Chat", icon: "💬", category: "Communication" },
-  // visuals removed per request
-  { key: "ads", label: "Promos & Press", icon: "�", category: "Studio" },
+  // Ads hidden from menu; still available for timed pop-ups
   {
     key: "contact",
     label: "Reach / Contact",
@@ -51,10 +55,14 @@ const menuItems: {
   { key: "cat", label: "Curated Cats", icon: "🐱", category: "Fun" },
   { key: "virus", label: "Faux Pop-ups", icon: "🎭", category: "Fun" },
   { key: "bsod", label: "Blue Screen Prank", icon: "💻", category: "Fun" },
-  { key: "notes", label: "Sticky Notes", icon: "📝", category: "Tools" },
+  { key: "notes", label: "Notes", icon: "📝", category: "Tools" },
   { key: "clippy", label: "Assistant", icon: "📎", category: "Tools" },
   // instagramPosts removed per request
   { key: "vibeCheck", label: "Vibe Check", icon: "✨", category: "Tools" },
+  { key: "portfolio", label: "Portfolio", icon: "🌐", category: "Studio" },
+  { key: "trash", label: "Trash", icon: "🗑️", category: "Studio" },
+  { key: "book", label: "Get on our calendar", icon: "🗓️", category: "Communication" },
+  { key: "mtv", label: "MTV 00s", icon: "📺", category: "Fun" },
   {
     key: "newsletter",
     label: "Mailing List",
@@ -85,14 +93,16 @@ export function StartMenu({
 
   return (
     <div
-      className="fixed z-[100] left-2 right-2 sm:left-4 sm:right-auto bottom-16 sm:bottom-16 w-auto sm:w-80 rounded-2xl bg-white/95 dark:bg-black/95 shadow-2xl border border-white/20 backdrop-blur-lg animate-fade-in"
+      className="fixed z-[100] left-2 right-2 sm:left-4 sm:right-auto bottom-16 sm:bottom-16 w-auto sm:w-80 rounded-2xl bg-gradient-to-br from-indigo-800/30 to-purple-600/30 shadow-2xl border border-white/20 backdrop-blur-lg animate-fade-in overflow-hidden"
       style={{ minHeight: 300, maxHeight: "70vh", overflowY: "auto" }}
       tabIndex={-1}
       role="menu"
       aria-label="Start Menu"
       onClick={onClose}
     >
-      <div className="p-4" onClick={(e) => e.stopPropagation()}>
+      {/* subtle glow overlay */}
+      <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(60%_60%_at_20%_0%,rgba(255,255,255,0.35),transparent_60%)]" />
+      <div className="relative p-4" onClick={(e) => e.stopPropagation()}>
         <div
           className="mb-3 text-lg font-bold text-black dark:text-white"
           style={{ fontFamily: "Tahoma, Geneva, Verdana, sans-serif" }}
@@ -131,7 +141,7 @@ export function StartMenu({
                 <li key={item.key} data-menu-item data-label={item.label}>
                   <button
                     role="menuitem"
-                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white text-sm font-medium transition"
+                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-transform duration-150 border border-white/10 hover:border-white/20 hover:scale-[1.01] active:scale-[0.99]"
                     onClick={(e) => {
                       e.stopPropagation();
                       onOpenWindow(item.key);
@@ -142,6 +152,14 @@ export function StartMenu({
                       {item.icon}
                     </span>
                     <span>{item.label}</span>
+                    {(item.key === "mtv" || item.key === "book") && (
+                      <span
+                        className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-pink-500/90 text-white animate-bounce-dino"
+                        aria-label="New"
+                      >
+                        NEW
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}

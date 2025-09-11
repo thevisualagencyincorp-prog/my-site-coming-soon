@@ -4,62 +4,83 @@
     "label": "AOL Chat",
     "iconSrc": "/images/icons/aol.svg",
     "x": 24,
-    "y": 96
+    "y": 72
   },
   {
     "key": "mash",
     "label": "MASH",
     "iconSrc": "/images/icons/mash.svg",
     "x": 24,
-    "y": 176
+    "y": 144
   },
   {
     "key": "about",
     "label": "MEET MARKETING BADDIES",
     "iconSrc": "/images/icons/about.svg",
     "x": 24,
-    "y": 256
-  },
-  {
-    "key": "faq",
-    "label": "Help & Tips",
-    "iconSrc": "/images/icons/faq.svg",
-    "x": 24,
-    "y": 336
+    "y": 216
   },
   {
     "key": "notes",
-    "label": "Sticky Notes",
+    "label": "Notes",
     "iconSrc": "/images/icons/notes.svg",
-    "x": 120,
-    "y": 96
+    "x": 24,
+    "y": 288
   },
   {
     "key": "virus",
     "label": "Promos/Alerts",
     "iconSrc": "/images/icons/virus.svg",
     "x": 120,
-    "y": 256
+    "y": 216
   },
   {
     "key": "newsletter",
     "label": "Newsletter",
     "iconSrc": "/images/icons/newsletter.svg",
     "x": 216,
-    "y": 96
+    "y": 72
+  },
+  {
+    "key": "portfolio",
+    "label": "Portfolio",
+    "iconSrc": "/globe.svg",
+    "x": 312,
+    "y": 72
+  },
+  {
+    "key": "trash",
+    "label": "Trash",
+    "iconSrc": "/window.svg",
+    "x": 312,
+    "y": 144
   },
   {
     "key": "mysteryClub",
     "label": "Mystery Club",
     "iconSrc": "/images/icons/mystery.svg",
     "x": 216,
-    "y": 176
+    "y": 144
   },
   {
     "key": "coffeeClub",
     "label": "Coffee Club",
     "iconSrc": "/images/icons/coffee.svg",
     "x": 216,
-    "y": 256
+    "y": 216
+  },
+  {
+    "key": "mtv",
+    "label": "MTV 00s",
+    "iconSrc": "/window.svg",
+    "x": 408,
+    "y": 72
+  },
+  {
+    "key": "book",
+    "label": "Book Now",
+    "iconSrc": "/file.svg",
+    "x": 408,
+    "y": 144
   }
 ]

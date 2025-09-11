@@ -1,33 +1,62 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function StickyNotesWindow() {
-  const [notes, setNotes] = useState([
+  const pool = [
     {
-      id: 1,
-      title: "Welcome to The Agency OS™!",
-      content:
-        "Thanks for checking out our retro desktop experience. Feel free to explore all the windows and features!",
+      title: "Quick reset",
+      content: "Take 3 slow breaths. Shoulders down. Jaw unclench. You’re okay.",
       color: "#ffcc00",
-      position: { x: 20, y: 20 },
     },
     {
-      id: 2,
-      title: "Creative Ideas",
-      content:
-        "• Brand identity refresh\n• Social media campaign\n• Website redesign\n• Photography session\n• Video production",
+      title: "Friendly nudge",
+      content: "Post the thing. It doesn’t need to be perfect to help someone.",
       color: "#ff6b35",
-      position: { x: 250, y: 20 },
     },
     {
-      id: 3,
-      title: "Contact Info",
-      content:
-        "📧 hello@meettheagency.com\n📱 Let's chat!\n🌐 meettheagency.com\n📍 Mountain-based agency",
+      title: "Founder mantra",
+      content: "Consistent > intense. One tiny action today beats a perfect plan.",
       color: "#4ecdc4",
-      position: { x: 20, y: 200 },
     },
-  ]);
+    {
+      title: "Artist reminder",
+      content: "Your taste is valid. Your pace is valid. Keep going.",
+      color: "#45b7d1",
+    },
+    {
+      title: "Money mindset",
+      content: "People love paying for clarity. Make it easy to hire you.",
+      color: "#9b59b6",
+    },
+    {
+      title: "Offer tip",
+      content: "Name the outcome. ‘Brand that books clients’ > ‘Logo package’.",
+      color: "#e91e63",
+    },
+    {
+      title: "Self love",
+      content: "You’re not behind. You’re building. The internet’s timeline is fake.",
+      color: "#96ceb4",
+    },
+    {
+      title: "Relax",
+      content: "5-minute walk. No phone. Notice 5 pretty things. Come back fresh.",
+      color: "#ffd93d",
+    },
+  ];
+
+  const initial = Array.from({ length: 6 }).map((_, i) => {
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    return {
+      id: i + 1,
+      title: pick.title,
+      content: pick.content,
+      color: pick.color,
+      position: { x: 20 + (i % 3) * 230, y: 20 + Math.floor(i / 3) * 180 },
+    };
+  });
+
+  const [notes, setNotes] = useState(initial);
 
   const [nextId, setNextId] = useState(4);
   const [draggedNote, setDraggedNote] = useState<number | null>(null);
@@ -56,6 +85,37 @@ export function StickyNotesWindow() {
     setNotes([...notes, newNote]);
     setNextId(nextId + 1);
   };
+
+  // Persist notes daily
+  useEffect(() => {
+    try {
+      const today = new Date();
+      const key = today.toISOString().slice(0, 10);
+      const savedKey = localStorage.getItem("notes_daily_key_v1");
+      if (savedKey === key) {
+        const raw = localStorage.getItem("notes_daily_data_v1");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            // Only adopt if shapes match
+            setNotes(parsed);
+            return;
+          }
+        }
+      }
+      // save current as today's
+      localStorage.setItem("notes_daily_key_v1", key);
+      localStorage.setItem("notes_daily_data_v1", JSON.stringify(notes));
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      const key = new Date().toISOString().slice(0, 10);
+      localStorage.setItem("notes_daily_key_v1", key);
+      localStorage.setItem("notes_daily_data_v1", JSON.stringify(notes));
+    } catch {}
+  }, [notes]);
 
   const updateNote = (id: number, field: string, value: string) => {
     setNotes(
@@ -112,19 +172,7 @@ export function StickyNotesWindow() {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      {/* Window Title Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8, #3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        Sticky Notes - Digital Notepad
-      </div>
+      {/* Title moved to window chrome */}
 
       {/* Toolbar */}
       <div
@@ -153,7 +201,7 @@ export function StickyNotesWindow() {
           ➕ New Note
         </button>
         <span style={{ fontSize: "12px", color: "#6c7c9b" }}>
-          {notes.length} notes • Drag notes to move them around
+          {notes.length} notes • Drag to rearrange — tiny mindset boosts for founders + artists
         </span>
       </div>
 

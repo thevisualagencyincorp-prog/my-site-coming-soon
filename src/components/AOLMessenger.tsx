@@ -186,14 +186,14 @@ export function AOLMessenger() {
     setTypingStates((prev) => ({ ...prev, [chatKey]: true }));
 
     const lines = [
-      "Got it — sending a few refs in a minute.",
-      "This feels on-brand. What’s the launch timeline?",
-      "We can prototype this week if you’re free.",
-      "Love the energy here. Any must-avoid comps?",
-      "Noted. I’ll route this to the team for AM sync.",
+      "Love this direction — feels very you. We’ll sketch a cute path forward.",
+      "Heard. What’s the heartbeat here — timeline, must‑haves, any no‑gos?",
+      "We can prototype this week and keep it playful but intentional.",
+      "Saving inspo to the deck right now — want a mini mood later today?",
+      "Noted, bestie. We’ll spin up options and make it feel iconic.",
     ];
     const first = lines[Math.floor(Math.random() * lines.length)];
-    const second = "Cool if we hop on a quick call later today?";
+    const second = "Cool if we hop on a 10‑min call later today?";
 
     setTimeout(() => {
       setTypingStates((prev) => ({ ...prev, [chatKey]: false }));
@@ -240,11 +240,9 @@ export function AOLMessenger() {
   return (
     <div
       style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        // Fill the DesktopWindow content area without escaping it
+        position: "relative",
+        height: "100%",
         background: "#d4d9e7",
         font: "14px Tahoma,Verdana,Segoe UI,Arial,sans-serif",
         overflow: "hidden",
@@ -253,32 +251,19 @@ export function AOLMessenger() {
         flexDirection: "column",
       }}
     >
-      {/* Window Bar */}
-      <div
-        style={{
-          padding: "6px 10px",
-          background: "linear-gradient(#5f88d8,#3c67c2)",
-          color: "#fff",
-          fontWeight: "700",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "1px solid #254e9a",
-          textShadow: "0 1px 0 rgba(0,0,0,.25)",
-        }}
-      >
-        AOL Instant Messenger — The Agency OS™
-      </div>
+      {/* Title bar moved to DesktopWindow; remove internal header */}
 
       {/* Tabs */}
       <div
         style={{
           display: "flex",
           gap: "8px",
-          flexWrap: "wrap",
+          flexWrap: "nowrap",
+          overflowX: "auto",
           padding: "8px 10px",
           borderBottom: "1px solid #b8c6e3",
           background: "#e6ebf7",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {["taylor", "sabrina", "tyler", "olivia", "xo", "brief"].map((tab) => (

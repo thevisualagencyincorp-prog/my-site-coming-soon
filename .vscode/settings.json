@@ -16,5 +16,9 @@
     "typescript": "html",
     "typescriptreact": "html"
   },
-  "chat.agent.maxRequests": 100
+  "chat.agent.maxRequests": 100,
+  "workbench.editor.autoLockGroups": {
+    "default": true
+  },
+  "workbench.editor.enablePreviewFromQuickOpen": true
 }
