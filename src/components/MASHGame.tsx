@@ -12,6 +12,20 @@ export function MASHGame() {
   const [elimination, setElimination] = useState<
     Record<string, { eliminated: string[]; winner: string | null }>
   >({});
+  const [saving, setSaving] = useState(false);
+
+  // Editable classic categories
+  const [custom, setCustom] = useState({
+    partners: "Taylor,Sabrina,Tyler,Myspace Tom",
+    careers:
+      "Designer,Developer,Photographer,Director,Producer,Marketer,Writer,Artist",
+    cars: "Jeep,Mercedes,Range Rover,Porsche,Tesla,Honda,Subaru,Volkswagen",
+    kids: "0,1,2,3,4",
+    pets: "0,1,2,3",
+    wealth: "Rich,Comfortable,Modest,Struggling",
+    cities: "New York,Los Angeles,London,Tokyo,Paris,Austin",
+    hobbies: "Photography,Music,Gaming,Travel,Cooking,Fitness",
+  });
 
   const [userInputs, setUserInputs] = useState({
     projectType: "",
@@ -21,46 +35,100 @@ export function MASHGame() {
   });
 
   const mashOptions = {
-    projectType: [
-      "Brand Identity Package",
-      "Website Redesign",
-      "Social Media Campaign",
-      "Photography Session",
-      "Video Production",
-      "Print Design Suite",
-      "Digital Marketing Strategy",
-      "E-commerce Store",
+    house: ["Mansion", "Apartment", "Shack", "House"],
+    partners: ["Taylor", "Sabrina", "Tyler", "Myspace Tom"],
+    careers: [
+      "Designer",
+      "Developer",
+      "Photographer",
+      "Director",
+      "Producer",
+      "Marketer",
+      "Writer",
+      "Artist",
     ],
-    budget: [
-      "$5,000 - $10,000",
-      "$10,000 - $25,000",
-      "$25,000 - $50,000",
-      "$50,000 - $100,000",
-      "$100,000+",
-      "Custom Quote",
-      "Phase 1 Budget Only",
-      "Full Campaign Budget",
-    ],
-    timeline: [
-      "2-4 Weeks",
-      "1-2 Months",
-      "2-3 Months",
-      "3-6 Months",
-      "6+ Months",
-      "Rush Project (2 Weeks)",
-      "Flexible Timeline",
-      "Phase-Based Delivery",
-    ],
-    style: [
-      "Minimalist & Clean",
-      "Bold & Vibrant",
-      "Retro & Nostalgic",
-      "Modern & Sleek",
-      "Playful & Fun",
-      "Luxury & Elegant",
-      "Streetwear Inspired",
-      "Corporate Professional",
-    ],
+    cars: ["Jeep", "Mercedes", "Range Rover", "Porsche", "Tesla", "Honda"],
+    kids: ["0", "1", "2", "3", "4"],
+    pets: ["0", "1", "2", "3"],
+    wealth: ["Rich", "Comfortable", "Modest", "Struggling"],
+  };
+
+  const saveCardAsImage = async () => {
+    if (!currentResult) return;
+    setSaving(true);
+    try {
+      // Compose an image in canvas instead of DOM screenshot
+      const W = 1080;
+      const H = 1350;
+      const P = 48;
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("no canvas context");
+
+      // background (notebook style)
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = "#fecaca"; // red margin line
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(P + 40, 0);
+      ctx.lineTo(P + 40, H);
+      ctx.stroke();
+      ctx.strokeStyle = "#e5e7eb"; // light lines
+      ctx.lineWidth = 1;
+      for (let y = P + 64; y < H - P; y += 36) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+
+      // header
+      ctx.fillStyle = "#111827";
+      ctx.font = "700 56px 'Courier New', monospace";
+      ctx.fillText("My Agency MASH", P, P + 40);
+
+      // summary box
+      ctx.fillStyle = "#111827";
+      ctx.font = "700 36px 'Courier New', monospace";
+      const lines = currentResult.split("\n");
+      let y = P + 120;
+      lines.forEach((line) => {
+        ctx.fillText(line, P, y);
+        y += 48;
+      });
+
+      // winners per category
+      ctx.font = "400 28px 'Courier New', monospace";
+      y += 24;
+      (Object.keys(elimination) as Array<keyof typeof elimination>).forEach(
+        (cat) => {
+          const e = elimination[cat as string];
+          if (!e) return;
+          const label = `${String(cat)}: ${e.winner ?? ''}`;
+          ctx.fillText(label, P, y);
+          y += 40;
+        }
+      );
+
+      // footer
+      ctx.font = "400 24px 'Courier New', monospace";
+      ctx.fillStyle = "#6b7280";
+      ctx.fillText("the-agency.os  •  #theagencyMASH", P, H - P);
+
+      const url = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "agency-mash.png";
+      a.click();
+    } catch (e) {
+      console.error(e);
+      alert("Could not save image on this browser.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const spinWheel = async () => {
@@ -79,34 +147,28 @@ export function MASHGame() {
       currentSpin++;
       setSpinCount(currentSpin);
 
-      // Random result for each category
-      const randomType =
-        mashOptions.projectType[
-          Math.floor(Math.random() * mashOptions.projectType.length)
-        ];
-      const randomBudget =
-        mashOptions.budget[
-          Math.floor(Math.random() * mashOptions.budget.length)
-        ];
-      const randomTimeline =
-        mashOptions.timeline[
-          Math.floor(Math.random() * mashOptions.timeline.length)
-        ];
-      const randomStyle =
-        mashOptions.style[Math.floor(Math.random() * mashOptions.style.length)];
-
-      setCurrentResult(
-        `${randomType}\n${randomBudget}\n${randomTimeline}\n${randomStyle}`
-      );
+      // Show a little counter while rolling
+      setCurrentResult(`Rolling… ${currentSpin}`);
 
       if (currentSpin >= totalSpins) {
         clearInterval(spinInterval);
         setIsSpinning(false);
-        // Compute elimination winners per category
+        // Compute elimination winners per category (using custom + house)
+        const dynamicOptions: Record<string, string[]> = {
+          house: mashOptions.house,
+          partners: custom.partners.split(",").map((s) => s.trim()).filter(Boolean),
+          careers: custom.careers.split(",").map((s) => s.trim()).filter(Boolean),
+          cars: custom.cars.split(",").map((s) => s.trim()).filter(Boolean),
+          kids: custom.kids.split(",").map((s) => s.trim()).filter(Boolean),
+          pets: custom.pets.split(",").map((s) => s.trim()).filter(Boolean),
+          wealth: custom.wealth.split(",").map((s) => s.trim()).filter(Boolean),
+          cities: custom.cities.split(",").map((s) => s.trim()).filter(Boolean),
+          hobbies: custom.hobbies.split(",").map((s) => s.trim()).filter(Boolean),
+        };
         const build: Record<string, { eliminated: string[]; winner: string | null }> = {};
-        (Object.keys(mashOptions) as Array<keyof typeof mashOptions>).forEach(
+        (Object.keys(dynamicOptions) as Array<keyof typeof dynamicOptions>).forEach(
           (cat) => {
-            const arr = [...mashOptions[cat]];
+            const arr = [...dynamicOptions[cat]];
             const eliminated: string[] = [];
             let idx = 0;
             while (arr.length > 1) {
@@ -118,7 +180,7 @@ export function MASHGame() {
           }
         );
         setElimination(build);
-        const summary = `Project: ${build.projectType.winner}\nBudget: ${build.budget.winner}\nTimeline: ${build.timeline.winner}\nStyle: ${build.style.winner}`;
+        const summary = `Home: ${build.house.winner}\nPartner: ${build.partners.winner}\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${build.kids.winner}\nPets: ${build.pets.winner}\nWealth: ${build.wealth.winner}\nCity: ${build.cities.winner}\nHobby: ${build.hobbies.winner}`;
         setCurrentResult(summary);
         setGameState("result");
       }
@@ -178,46 +240,53 @@ export function MASHGame() {
             >
               🎯
             </div>
-            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Classic MASH — Notebook Edition
-            </h2>
-            <p
-              style={{
-                margin: "0 0 20px 0",
-                lineHeight: "1.6",
-                color: "#6c7c9b",
-              }}
-            >
-              Think of your dream project. Click ROLL to let fate pick your
-              destiny — just like middle school, but make it agency.
+            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>Classic MASH — Notebook Edition</h2>
+            <p style={{ margin: "0 0 20px 0", lineHeight: "1.6", color: "#6c7c9b" }}>
+              Fill the options (comma‑separated) then hit ROLL. We’ll eliminate
+              items by the dice until one remains in each category.
             </p>
 
             <div
               style={{
                 background: "#fff",
-                padding: "20px",
-                borderRadius: "8px",
+                padding: 20,
+                borderRadius: 8,
                 border: "1px solid #cbd5ea",
                 margin: "20px 0",
               }}
             >
-              <h3 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-                How to Play:
-              </h3>
-              <ol
+              <h3 style={{ margin: 0, color: "#1e2a4a" }}>Your Options</h3>
+              <p style={{ margin: "6px 0 12px", color: "#6c7c9b", fontSize: 12 }}>
+                Enter comma‑separated values. Each row is a category. On mobile, fields stack vertically.
+              </p>
+              <div
                 style={{
-                  textAlign: "left",
-                  margin: "0",
-                  paddingLeft: "20px",
-                  lineHeight: "1.8",
-                  color: "#4a5568",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: 12,
                 }}
               >
-                <li>Think about your ideal creative project</li>
-                <li>Click the big ROLL button</li>
-                <li>Watch as destiny decides your project fate!</li>
-                <li>Get inspired by your randomly generated combination</li>
-              </ol>
+              {( [
+                ["partners", "Partners (names)", custom.partners],
+                ["careers", "Careers", custom.careers],
+                ["cars", "Cars", custom.cars],
+                ["kids", "# of Kids", custom.kids],
+                ["pets", "# of Pets", custom.pets],
+                ["wealth", "Wealth (Rich/Comfortable/…)", custom.wealth],
+                ["cities", "Cities", custom.cities],
+                ["hobbies", "Hobbies", custom.hobbies],
+              ] as const).map(([key, label, val]) => (
+                <div key={key}>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: "#1e2a4a" }}>{label}</label>
+                  <input
+                    type="text"
+                    value={val}
+                    onChange={(e) => setCustom((prev) => ({ ...prev, [key]: e.target.value }))}
+                    style={{ width: "100%", marginTop: 6, padding: 10, border: "2px solid #cbd5ea", borderRadius: 6, fontSize: 14 }}
+                  />
+                </div>
+              ))}
+              </div>
             </div>
 
             <button
@@ -330,42 +399,21 @@ export function MASHGame() {
                 {currentResult}
               </div>
               {/* Elimination lists */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                  gap: "12px",
-                  marginTop: "16px",
-                  textAlign: "left",
-                }}
-              >
-                {(Object.keys(mashOptions) as Array<keyof typeof mashOptions>).map(
-                  (cat) => (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginTop: 16, textAlign: "left" }}>
+                {Object.keys(elimination).map((cat) => {
+                  const e = elimination[cat]!;
+                  const ordered = e ? [...e.eliminated, e.winner || ""] : [];
+                  return (
                     <div key={cat}>
-                      <div style={{ fontWeight: 700, marginBottom: 6 }}>
-                        {cat}
-                      </div>
+                      <div style={{ fontWeight: 700, marginBottom: 6 }}>{cat}</div>
                       <ul style={{ margin: 0, paddingLeft: 18 }}>
-                        {mashOptions[cat].map((opt) => {
-                          const e = elimination[cat];
-                          const isOut = e?.eliminated.includes(opt);
-                          const isWin = e?.winner === opt;
-                          return (
-                            <li
-                              key={opt}
-                              style={{
-                                textDecoration: isOut ? "line-through" : "none",
-                                color: isWin ? "#059669" : isOut ? "#9ca3af" : "#111827",
-                              }}
-                            >
-                              {opt}
-                            </li>
-                          );
-                        })}
+                        {ordered.map((opt, i) => (
+                          <li key={i} style={{ textDecoration: i < ordered.length - 1 ? "line-through" : "none", color: i === ordered.length - 1 ? "#059669" : "#9ca3af" }}>{opt}</li>
+                        ))}
                       </ul>
                     </div>
-                  )
-                )}
+                  );
+                })}
               </div>
             </div>
 
@@ -401,7 +449,7 @@ export function MASHGame() {
               </p>
             </div>
 
-            <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+            <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap" }}>
               <button
                 onClick={() =>
                   window.dispatchEvent(new CustomEvent("openAOLWindow"))
@@ -420,8 +468,24 @@ export function MASHGame() {
                 💬 Let&apos;s Talk About This
               </button>
               <button
+                onClick={saveCardAsImage}
+                disabled={saving}
+                style={{
+                  padding: "12px 20px",
+                  background: saving ? "#e5e7eb" : "#fff",
+                  border: "1px solid #cbd5ea",
+                  borderRadius: "6px",
+                  cursor: saving ? "not-allowed" : "pointer",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#1e2a4a",
+                }}
+              >
+                🖼️ {saving ? "Saving…" : "Save Card as Image"}
+              </button>
+              <button
                 onClick={async () => {
-                  const text = `My Agency MASH: \n${currentResult}`;
+                  const text = `#theagencyMASH\n${currentResult}`;
                   try {
                     if (navigator.share) {
                       await navigator.share({ text, title: "My Agency MASH" });

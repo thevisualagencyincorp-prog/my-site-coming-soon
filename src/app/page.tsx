@@ -9,6 +9,7 @@ import {
   DigitalClockOnlyTime,
   WeatherWidgetTaskbar,
   DesktopIcons,
+  LoadingScreen,
   StartMenu,
   AOLMessenger,
   MASHGame,
@@ -30,7 +31,8 @@ import {
 import type { WindowKey } from "@/components/StartMenu";
 
 export default function Page() {
-  // Boot/coming-soon overlay removed
+  // Boot overlay
+  const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [startOpen, setStartOpen] = useState(false);
 
@@ -376,6 +378,8 @@ export default function Page() {
     return () => window.removeEventListener("resize", updateIsMobile);
   }, []);
 
+  
+
   // Auto day/night background selection
   const [bgImage, setBgImage] = useState("/images/Background:day.png");
   useEffect(() => {
@@ -392,6 +396,8 @@ export default function Page() {
         <title>The Agency OS™ — The Agency</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+
+      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
       <TopBar />
 
@@ -418,7 +424,7 @@ export default function Page() {
           // Map key to component
           const common = {
             title: key === "bsod" ? "Blue Screen Prank" : key,
-            iconSrc: "/images/icons/folder.svg",
+            iconSrc: "/images/folder.webp",
             initialPosition: w.pos,
             width: w.size.w,
             height: w.size.h,
@@ -489,6 +495,11 @@ export default function Page() {
               content = <div style={{ padding: 12 }}>Nothing here yet.</div>;
           }
 
+          if (key === "clippy") {
+            // Render Clippy as overlay assistant without a window
+            return <ClippyWindow key="clippy" />;
+          }
+
           return (
             <DesktopWindow key={key} {...common}>
               {content}
@@ -505,6 +516,7 @@ export default function Page() {
             right: 12,
             zIndex: 2000,
           }}
+          data-role="taskbar"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -540,11 +552,7 @@ export default function Page() {
                 <span className="flex items-center gap-1 mr-2">
                   <WeatherWidgetTaskbar />
                 </span>
-                <img
-                  src="/images/blutooth.webp"
-                  alt="bluetooth"
-                  className="w-4 h-4 ml-1"
-                />
+                {/* Bluetooth icon removed per request */}
               </div>
               <div className="flex items-center gap-2">
                 {Object.keys(windows).map((k) => {

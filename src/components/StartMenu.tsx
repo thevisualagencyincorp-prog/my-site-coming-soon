@@ -163,6 +163,7 @@ export function StartMenu({
             </button>
           </div>
         )}
+
       </div>
     </div>
   );

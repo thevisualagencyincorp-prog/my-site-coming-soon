@@ -5,6 +5,7 @@ export function FunnyCatWindow() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentCat, setCurrentCat] = useState(0);
   const [likes, setLikes] = useState(0);
+  const [muted, setMuted] = useState(true);
 
   const cats = [
     {
@@ -154,81 +155,86 @@ export function FunnyCatWindow() {
               </button>
             </div>
           ) : (
-            <div style={{ textAlign: "center", color: "#fff", width: "100%" }}>
+            <div style={{ width: "100%", height: "100%", position: "relative" }}>
               <div
                 style={{
-                  fontSize: "80px",
-                  marginBottom: "20px",
-                  animation: "catDance 1s infinite",
-                }}
-              >
-                {cats[currentCat].emoji}
-              </div>
-              <div
-                style={{
-                  fontSize: "20px",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                }}
-              >
-                {cats[currentCat].name}
-              </div>
-              <div
-                style={{
-                  fontSize: "16px",
-                  marginBottom: "10px",
-                  opacity: "0.9",
-                }}
-              >
-                {cats[currentCat].action}
-              </div>
-              <div
-                style={{
-                  fontSize: "14px",
-                  opacity: "0.7",
-                  marginBottom: "20px",
-                }}
-              >
-                {cats[currentCat].description}
-              </div>
-
-              <div
-                style={{
+                  position: "absolute",
+                  inset: 0,
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "20px",
+                  flexDirection: "column",
                 }}
               >
-                <button
-                  onClick={() => setIsPlaying(false)}
+                {/* 16:9 responsive container */}
+                <div style={{ position: "relative", paddingTop: "56.25%" }}>
+                  <iframe
+                    key={`cat-yt-${muted ? 'm' : 'u'}`}
+                    title="Funny Cat Video"
+                    src={`https://www.youtube-nocookie.com/embed/uwmeH6Rnj2E?autoplay=1&mute=${muted ? 1 : 0}&rel=0&modestbranding=1&playsinline=1`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      border: 0,
+                    }}
+                  />
+                </div>
+
+                <div
                   style={{
-                    padding: "8px 16px",
-                    background: "#666",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    color: "#fff",
-                  }}
-                >
-                  ⏸️ PAUSE
-                </button>
-                <button
-                  onClick={() => setLikes((prev) => prev + 1)}
-                  style={{
-                    padding: "8px 16px",
-                    background: "#ff4757",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    color: "#fff",
                     display: "flex",
                     alignItems: "center",
-                    gap: "5px",
+                    justifyContent: "center",
+                    gap: "20px",
+                    padding: "10px 0",
                   }}
                 >
-                  ❤️ {likes}
-                </button>
+                  <button
+                    onClick={() => setIsPlaying(false)}
+                    style={{
+                      padding: "8px 16px",
+                      background: "#666",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      color: "#fff",
+                    }}
+                  >
+                    ⏸️ PAUSE
+                  </button>
+                  <button
+                    onClick={() => setMuted((m) => !m)}
+                    style={{
+                      padding: "8px 16px",
+                      background: muted ? "#1f2937" : "#10b981",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      color: "#fff",
+                    }}
+                  >
+                    {muted ? "🔇 Unmute" : "🔊 Mute"}
+                  </button>
+                  <button
+                    onClick={() => setLikes((prev) => prev + 1)}
+                    style={{
+                      padding: "8px 16px",
+                      background: "#ff4757",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    ❤️ {likes}
+                  </button>
+                </div>
               </div>
             </div>
           )}

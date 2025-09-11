@@ -61,7 +61,6 @@ export function MysteryMurderClubWaitlistWindow() {
     date: "Coming Soon - Fall 2025",
     duration: "2 Hours",
     format: "In-Person + Virtual Options",
-    price: "$25 per person (includes themed drinks & snacks)",
     whatToExpect: [
       "🎭 Immersive murder mystery experience",
       "🤝 Professional networking opportunities",
@@ -142,6 +141,13 @@ export function MysteryMurderClubWaitlistWindow() {
                 marginBottom: "25px",
               }}
             >
+              {/* Optional hero image */}
+              <img
+                src="/images/mystery-hero.jpg"
+                alt="Mystery/Murder Club"
+                onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                style={{ width: '100%', borderRadius: 8, marginBottom: 12, objectFit: 'cover', maxHeight: 220 }}
+              />
               <h3
                 style={{
                   fontSize: "16px",
@@ -202,20 +208,7 @@ export function MysteryMurderClubWaitlistWindow() {
                     {eventDetails.format}
                   </div>
                 </div>
-                <div>
-                  <div
-                    style={{
-                      fontWeight: "600",
-                      fontSize: "13px",
-                      color: "#1e2a4a",
-                    }}
-                  >
-                    💰 Price
-                  </div>
-                  <div style={{ fontSize: "12px", color: "#6c7c9b" }}>
-                    {eventDetails.price}
-                  </div>
-                </div>
+                {/* Price intentionally omitted */}
               </div>
               <div>
                 <div

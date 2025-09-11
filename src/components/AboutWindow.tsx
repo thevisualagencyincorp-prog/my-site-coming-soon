@@ -73,28 +73,44 @@ export function AboutWindow() {
           <div style={{ textAlign: "center" }}>
             <div
               style={{
-                width: "120px",
-                height: "120px",
+                width: "140px",
+                height: "140px",
                 borderRadius: "50%",
                 background: "#ddd",
                 margin: "0 auto 20px",
+                overflow: "hidden",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.12)",
+                border: "2px solid #cbd5ea",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "48px",
               }}
             >
-              👭
+              <img
+                src="/images/meet-us.jpg"
+                alt="Meet The Agency"
+                width={140}
+                height={140}
+                onError={(e) => {
+                  (e.currentTarget.style.display = 'none');
+                  const p = e.currentTarget.parentElement as HTMLElement;
+                  if (p) p.textContent = '👭';
+                }}
+                style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }}
+              />
             </div>
             <h2 style={{ margin: "0 0 10px 0", color: "#1e2a4a" }}>
               Meet The Agency
             </h2>
-            <p style={{ margin: "0 0 20px 0", lineHeight: "1.6" }}>
+            <p style={{ margin: "0 0 10px 0", lineHeight: "1.6" }}>
               Your Business/Creative Besties™
               <br />
               We specialize in turning your vision into reality with creativity,
               strategy, and a whole lot of heart.
             </p>
+            <div style={{ fontSize: "12px", color: "#6c7c9b", marginBottom: "20px" }}>
+              Photo: a peek at our team energy and vibe.
+            </div>
             <div
               style={{
                 background: "#fff",

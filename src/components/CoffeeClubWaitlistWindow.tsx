@@ -83,13 +83,12 @@ export function CoffeeClubWaitlistWindow() {
     duration: "2 Hours",
     format: "In-Person at Local Coffee Shops",
     frequency: "Weekly Sessions",
-    price: "$15 per session (coffee included)",
     whatToExpect: [
       "☕ Premium coffee and snacks provided",
-      "💻 Dedicated cowork space",
+      "💻 Dedicated cowork space with supportive accountability",
       "🤝 Professional networking",
       "🎯 Productivity challenges",
-      "💡 Skill-sharing sessions",
+      "💡 Skill-sharing sessions across all disciplines",
       "📚 Resource recommendations",
     ],
   };
@@ -148,9 +147,10 @@ export function CoffeeClubWaitlistWindow() {
                 Join The Coffee Club
               </h2>
               <p style={{ color: "#6c7c9b", lineHeight: "1.5" }}>
-                Work on your projects, meet fellow creatives, and enjoy premium
-                coffee at local coffee shops. Perfect for focused work sessions
-                and meaningful connections.
+                A welcoming coworking session to help people who work from home
+                stay motivated and feel supported around others also focused on
+                their work. Open to all careers and disciplines—bring your
+                project, grab a coffee, and get things done together.
               </p>
             </div>
 
@@ -164,6 +164,13 @@ export function CoffeeClubWaitlistWindow() {
                 marginBottom: "25px",
               }}
             >
+              {/* Optional hero image */}
+              <img
+                src="/images/coffee-hero.jpg"
+                alt="Coffee Club"
+                onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                style={{ width: '100%', borderRadius: 8, marginBottom: 12, objectFit: 'cover', maxHeight: 220 }}
+              />
               <h3
                 style={{
                   fontSize: "16px",
@@ -224,20 +231,7 @@ export function CoffeeClubWaitlistWindow() {
                     {eventDetails.frequency}
                   </div>
                 </div>
-                <div>
-                  <div
-                    style={{
-                      fontWeight: "600",
-                      fontSize: "13px",
-                      color: "#1e2a4a",
-                    }}
-                  >
-                    💰 Price
-                  </div>
-                  <div style={{ fontSize: "12px", color: "#6c7c9b" }}>
-                    {eventDetails.price}
-                  </div>
-                </div>
+                {/* Price intentionally omitted */}
               </div>
               <div>
                 <div

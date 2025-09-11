@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "The Agency OS™",
     images: [
-      { url: "/images/Background:day.png", width: 1200, height: 630, alt: "The Agency OS Desktop" },
+      { url: "/images/og.jpg", width: 1200, height: 630, alt: "The Agency OS — #theagencyMASH" },
     ],
     locale: "en_US",
     type: "website",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "The Agency OS™ — Digital Agency, Web Dev, Branding",
     description:
       "Retro desktop experience for a modern digital agency. Explore apps, chat, and learn about our services.",
-    images: ["/images/Background:day.png"],
+    images: ["/images/og.jpg"],
   },
   icons: {
     icon: "/favicon.ico",

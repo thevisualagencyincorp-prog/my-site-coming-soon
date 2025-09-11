@@ -7,41 +7,103 @@ export function AOLMessenger() {
     taylor: [
       {
         who: "Taylor Nation",
-        text: "Welcome to Agency OS — excited to chat ✨",
+        text: "Happy Sept ’25! We’ve been raving about your OS site — it feels like we’re chatting with best friends ✨",
         me: false,
-        timestamp: Date.now() - 1000 * 60 * 30,
+        timestamp: Date.now() - 1000 * 60 * 120,
       },
       {
         who: "You",
-        text: "Likewise! Sending over a few thoughts.",
+        text: "We adore you back! What are you dreaming up?",
         me: true,
-        timestamp: Date.now() - 1000 * 60 * 29,
+        timestamp: Date.now() - 1000 * 60 * 118,
       },
       {
         who: "Taylor Nation",
-        text: "Saw your site — love the playful OS vibe.",
+        text: "We want a playful microsite + tour visuals refresh — something only your creative brain could do.",
         me: false,
-        timestamp: Date.now() - 1000 * 60 * 25,
+        timestamp: Date.now() - 1000 * 60 * 115,
+      },
+      {
+        who: "You",
+        text: "We’ll bring the sparkle. Sending a mini brief + mood sparks in a sec.",
+        me: true,
+        timestamp: Date.now() - 1000 * 60 * 112,
+      },
+      {
+        who: "Taylor Nation",
+        text: "Perfect — your enthusiasm and taste are exactly why we come to you.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 110,
       },
     ],
     sabrina: [
       {
         who: "Sabrina Team",
-        text: "Dropping moodboard references here.",
+        text: "Besties! We need cheeky visuals for September 2025 promos — fun, flirty, elevated.",
         me: false,
-        timestamp: Date.now() - 1000 * 60 * 45,
+        timestamp: Date.now() - 1000 * 60 * 90,
+      },
+      {
+        who: "You",
+        text: "Say less. Think glossy type + motion stickers + candy‑color palette?",
+        me: true,
+        timestamp: Date.now() - 1000 * 60 * 88,
+      },
+      {
+        who: "Sabrina Team",
+        text: "Exactly. This is why we always ping you first — you get it.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 86,
       },
     ],
     tyler: [
       {
         who: "Tyler",
-        text: "Yo — let’s keep it playful but clean.",
+        text: "Yo fam — need a weird‑cool landing for a drop. You’re our people.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 75,
+      },
+      {
+        who: "You",
+        text: "Let’s make it playful but intentional. Send constraints + timing.",
+        me: true,
+        timestamp: Date.now() - 1000 * 60 * 74,
+      },
+      {
+        who: "Tyler",
+        text: "Constraints: none 😂 Timing: soon. Love your energy.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 72,
+      },
+    ],
+    olivia: [
+      {
+        who: "Olivia Team",
+        text: "Hey besties — quick question: can you mock a zine‑style lyric page this week?",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 60,
       },
+      {
+        who: "You",
+        text: "Yes yes yes. We’ll sketch ideas tonight and send in the AM.",
+        me: true,
+        timestamp: Date.now() - 1000 * 60 * 59,
+      },
     ],
-    olivia: [],
-    xo: [],
+    xo: [
+      {
+        who: "XO Team",
+        text: "Team! You’re our go‑to for concept decks — can we book you for a September sprint?",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 48,
+      },
+      {
+        who: "You",
+        text: "Locked. We’ve got fresh ideas queued and coffee ready.",
+        me: true,
+        timestamp: Date.now() - 1000 * 60 * 47,
+      },
+    ],
     brief: [],
   };
   const [messages, setMessages] = useState(initialMessages);

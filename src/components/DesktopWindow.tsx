@@ -187,7 +187,9 @@ export function DesktopWindow({
     const handler = (e: globalThis.MouseEvent) => {
       const el = windowRef.current;
       if (!el) return;
-      if (!el.contains(e.target as Node)) {
+      const target = e.target as HTMLElement | null;
+      const inTaskbar = !!target?.closest('[data-role="taskbar"]');
+      if (!inTaskbar && !el.contains(target as Node)) {
         onMinimize();
       }
     };
