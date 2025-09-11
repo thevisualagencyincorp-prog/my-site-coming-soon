@@ -5,8 +5,11 @@
   --foreground: #171717;
   /* Desktop-window chrome palette (tuned to match background blues) */
   --win-title-start: #0f2b6e; /* dark navy */
+  --win-title-mid: #1f4bd1; /* mid blue */
   --win-title-end: #2b6cff; /* royal blue */
   --win-border: #0b2a5e; /* outline/navy */
+  --win-shadow-1: 8px 8px 0 rgba(11, 42, 94, 1);
+  --win-shadow-2: 0 14px 40px rgba(0, 0, 0, 0.3);
 }
 
 @theme inline {
@@ -20,6 +23,11 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    /* slightly different title colors for night */
+    --win-title-start: #021028;
+    --win-title-mid: #07356a;
+    --win-title-end: #1b4fe0;
+    --win-border: #031833;
   }
 }
 
@@ -30,6 +38,7 @@ body {
   font-weight: 400;
   letter-spacing: 0.5px;
   line-height: 1.4;
+  transition: background 400ms ease-in-out, color 400ms ease-in-out;
 }
 
 /* Scumner.world inspired typography */

@@ -3,7 +3,6 @@
 export type WindowKey =
   | "mash"
   | "aol"
-  | "instagram"
   | "ads"
   | "contact"
   | "faq"
@@ -16,7 +15,6 @@ export type WindowKey =
   | "bsod"
   | "notes"
   | "clippy"
-  | "instagramPosts"
   | "vibeCheck"
   | "newsletter"
   | "mysteryClub"
@@ -35,31 +33,31 @@ const menuItems: {
   icon: string;
   category?: string;
 }[] = [
-  { key: "mash", label: "MASH Game", icon: "🎯", category: "Fun" },
-  { key: "aol", label: "AOL Messenger", icon: "💬", category: "Communication" },
-  { key: "instagram", label: "Instagram", icon: "📸", category: "Social" },
-  { key: "ads", label: "Ads", icon: "📢", category: "Business" },
-  { key: "contact", label: "Contact", icon: "📧", category: "Communication" },
-  { key: "faq", label: "Help & FAQ", icon: "❓", category: "Support" },
-  { key: "about", label: "About Us", icon: "👥", category: "About" },
-  { key: "creative", label: "Creative Wizard", icon: "🎨", category: "Tools" },
-  { key: "metrics", label: "Agency Metrics", icon: "📊", category: "Business" },
-  { key: "skeleton", label: "Skeleton Dance", icon: "💀", category: "Fun" },
-  { key: "cat", label: "Funny Cats", icon: "🐱", category: "Fun" },
-  { key: "virus", label: "Virus Alert", icon: "⚠️", category: "Fun" },
-  { key: "bsod", label: "BSOD", icon: "💻", category: "Fun" },
-  { key: "notes", label: "Sticky Notes", icon: "📝", category: "Tools" },
-  { key: "clippy", label: "Clippy Assistant", icon: "📎", category: "Fun" },
+  { key: "mash", label: "Fate Machine", icon: "🎯", category: "Fun" },
+  { key: "aol", label: "Retro Chat", icon: "💬", category: "Communication" },
+  // visuals removed per request
+  { key: "ads", label: "Promos & Press", icon: "�", category: "Studio" },
   {
-    key: "instagramPosts",
-    label: "Instagram Posts",
-    icon: "📸",
-    category: "Social",
+    key: "contact",
+    label: "Reach / Contact",
+    icon: "✉️",
+    category: "Communication",
   },
+  { key: "faq", label: "Help & Tips", icon: "❓", category: "Support" },
+  { key: "about", label: "Studio Info", icon: "👥", category: "About" },
+  { key: "creative", label: "Creative Lab", icon: "🎨", category: "Tools" },
+  { key: "metrics", label: "Studio Metrics", icon: "📊", category: "Studio" },
+  { key: "skeleton", label: "Dance Off", icon: "💀", category: "Fun" },
+  { key: "cat", label: "Curated Cats", icon: "🐱", category: "Fun" },
+  { key: "virus", label: "Faux Pop-ups", icon: "🎭", category: "Fun" },
+  { key: "bsod", label: "Blue Screen Prank", icon: "💻", category: "Fun" },
+  { key: "notes", label: "Sticky Notes", icon: "📝", category: "Tools" },
+  { key: "clippy", label: "Assistant", icon: "📎", category: "Tools" },
+  // instagramPosts removed per request
   { key: "vibeCheck", label: "Vibe Check", icon: "✨", category: "Tools" },
   {
     key: "newsletter",
-    label: "Newsletter",
+    label: "Mailing List",
     icon: "📧",
     category: "Communication",
   },
@@ -67,7 +65,12 @@ const menuItems: {
   { key: "coffeeClub", label: "Coffee Club", icon: "☕", category: "Events" },
 ];
 
-export function StartMenu({ open, onClose, onOpenWindow, onResetLayout }: StartMenuProps) {
+export function StartMenu({
+  open,
+  onClose,
+  onOpenWindow,
+  onResetLayout,
+}: StartMenuProps) {
   if (!open) return null;
 
   // Group menu items by category
@@ -90,8 +93,11 @@ export function StartMenu({ open, onClose, onOpenWindow, onResetLayout }: StartM
       onClick={onClose}
     >
       <div className="p-4" onClick={(e) => e.stopPropagation()}>
-        <div className="mb-3 text-lg font-bold text-black dark:text-white">
-          The Agency OS™
+        <div
+          className="mb-3 text-lg font-bold text-black dark:text-white"
+          style={{ fontFamily: "Tahoma, Geneva, Verdana, sans-serif" }}
+        >
+          THE AGENCY OS™
         </div>
 
         {/* Quick search */}
@@ -104,9 +110,12 @@ export function StartMenu({ open, onClose, onOpenWindow, onResetLayout }: StartM
             const el = e.currentTarget.closest('[role="menu"]');
             if (!el) return;
             // Show/hide items based on search
-            el.querySelectorAll('[data-menu-item]')?.forEach((node) => {
-              const label = (node as HTMLElement).dataset.label?.toLowerCase() || '';
-              (node as HTMLElement).style.display = label.includes(q) ? '' : 'none';
+            el.querySelectorAll("[data-menu-item]")?.forEach((node) => {
+              const label =
+                (node as HTMLElement).dataset.label?.toLowerCase() || "";
+              (node as HTMLElement).style.display = label.includes(q)
+                ? ""
+                : "none";
             });
           }}
           aria-label="Search applications"
@@ -122,14 +131,16 @@ export function StartMenu({ open, onClose, onOpenWindow, onResetLayout }: StartM
                 <li key={item.key} data-menu-item data-label={item.label}>
                   <button
                     role="menuitem"
-                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-black/10 dark:hover:bg:white/10 text-black dark:text-white text-sm font-medium transition"
+                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white text-sm font-medium transition"
                     onClick={(e) => {
                       e.stopPropagation();
                       onOpenWindow(item.key);
                       onClose();
                     }}
                   >
-                    <span className="text-lg" aria-hidden>{item.icon}</span>
+                    <span className="text-lg" aria-hidden>
+                      {item.icon}
+                    </span>
                     <span>{item.label}</span>
                   </button>
                 </li>

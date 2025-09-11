@@ -13,7 +13,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   // Preload image, then run a timed boot so the screen actually shows
   useEffect(() => {
-    let interval: any;
+    let interval: number | undefined;
     const minShow = 2600; // show at least this long
     const fadeDuration = 800;
     const start = Date.now();
@@ -21,12 +21,12 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     const img = new Image();
     img.onload = () => {
       setImageReady(true);
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setProgress((prev) => {
           const next = Math.min(100, prev + 2);
           const longEnough = Date.now() - start >= minShow;
           if (next >= 100 && longEnough) {
-            clearInterval(interval);
+            if (interval) window.clearInterval(interval);
             setFading(true);
             setTimeout(() => onComplete(), fadeDuration);
           }
@@ -34,9 +34,12 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         });
       }, 45);
     };
+    // Use site's loading image (uploaded to public/images)
     img.src = "/images/Loading:boot page.png";
 
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) window.clearInterval(interval);
+    };
   }, [onComplete]);
 
   return (

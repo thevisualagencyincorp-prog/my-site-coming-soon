@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export function SkeletonDanceWindow() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -42,6 +42,7 @@ export function SkeletonDanceWindow() {
   ];
 
   const currentVideoData = videoLibrary[currentVideo];
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <div
@@ -155,7 +156,10 @@ export function SkeletonDanceWindow() {
                   {currentVideoData.description}
                 </div>
                 <button
-                  onClick={() => setIsPlaying(true)}
+                  onClick={() => {
+                    setIsPlaying(true);
+                    setTimeout(() => videoRef.current?.play().catch(() => {}), 50);
+                  }}
                   style={{
                     padding: "12px 24px",
                     background: "#ff6b35",
@@ -171,95 +175,24 @@ export function SkeletonDanceWindow() {
                 </button>
               </div>
             ) : (
-              <div
-                style={{ textAlign: "center", color: "#fff", width: "100%" }}
-              >
-                <div
-                  style={{
-                    fontSize: "60px",
-                    marginBottom: "20px",
-                    animation: "dance 1s infinite",
-                  }}
+              <div style={{ width: "100%", height: "100%" }}>
+                <video
+                  ref={videoRef}
+                  controls
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  poster="/images/Background:night.png"
+                  onPause={() => setIsPlaying(false)}
+                  onPlay={() => setIsPlaying(true)}
                 >
-                  💀🕺💃
-                </div>
-                <div
-                  style={{
-                    fontSize: "20px",
-                    marginBottom: "10px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  NOW PLAYING: {currentVideoData.title}
-                </div>
-                <div
-                  style={{
-                    fontSize: "16px",
-                    opacity: "0.9",
-                    marginBottom: "20px",
-                  }}
-                >
-                  {currentVideoData.description}
-                </div>
-
-                {/* Video Controls */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "20px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <button
-                    onClick={() => setIsPlaying(false)}
-                    style={{
-                      padding: "8px 16px",
-                      background: "#666",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      color: "#fff",
-                    }}
-                  >
-                    ⏸️ PAUSE
-                  </button>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <span style={{ fontSize: "12px" }}>🔊</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={volume}
-                      onChange={(e) => setVolume(Number(e.target.value))}
-                      style={{ width: "80px" }}
-                    />
-                    <span style={{ fontSize: "12px", minWidth: "30px" }}>
-                      {volume}%
-                    </span>
-                  </div>
-                </div>
-
-                {/* Video Stats */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "20px",
-                    fontSize: "14px",
-                    opacity: "0.8",
-                  }}
-                >
-                  <span>👁️ {currentVideoData.views} views</span>
-                  <span>❤️ {currentVideoData.likes} likes</span>
-                </div>
+                  {/* Replace the src below with an actual open-source/public-domain skeleton clip URL */}
+                  <source
+                    src={
+                      process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
+                      "https://archive.org/download/TheSkeletonDance1929/TheSkeletonDance1929_512kb.mp4"
+                    }
+                    type="video/mp4"
+                  />
+                </video>
               </div>
             )}
           </div>

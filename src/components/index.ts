@@ -25,3 +25,4 @@ export { VibeCheckWindow } from "./VibeCheckWindow";
 export { NewsletterWindow } from "./NewsletterWindow";
 export { MysteryMurderClubWaitlistWindow } from "./MysteryMurderClubWaitlistWindow";
 export { CoffeeClubWaitlistWindow } from "./CoffeeClubWaitlistWindow";
+export { DesktopIcons } from "./DesktopIcons";

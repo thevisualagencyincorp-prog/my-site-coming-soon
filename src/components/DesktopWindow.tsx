@@ -23,6 +23,7 @@ interface DesktopWindowProps {
   }) => void;
   minimized?: boolean;
   maximized?: boolean;
+  autoDock?: boolean;
 }
 
 export function DesktopWindow({
@@ -41,6 +42,7 @@ export function DesktopWindow({
   onLayoutChange,
   minimized = false,
   maximized = false,
+  autoDock = false,
 }: DesktopWindowProps) {
   const [pos, setPos] = useState(initialPosition);
   const [dragging, setDragging] = useState(false);
@@ -95,7 +97,7 @@ export function DesktopWindow({
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const maxX = Math.max(0, vw - rect.width);
-    const maxY = Math.max(0, vh - rect.height);
+    const maxY = Math.max(0, vh - TASKBAR_HEIGHT - rect.height);
     return {
       x: Math.min(Math.max(0, next.x), maxX),
       y: Math.min(Math.max(0, next.y), maxY),
@@ -140,7 +142,7 @@ export function DesktopWindow({
   // Global listeners for dragging
   useEffect(() => {
     if (!dragging || maximized) return;
-    const onMove = (e: any) => {
+    const onMove = (e: globalThis.MouseEvent) => {
       const nx = e.clientX - dragOffset.current.x;
       const ny = e.clientY - dragOffset.current.y;
       // live snap to grid while dragging
@@ -168,21 +170,35 @@ export function DesktopWindow({
         }
         return finalPos;
       });
-      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
-    window.addEventListener("mousemove", onMove as any);
+    window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
     return () => {
-      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
   }, [dragging, maximized]);
 
+  // Auto-dock on outside click (for chat-like windows)
+  useEffect(() => {
+    if (!autoDock || !onMinimize) return;
+    const handler = (e: globalThis.MouseEvent) => {
+      const el = windowRef.current;
+      if (!el) return;
+      if (!el.contains(e.target as Node)) {
+        onMinimize();
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [autoDock, onMinimize]);
+
   // Global listeners for resizing
   useEffect(() => {
     if (!resizing || maximized) return;
-    const onMove = (e: any) => {
+    const onMove = (e: globalThis.MouseEvent) => {
       const { dir, startX, startY, startW, startH, startLeft, startTop } =
         resizeRef.current;
       let newW = startW;
@@ -214,13 +230,13 @@ export function DesktopWindow({
           height: size.height as number,
         });
       }
-      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
-    window.addEventListener("mousemove", onMove as any);
+    window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
     return () => {
-      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
   }, [resizing, maximized]);
@@ -237,7 +253,8 @@ export function DesktopWindow({
     if (Math.abs(x - 0) < MAGNET_THRESHOLD) x = 0;
     if (Math.abs(x + rect.width - vw) < MAGNET_THRESHOLD) x = vw - rect.width;
     if (Math.abs(y - 0) < MAGNET_THRESHOLD) y = 0;
-    if (Math.abs(y + rect.height - vh) < MAGNET_THRESHOLD) y = vh - rect.height;
+    if (Math.abs(y + rect.height - (vh - TASKBAR_HEIGHT)) < MAGNET_THRESHOLD)
+      y = vh - TASKBAR_HEIGHT - rect.height;
 
     // other windows
     const nodes = Array.from(
@@ -306,8 +323,8 @@ export function DesktopWindow({
         maxWidth: maximized ? "100vw" : "90vw",
         minHeight: 120,
         boxShadow: dragging
-          ? "0 0 0 2px #3b82f6, 0 10px 30px rgba(0,0,0,0.35)"
-          : "0 0 0 2px #2b5fb8, 6px 6px 0 #0b2a5e",
+          ? "0 0 0 2px rgba(59,130,246,0.6), 0 14px 40px rgba(0,0,0,0.35)"
+          : `var(--win-shadow-2), var(--win-shadow-1)`,
         transition: dragging ? "none" : "box-shadow 0.2s",
         cursor: dragging ? "grabbing" : "default",
         borderRadius: 0,
@@ -327,8 +344,9 @@ export function DesktopWindow({
         style={{
           height: 30,
           background:
-            "linear-gradient(180deg, var(--win-title-start), var(--win-title-end))",
+            "linear-gradient(180deg, var(--win-title-start), var(--win-title-mid), var(--win-title-end))",
           borderBottom: "2px solid var(--win-border)",
+          boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.12)",
         }}
         onMouseDown={handleMouseDown}
         onDoubleClick={(e) => {
@@ -364,7 +382,23 @@ export function DesktopWindow({
               handleMinimize();
             }}
           >
-            <span className="block w-3 h-0.5 bg-gray-700" />
+            {/* minimize icon */}
+            <svg
+              width="10"
+              height="6"
+              viewBox="0 0 10 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="0"
+                y="3"
+                width="10"
+                height="1.5"
+                fill="#1f2937"
+                rx="0.5"
+              />
+            </svg>
           </button>
           <button
             className="w-6 h-6 bg-[#efeff5] border border-[#1b3a73] flex items-center justify-center hover:bg-white active:bg-gray-200 transition-colors"
@@ -375,7 +409,25 @@ export function DesktopWindow({
               handleMaximize();
             }}
           >
-            <span className="block w-3 h-3 border-2 border-gray-700 border-t-0 border-l-0 rotate-45" />
+            {/* maximize icon */}
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="1.5"
+                y="1.5"
+                width="7"
+                height="7"
+                stroke="#1f2937"
+                strokeWidth="1.2"
+                fill="none"
+                rx="1"
+              />
+            </svg>
           </button>
           <button
             className="w-6 h-6 bg-[#ffdad6] border border-[#1b3a73] flex items-center justify-center hover:bg-[#ffc7c0] active:bg-[#ffb2a8] transition-colors"
@@ -386,7 +438,20 @@ export function DesktopWindow({
               handleClose();
             }}
           >
-            <span className="block w-3 h-3 border-2 border-gray-700 border-t-0 border-l-0 rotate-45" />
+            {/* close icon */}
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1 L9 9 M9 1 L1 9"
+                stroke="#2b2b2b"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -446,7 +511,7 @@ export function DesktopWindow({
                   startH: typeof size.height === "number" ? size.height : 320,
                   startLeft: pos.x,
                   startTop: pos.y,
-                  dir: dir as any,
+                  dir: dir as typeof resizeRef.current.dir,
                 };
                 setResizing(true);
               }}

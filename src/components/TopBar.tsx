@@ -5,6 +5,12 @@ export function TopBar() {
     const event = new CustomEvent("openFAQWindow");
     window.dispatchEvent(event);
   };
+  const handleFileClick = () => {
+    window.dispatchEvent(new CustomEvent("openBSODWindow"));
+  };
+  const handleEditClick = () => {
+    window.dispatchEvent(new CustomEvent("openSkeletonWindow"));
+  };
 
   return (
     <div
@@ -18,8 +24,8 @@ export function TopBar() {
       }}
     >
       <span className="ml-4 mr-8 tracking-wider">The Agency OS™</span>
-      <span className="mr-6 cursor-pointer hover:underline">File</span>
-      <span className="mr-6 cursor-pointer hover:underline">Edit</span>
+      <span className="mr-6 cursor-pointer hover:underline" onClick={handleFileClick}>File</span>
+      <span className="mr-6 cursor-pointer hover:underline" onClick={handleEditClick}>Edit</span>
       <span
         className="mr-6 cursor-pointer hover:underline"
         onClick={handleHelpClick}

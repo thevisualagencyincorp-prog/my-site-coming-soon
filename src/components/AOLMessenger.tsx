@@ -3,12 +3,7 @@ import { useState, useEffect, useRef } from "react";
 
 export function AOLMessenger() {
   const [activeTab, setActiveTab] = useState("taylor");
-  const [messages, setMessages] = useState<
-    Record<
-      string,
-      Array<{ who: string; text: string; me: boolean; timestamp: number }>
-    >
-  >({
+  const initialMessages: Record<string, Array<{ who: string; text: string; me: boolean; timestamp: number }>> = {
     taylor: [
       {
         who: "Taylor Nation",
@@ -21,6 +16,12 @@ export function AOLMessenger() {
         text: "Likewise! Sending over a few thoughts.",
         me: true,
         timestamp: Date.now() - 1000 * 60 * 29,
+      },
+      {
+        who: "Taylor Nation",
+        text: "Saw your site — love the playful OS vibe.",
+        me: false,
+        timestamp: Date.now() - 1000 * 60 * 25,
       },
     ],
     sabrina: [
@@ -42,7 +43,8 @@ export function AOLMessenger() {
     olivia: [],
     xo: [],
     brief: [],
-  });
+  };
+  const [messages, setMessages] = useState(initialMessages);
   const [typingStates, setTypingStates] = useState<Record<string, boolean>>({
     taylor: false,
     sabrina: false,
@@ -61,6 +63,8 @@ export function AOLMessenger() {
     budget: "[budget]",
     name: "[name]",
     email: "[email]",
+    competitor: "[competitor]",
+    pinterest: "[pinterest board link]",
   });
 
   const tracks = [
@@ -75,11 +79,22 @@ export function AOLMessenger() {
   const endRefs = useRef<Record<string, HTMLDivElement>>({});
 
   useEffect(() => {
+    // Load history
+    try {
+      const raw = localStorage.getItem("aol_messages");
+      if (raw) setMessages(JSON.parse(raw));
+    } catch {}
     const interval = setInterval(() => {
       setNowPlayingIndex((prev) => (prev + 1) % tracks.length);
     }, 20000);
     return () => clearInterval(interval);
   }, [tracks.length]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("aol_messages", JSON.stringify(messages));
+    } catch {}
+  }, [messages]);
 
   const formatTime = (ts: number = Date.now()) => {
     return new Intl.DateTimeFormat(undefined, {
@@ -108,19 +123,25 @@ export function AOLMessenger() {
   const simulateReply = (chatKey: string, who: string) => {
     setTypingStates((prev) => ({ ...prev, [chatKey]: true }));
 
+    const lines = [
+      "Got it — sending a few refs in a minute.",
+      "This feels on-brand. What’s the launch timeline?",
+      "We can prototype this week if you’re free.",
+      "Love the energy here. Any must-avoid comps?",
+      "Noted. I’ll route this to the team for AM sync.",
+    ];
+    const first = lines[Math.floor(Math.random() * lines.length)];
+    const second = "Cool if we hop on a quick call later today?";
+
     setTimeout(() => {
       setTypingStates((prev) => ({ ...prev, [chatKey]: false }));
-      addMessage(chatKey, who, "Thanks bestie! Got it 💫");
+      addMessage(chatKey, who, first);
 
       setTimeout(() => {
-        addMessage(chatKey, who, "Going away for now 👋");
+        addMessage(chatKey, who, second);
         setTypingStates((prev) => ({ ...prev, [chatKey]: false }));
-        // Mark buddy as away
-        if (chatKey !== "brief") {
-          // This would normally update the buddy status
-        }
-      }, 4000);
-    }, 2000 + Math.random() * 1000);
+      }, 2500 + Math.random() * 1500);
+    }, 1500 + Math.random() * 1200);
   };
 
   const handleSendMessage = (chatKey: string) => {
@@ -140,18 +161,8 @@ export function AOLMessenger() {
   };
 
   const handleBriefSend = () => {
-    addMessage(
-      "brief",
-      "System",
-      "Yay, friend! You're officially on our books. We'll send more info within 1 business day. This message will self-destruct in 5…4…3…2…1."
-    );
-
-    setTimeout(() => {
-      setMessages((prev) => ({
-        ...prev,
-        brief: prev.brief.slice(0, -1), // Remove the last message
-      }));
-    }, 5000);
+    const summary = `Brief received!\nBrand: ${briefFields.brand}\nProject: ${briefFields.project}\nVibe: ${briefFields.vibe}\nGoals: ${briefFields.goals}\nTimeline: ${briefFields.timeline}\nBudget: ${briefFields.budget}\nCompetitor: ${briefFields.competitor || "[competitor]"}\nPinterest: ${briefFields.pinterest || "[board link]"}`;
+    addMessage("brief", "System", summary);
   };
 
   const updateBriefPreview = () => {
@@ -313,7 +324,7 @@ export function AOLMessenger() {
                       style={{
                         flex: 1,
                         padding: "12px",
-                        background: "#fffef6",
+                        background: "#fffef6 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'#fffef6\'/><path d=\'M0 20 H200\' stroke=\'#e7e1c5\' stroke-width=\'1\'/><path d=\'M0 40 H200\' stroke=\'#e7e1c5\' stroke-width=\'1\'/><path d=\'M40 0 V200\' stroke=\'#eec1c1\' stroke-width=\'2\'/></svg>') repeat",
                         borderTop: "1px dashed #cbd5ea",
                         lineHeight: "1.8",
                       }}
@@ -390,6 +401,43 @@ export function AOLMessenger() {
                       >
                         {briefFields.goals}
                       </span>
+                      . A top competitor is{" "}
+                      <span
+                        contentEditable
+                        suppressContentEditableWarning
+                        style={{
+                          borderBottom: "1px dashed #aaa",
+                          minWidth: "60px",
+                          display: "inline-block",
+                        }}
+                        onInput={(e) =>
+                          setBriefFields((prev) => ({
+                            ...prev,
+                            competitor: e.currentTarget.textContent || "",
+                          }))
+                        }
+                      >
+                        {briefFields.competitor}
+                      </span>
+                      , and we love pins like{" "}
+                      <span
+                        contentEditable
+                        suppressContentEditableWarning
+                        style={{
+                          borderBottom: "1px dashed #aaa",
+                          minWidth: "120px",
+                          display: "inline-block",
+                        }}
+                        onInput={(e) =>
+                          setBriefFields((prev) => ({
+                            ...prev,
+                            pinterest: e.currentTarget.textContent || "",
+                          }))
+                        }
+                      >
+                        {briefFields.pinterest}
+                      </span>
+                      .
                       . We&apos;re aiming to share this around{" "}
                       <span
                         contentEditable

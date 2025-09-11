@@ -7,7 +7,11 @@ export function MASHGame() {
   );
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinCount, setSpinCount] = useState(0);
+  const [rollNumber, setRollNumber] = useState<number | null>(null);
   const [currentResult, setCurrentResult] = useState<string>("");
+  const [elimination, setElimination] = useState<
+    Record<string, { eliminated: string[]; winner: string | null }>
+  >({});
 
   const [userInputs, setUserInputs] = useState({
     projectType: "",
@@ -64,9 +68,11 @@ export function MASHGame() {
 
     setIsSpinning(true);
     setGameState("playing");
+    const rolled = Math.floor(3 + Math.random() * 6); // 3-8 classic
+    setRollNumber(rolled);
 
-    // Simulate spinning animation
-    const totalSpins = 20 + Math.random() * 30;
+    // Simulate dice ticking
+    const totalSpins = 16 + Math.floor(Math.random() * 12);
     let currentSpin = 0;
 
     const spinInterval = setInterval(() => {
@@ -96,6 +102,24 @@ export function MASHGame() {
       if (currentSpin >= totalSpins) {
         clearInterval(spinInterval);
         setIsSpinning(false);
+        // Compute elimination winners per category
+        const build: Record<string, { eliminated: string[]; winner: string | null }> = {};
+        (Object.keys(mashOptions) as Array<keyof typeof mashOptions>).forEach(
+          (cat) => {
+            const arr = [...mashOptions[cat]];
+            const eliminated: string[] = [];
+            let idx = 0;
+            while (arr.length > 1) {
+              idx = (idx + rolled - 1) % arr.length;
+              const [rem] = arr.splice(idx, 1);
+              eliminated.push(rem);
+            }
+            build[cat] = { eliminated, winner: arr[0] ?? null };
+          }
+        );
+        setElimination(build);
+        const summary = `Project: ${build.projectType.winner}\nBudget: ${build.budget.winner}\nTimeline: ${build.timeline.winner}\nStyle: ${build.style.winner}`;
+        setCurrentResult(summary);
         setGameState("result");
       }
     }, 100);
@@ -142,7 +166,7 @@ export function MASHGame() {
       </div>
 
       {/* Game Content */}
-      <div style={{ flex: 1, overflow: "auto", padding: "15px" }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "15px", background: "#fff url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'#ffffff\'/><path d=\'M0 24 H200\' stroke=\'%23e5e7eb\' stroke-width=\'1\'/><path d=\'M0 48 H200\' stroke=\'%23e5e7eb\' stroke-width=\'1\'/><path d=\'M32 0 V200\' stroke=\'%23fecaca\' stroke-width=\'2\'/></svg>') repeat" }}>
         {gameState === "setup" && (
           <div style={{ textAlign: "center" }}>
             <div
@@ -155,7 +179,7 @@ export function MASHGame() {
               🎯
             </div>
             <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Welcome to MASH!
+              Classic MASH — Notebook Edition
             </h2>
             <p
               style={{
@@ -164,9 +188,8 @@ export function MASHGame() {
                 color: "#6c7c9b",
               }}
             >
-              The Agency Destiny Generator will randomly select your perfect
-              creative project combination. Think of your dream project and
-              click &quot;SPIN&quot; to see what the universe has in store!
+              Think of your dream project. Click ROLL to let fate pick your
+              destiny — just like middle school, but make it agency.
             </p>
 
             <div
@@ -191,7 +214,7 @@ export function MASHGame() {
                 }}
               >
                 <li>Think about your ideal creative project</li>
-                <li>Click the big SPIN button</li>
+                <li>Click the big ROLL button</li>
                 <li>Watch as destiny decides your project fate!</li>
                 <li>Get inspired by your randomly generated combination</li>
               </ol>
@@ -222,7 +245,7 @@ export function MASHGame() {
                 e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              🎲 SPIN THE WHEEL OF DESTINY 🎲
+              🎲 ROLL THE DICE 🎲
             </button>
           </div>
         )}
@@ -239,7 +262,7 @@ export function MASHGame() {
               🎡
             </div>
             <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Spinning the Wheel of Destiny...
+              Rolling the dice...
             </h2>
             <div
               style={{
@@ -249,7 +272,7 @@ export function MASHGame() {
                 marginBottom: "20px",
               }}
             >
-              {spinCount}
+              {rollNumber ?? spinCount}
             </div>
             <div
               style={{
@@ -292,7 +315,7 @@ export function MASHGame() {
                 borderRadius: "12px",
                 border: "2px solid #ffcc00",
                 margin: "20px 0",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.12)",
               }}
             >
               <div
@@ -306,17 +329,55 @@ export function MASHGame() {
               >
                 {currentResult}
               </div>
+              {/* Elimination lists */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                  gap: "12px",
+                  marginTop: "16px",
+                  textAlign: "left",
+                }}
+              >
+                {(Object.keys(mashOptions) as Array<keyof typeof mashOptions>).map(
+                  (cat) => (
+                    <div key={cat}>
+                      <div style={{ fontWeight: 700, marginBottom: 6 }}>
+                        {cat}
+                      </div>
+                      <ul style={{ margin: 0, paddingLeft: 18 }}>
+                        {mashOptions[cat].map((opt) => {
+                          const e = elimination[cat];
+                          const isOut = e?.eliminated.includes(opt);
+                          const isWin = e?.winner === opt;
+                          return (
+                            <li
+                              key={opt}
+                              style={{
+                                textDecoration: isOut ? "line-through" : "none",
+                                color: isWin ? "#059669" : isOut ? "#9ca3af" : "#111827",
+                              }}
+                            >
+                              {opt}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
 
-            <div
-              style={{
-                background: "#e6ebf7",
-                padding: "15px",
-                borderRadius: "8px",
-                border: "1px solid #b8c6e3",
-                margin: "20px 0",
-              }}
-            >
+              <div
+                style={{
+                  background: "#e6ebf7",
+                  padding: "15px",
+                  borderRadius: "8px",
+                  border: "1px solid #b8c6e3",
+                  margin: "20px 0",
+                }}
+              >
               <p
                 style={{
                   margin: "0 0 10px 0",
@@ -340,9 +401,7 @@ export function MASHGame() {
               </p>
             </div>
 
-            <div
-              style={{ display: "flex", gap: "10px", justifyContent: "center" }}
-            >
+            <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
               <button
                 onClick={() =>
                   window.dispatchEvent(new CustomEvent("openAOLWindow"))
@@ -359,6 +418,31 @@ export function MASHGame() {
                 }}
               >
                 💬 Let&apos;s Talk About This
+              </button>
+              <button
+                onClick={async () => {
+                  const text = `My Agency MASH: \n${currentResult}`;
+                  try {
+                    if (navigator.share) {
+                      await navigator.share({ text, title: "My Agency MASH" });
+                    } else {
+                      await navigator.clipboard.writeText(text);
+                      alert("Copied to clipboard — share it!");
+                    }
+                  } catch {}
+                }}
+                style={{
+                  padding: "12px 20px",
+                  background: "#fff",
+                  border: "1px solid #cbd5ea",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#1e2a4a",
+                }}
+              >
+                📸 Share Result
               </button>
               <button
                 onClick={resetGame}
