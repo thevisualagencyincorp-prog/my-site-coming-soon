@@ -1,6 +1,6 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
-import type { ReactNode, MouseEvent } from "react";
+import { useRef, useState, useEffect, useId } from "react";
+import type { ReactNode, MouseEvent, PointerEvent } from "react";
 
 interface DesktopWindowProps {
   title: string;
@@ -9,11 +9,18 @@ interface DesktopWindowProps {
   width?: number | string;
   height?: number | string;
   iconSrc?: string;
+  windowKey?: string; // used for magnetic alignment query
   zIndex?: number;
   onClick?: () => void;
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
+  onLayoutChange?: (layout: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) => void;
   minimized?: boolean;
   maximized?: boolean;
 }
@@ -25,11 +32,13 @@ export function DesktopWindow({
   width = 420,
   height = 320,
   iconSrc = "/images/folder.webp",
+  windowKey,
   zIndex = 10,
   onClick,
   onClose,
   onMinimize,
   onMaximize,
+  onLayoutChange,
   minimized = false,
   maximized = false,
 }: DesktopWindowProps) {
@@ -53,6 +62,12 @@ export function DesktopWindow({
   // Parent controls min/max state; this component only reports actions
   const [currentZIndex, setCurrentZIndex] = useState(zIndex);
   const windowRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const [appearing, setAppearing] = useState(true);
+  const [closing, setClosing] = useState(false);
+  const GRID = 16;
+  const MAGNET_THRESHOLD = 12;
+  const TASKBAR_HEIGHT = 54; // keep room for taskbar when maximized
 
   // Handle window focus (bring to front)
   const handleWindowClick = () => {
@@ -81,13 +96,14 @@ export function DesktopWindow({
     const vh = window.innerHeight;
     const maxX = Math.max(0, vw - rect.width);
     const maxY = Math.max(0, vh - rect.height);
-    return { x: Math.min(Math.max(0, next.x), maxX), y: Math.min(Math.max(0, next.y), maxY) };
+    return {
+      x: Math.min(Math.max(0, next.x), maxX),
+      y: Math.min(Math.max(0, next.y), maxY),
+    };
   };
 
   const handleMouseUp = () => {
-    if (dragging) {
-      setPos((p) => clampToViewport(p));
-    }
+    if (dragging) setPos((p) => clampToViewport(p));
     setDragging(false);
   };
 
@@ -100,7 +116,9 @@ export function DesktopWindow({
   };
 
   const handleClose = () => {
-    if (onClose) onClose();
+    // run close animation before unmounting
+    setClosing(true);
+    setTimeout(() => onClose && onClose(), 180);
   };
 
   // Reset position when un-maximizing
@@ -111,6 +129,159 @@ export function DesktopWindow({
     }
   }, [maximized, initialPosition]);
 
+  useEffect(() => {
+    // end appear animation shortly after mount
+    const t = setTimeout(() => setAppearing(false), 180);
+    // focus window for accessibility
+    windowRef.current?.focus();
+    return () => clearTimeout(t);
+  }, []);
+
+  // Global listeners for dragging
+  useEffect(() => {
+    if (!dragging || maximized) return;
+    const onMove = (e: any) => {
+      const nx = e.clientX - dragOffset.current.x;
+      const ny = e.clientY - dragOffset.current.y;
+      // live snap to grid while dragging
+      setPos({
+        x: Math.round(nx / GRID) * GRID,
+        y: Math.round(ny / GRID) * GRID,
+      });
+    };
+    const onUp = () => {
+      setDragging(false);
+      setPos((p) => {
+        const snapped = {
+          x: Math.round(p.x / GRID) * GRID,
+          y: Math.round(p.y / GRID) * GRID,
+        };
+        // magnetic align to other windows and viewport edges
+        const finalPos = applyMagnet(snapped);
+        if (onLayoutChange) {
+          onLayoutChange({
+            x: finalPos.x,
+            y: finalPos.y,
+            width: size.width as number,
+            height: size.height as number,
+          });
+        }
+        return finalPos;
+      });
+      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove as any);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [dragging, maximized]);
+
+  // Global listeners for resizing
+  useEffect(() => {
+    if (!resizing || maximized) return;
+    const onMove = (e: any) => {
+      const { dir, startX, startY, startW, startH, startLeft, startTop } =
+        resizeRef.current;
+      let newW = startW;
+      let newH = startH;
+      let newLeft = startLeft;
+      let newTop = startTop;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (dir.includes("e")) newW = Math.max(280, startW + dx);
+      if (dir.includes("s")) newH = Math.max(120, startH + dy);
+      if (dir.includes("w")) {
+        newW = Math.max(280, startW - dx);
+        newLeft = startLeft + dx;
+      }
+      if (dir.includes("n")) {
+        newH = Math.max(120, startH - dy);
+        newTop = startTop + dy;
+      }
+      setSize({ width: newW, height: newH });
+      setPos(clampToViewport({ x: newLeft, y: newTop }));
+    };
+    const onUp = () => {
+      setResizing(false);
+      if (onLayoutChange) {
+        onLayoutChange({
+          x: pos.x,
+          y: pos.y,
+          width: size.width as number,
+          height: size.height as number,
+        });
+      }
+      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove as any);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove as any);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [resizing, maximized]);
+
+  // Magnetic alignment helper: snaps to viewport edges and other windows
+  const applyMagnet = (next: { x: number; y: number }) => {
+    const el = windowRef.current;
+    if (!el) return clampToViewport(next);
+    const rect = el.getBoundingClientRect();
+    let { x, y } = next;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    // edges
+    if (Math.abs(x - 0) < MAGNET_THRESHOLD) x = 0;
+    if (Math.abs(x + rect.width - vw) < MAGNET_THRESHOLD) x = vw - rect.width;
+    if (Math.abs(y - 0) < MAGNET_THRESHOLD) y = 0;
+    if (Math.abs(y + rect.height - vh) < MAGNET_THRESHOLD) y = vh - rect.height;
+
+    // other windows
+    const nodes = Array.from(
+      document.querySelectorAll<HTMLElement>(".desktop-window")
+    );
+    for (const node of nodes) {
+      if (node === el) continue;
+      const r = node.getBoundingClientRect();
+      // current edges relative to viewport
+      const left = x;
+      const right = x + rect.width;
+      const top = y;
+      const bottom = y + rect.height;
+      // snap horizontally (our left to their right, our right to their left)
+      if (
+        Math.abs(left - r.right) < MAGNET_THRESHOLD &&
+        overlapsVert(top, bottom, r.top, r.bottom)
+      )
+        x = r.right;
+      if (
+        Math.abs(right - r.left) < MAGNET_THRESHOLD &&
+        overlapsVert(top, bottom, r.top, r.bottom)
+      )
+        x = r.left - rect.width;
+      // snap vertically (our top to their bottom, our bottom to their top)
+      if (
+        Math.abs(top - r.bottom) < MAGNET_THRESHOLD &&
+        overlapsHoriz(left, right, r.left, r.right)
+      )
+        y = r.bottom;
+      if (
+        Math.abs(bottom - r.top) < MAGNET_THRESHOLD &&
+        overlapsHoriz(left, right, r.left, r.right)
+      )
+        y = r.top - rect.height;
+    }
+    return clampToViewport({ x, y });
+  };
+
+  const overlapsHoriz = (l1: number, r1: number, l2: number, r2: number) =>
+    Math.min(r1, r2) - Math.max(l1, l2) > 0;
+  const overlapsVert = (t1: number, b1: number, t2: number, b2: number) =>
+    Math.min(b1, b2) - Math.max(t1, t2) > 0;
+
   if (minimized) {
     return null; // Don't render when minimized
   }
@@ -118,12 +289,18 @@ export function DesktopWindow({
   return (
     <div
       ref={windowRef}
-      className="fixed select-none border border-[#1b3a73] bg-[#f2f4fb] overflow-hidden shadow-[0_0_0_2px_#2b5fb8,6px_6px_0_#0b2a5e]"
+      className={`desktop-window fixed select-none border border-[#1b3a73] bg-[#f2f4fb] overflow-hidden shadow-[0_0_0_2px_#2b5fb8,6px_6px_0_#0b2a5e] transition-transform transition-opacity duration-150 ${
+        appearing
+          ? "scale-95 opacity-0"
+          : closing
+          ? "scale-95 opacity-0"
+          : "scale-100 opacity-100"
+      }`}
       style={{
         left: maximized ? 0 : pos.x,
         top: maximized ? 0 : pos.y,
-        width: maximized ? "100vw" : width,
-        height: maximized ? "100vh" : height,
+        width: maximized ? "100vw" : size.width,
+        height: maximized ? `calc(100vh - ${TASKBAR_HEIGHT}px)` : size.height,
         zIndex: currentZIndex,
         minWidth: 280,
         maxWidth: maximized ? "100vw" : "90vw",
@@ -139,13 +316,18 @@ export function DesktopWindow({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
       onClick={handleWindowClick}
+      data-window={windowKey || title}
+      role="dialog"
+      aria-labelledby={titleId}
+      tabIndex={-1}
     >
       {/* Title bar */}
       <div
         className="flex items-center px-2 py-1 cursor-grab relative select-none"
         style={{
           height: 30,
-          background: "linear-gradient(180deg, var(--win-title-start), var(--win-title-end))",
+          background:
+            "linear-gradient(180deg, var(--win-title-start), var(--win-title-end))",
           borderBottom: "2px solid var(--win-border)",
         }}
         onMouseDown={handleMouseDown}
@@ -167,6 +349,7 @@ export function DesktopWindow({
             fontFamily: "Tahoma, Geneva, Verdana, sans-serif",
             textShadow: "1px 1px 0 #000",
           }}
+          id={titleId}
         >
           {title}
         </span>
@@ -213,13 +396,64 @@ export function DesktopWindow({
         style={{
           maxHeight: maximized
             ? "calc(100vh - 40px)"
-            : typeof height === "number"
-            ? height - 40
+            : typeof size.height === "number"
+            ? (size.height as number) - 40
             : "60vh",
         }}
       >
         {children}
       </div>
+
+      {/* Resize handles */}
+      {!maximized && (
+        <>
+          {(
+            [
+              [
+                "n",
+                "top-0 left-1/2 -translate-x-1/2 h-1 w-full cursor-n-resize",
+              ],
+              [
+                "s",
+                "bottom-0 left-1/2 -translate-x-1/2 h-1 w-full cursor-s-resize",
+              ],
+              [
+                "e",
+                "right-0 top-1/2 -translate-y-1/2 w-1 h-full cursor-e-resize",
+              ],
+              [
+                "w",
+                "left-0 top-1/2 -translate-y-1/2 w-1 h-full cursor-w-resize",
+              ],
+              ["ne", "right-0 top-0 w-3 h-3 cursor-ne-resize"],
+              ["nw", "left-0 top-0 w-3 h-3 cursor-nw-resize"],
+              ["se", "right-0 bottom-0 w-3 h-3 cursor-se-resize"],
+              ["sw", "left-0 bottom-0 w-3 h-3 cursor-sw-resize"],
+            ] as const
+          ).map(([dir, cls]) => (
+            <div
+              key={dir}
+              className={`absolute ${cls}`}
+              style={{ background: "transparent" }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleWindowClick();
+                resizeRef.current = {
+                  startX: e.clientX,
+                  startY: e.clientY,
+                  startW: typeof size.width === "number" ? size.width : 420,
+                  startH: typeof size.height === "number" ? size.height : 320,
+                  startLeft: pos.x,
+                  startTop: pos.y,
+                  dir: dir as any,
+                };
+                setResizing(true);
+              }}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }

@@ -26,6 +26,7 @@ interface StartMenuProps {
   open: boolean;
   onClose: () => void;
   onOpenWindow: (windowKey: WindowKey) => void;
+  onResetLayout?: () => void;
 }
 
 const menuItems: {
@@ -66,7 +67,7 @@ const menuItems: {
   { key: "coffeeClub", label: "Coffee Club", icon: "☕", category: "Events" },
 ];
 
-export function StartMenu({ open, onClose, onOpenWindow }: StartMenuProps) {
+export function StartMenu({ open, onClose, onOpenWindow, onResetLayout }: StartMenuProps) {
   if (!open) return null;
 
   // Group menu items by category
@@ -81,15 +82,35 @@ export function StartMenu({ open, onClose, onOpenWindow }: StartMenuProps) {
 
   return (
     <div
-      className="fixed left-4 bottom-16 z-[100] w-80 rounded-2xl bg-white/95 dark:bg-black/95 shadow-2xl border border-white/20 backdrop-blur-lg animate-fade-in"
+      className="fixed z-[100] left-2 right-2 sm:left-4 sm:right-auto bottom-16 sm:bottom-16 w-auto sm:w-80 rounded-2xl bg-white/95 dark:bg-black/95 shadow-2xl border border-white/20 backdrop-blur-lg animate-fade-in"
       style={{ minHeight: 300, maxHeight: "70vh", overflowY: "auto" }}
       tabIndex={-1}
+      role="menu"
+      aria-label="Start Menu"
       onClick={onClose}
     >
-      <div className="p-4">
-        <div className="mb-4 text-lg font-bold text-black dark:text-white">
+      <div className="p-4" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-3 text-lg font-bold text-black dark:text-white">
           The Agency OS™
         </div>
+
+        {/* Quick search */}
+        <input
+          type="text"
+          placeholder="Search apps..."
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/10 text-sm outline-none"
+          onChange={(e) => {
+            const q = e.currentTarget.value.toLowerCase();
+            const el = e.currentTarget.closest('[role="menu"]');
+            if (!el) return;
+            // Show/hide items based on search
+            el.querySelectorAll('[data-menu-item]')?.forEach((node) => {
+              const label = (node as HTMLElement).dataset.label?.toLowerCase() || '';
+              (node as HTMLElement).style.display = label.includes(q) ? '' : 'none';
+            });
+          }}
+          aria-label="Search applications"
+        />
 
         {Object.entries(groupedItems).map(([category, items]) => (
           <div key={category} className="mb-4">
@@ -98,16 +119,17 @@ export function StartMenu({ open, onClose, onOpenWindow }: StartMenuProps) {
             </div>
             <ul className="space-y-1">
               {items.map((item) => (
-                <li key={item.key}>
+                <li key={item.key} data-menu-item data-label={item.label}>
                   <button
-                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white text-sm font-medium transition"
+                    role="menuitem"
+                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-black/10 dark:hover:bg:white/10 text-black dark:text-white text-sm font-medium transition"
                     onClick={(e) => {
                       e.stopPropagation();
                       onOpenWindow(item.key);
                       onClose();
                     }}
                   >
-                    <span className="text-lg">{item.icon}</span>
+                    <span className="text-lg" aria-hidden>{item.icon}</span>
                     <span>{item.label}</span>
                   </button>
                 </li>
@@ -115,6 +137,21 @@ export function StartMenu({ open, onClose, onOpenWindow }: StartMenuProps) {
             </ul>
           </div>
         ))}
+
+        {onResetLayout && (
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10">
+            <button
+              className="w-full px-3 py-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 text-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onResetLayout();
+                onClose();
+              }}
+            >
+              Reset Layout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
