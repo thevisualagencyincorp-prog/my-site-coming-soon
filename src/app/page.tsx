@@ -424,7 +424,14 @@ export default function Page() {
           if (!w.open) return null;
           // Map key to component
           const common = {
-            title: key === "bsod" ? "Blue Screen Prank" : key,
+            title:
+              key === "bsod"
+                ? "Blue Screen Prank"
+                : key === "skeleton"
+                ? "Skeleton Dance Clip"
+                : key === "faq"
+                ? "FAQ"
+                : key,
             iconSrc: "/images/folder.webp",
             initialPosition: w.pos,
             width: w.size.w,
