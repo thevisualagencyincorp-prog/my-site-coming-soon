@@ -16,16 +16,16 @@ export function MASHGame() {
 
   // Editable classic categories
   const [custom, setCustom] = useState({
-    partners: "Taylor,Sabrina,Tyler,Myspace Tom",
+    partners: "Taylor\nSabrina\nTyler\nMyspace Tom",
     careers:
-      "Founder,Creator,Influencer,Designer,Developer,Photographer,Director,Producer,Marketer,Writer,Artist",
-    cars: "Jeep,Mercedes,Range Rover,Porsche,Tesla,Honda,Subaru,Volkswagen",
-    kids: "0,1,2,3,4",
-    pets: "0,1,2,3",
-    petKinds: "Cat,Dog,Bird,Reptile,Fish",
-    wealth: "Rich,Comfortable,Modest,Struggling",
-    cities: "New York,Los Angeles,London,Tokyo,Paris,Austin",
-    hobbies: "Photography,Music,Gaming,Travel,Cooking,Fitness",
+      "Founder\nCreator\nInfluencer\nDesigner\nDeveloper\nPhotographer\nDirector\nProducer\nMarketer\nWriter\nArtist",
+    cars: "Jeep\nMercedes\nRange Rover\nPorsche\nTesla\nHonda\nSubaru\nVolkswagen",
+    kids: "0\n1\n2\n3\n4",
+    pets: "0\n1\n2\n3",
+    petKinds: "Cat\nDog\nBird\nReptile\nFish",
+    wealth: "Rich\nComfortable\nModest\nStruggling",
+    cities: "New York\nLos Angeles\nLondon\nTokyo\nParis\nAustin",
+    hobbies: "Photography\nMusic\nGaming\nTravel\nCooking\nFitness",
   });
 
   const mashOptions = {
@@ -151,39 +151,39 @@ export function MASHGame() {
         const dynamicOptions: Record<string, string[]> = {
           house: mashOptions.house,
           partners: custom.partners
-            .split(",")
+            .split(/\r?\n/) // one option per line
             .map((s) => s.trim())
             .filter(Boolean),
           careers: custom.careers
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           cars: custom.cars
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           kids: custom.kids
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           pets: custom.pets
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           petKinds: custom.petKinds
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           wealth: custom.wealth
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           cities: custom.cities
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
           hobbies: custom.hobbies
-            .split(",")
+            .split(/\r?\n/)
             .map((s) => s.trim())
             .filter(Boolean),
         };
@@ -205,7 +205,15 @@ export function MASHGame() {
           build[cat] = { eliminated, winner: arr[0] ?? null };
         });
         setElimination(build);
-        const summary = `Home: ${build.house.winner}\nPartner: ${build.partners.winner}\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${build.kids.winner}\nPets: ${build.pets.winner} (${build.petKinds?.winner ?? 'Pet'})\nWealth: ${build.wealth.winner}\nCity: ${build.cities.winner}\nHobby: ${build.hobbies.winner}`;
+        const summary = `Home: ${build.house.winner}\nPartner: ${
+          build.partners.winner
+        }\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${
+          build.kids.winner
+        }\nPets: ${build.pets.winner} (${
+          build.petKinds?.winner ?? "Pet"
+        })\nWealth: ${build.wealth.winner}\nCity: ${
+          build.cities.winner
+        }\nHobby: ${build.hobbies.winner}`;
         setCurrentResult(summary);
         setGameState("result");
       }
@@ -266,8 +274,12 @@ export function MASHGame() {
                 color: "#6c7c9b",
               }}
             >
-              Fill the options (comma‑separated) then hit ROLL. We’ll eliminate
-              items by the dice until one remains in each category.
+              Hey friend — grab a pen (or your keyboard)! These are playful
+              notebook-style fields — fill each tall box with a few options
+              (comma-separated) or keep the fun placeholders. When you&apos;re
+              ready, press ROLL and we&apos;ll playfully knock out options until
+              one magical result remains. Let&apos;s see what destiny picks for
+              you ✨
             </p>
 
             <div
@@ -288,37 +300,79 @@ export function MASHGame() {
               </p>
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  display: "flex",
+                  flexDirection: "column",
                   gap: 12,
                 }}
               >
                 {(
                   [
-                    ["partners", "Partners (names)", custom.partners],
-                    ["careers", "Careers (for our audience)", custom.careers],
-                    ["cars", "Cars", custom.cars],
-                    ["kids", "# of Kids", custom.kids],
-                    ["pets", "# of Pets", custom.pets],
-                    ["petKinds", "Kind of Pet (Cat, Dog…)", custom.petKinds],
-                    ["wealth", "Wealth (Rich/Comfortable/…)", custom.wealth],
-                    ["cities", "Cities", custom.cities],
-                    ["hobbies", "Hobbies", custom.hobbies],
+                    [
+                      "partners",
+                      "Partners (names)",
+                      custom.partners,
+                      "e.g. Taylor, Sabrina, Tyler, Myspace Tom",
+                    ],
+                    [
+                      "careers",
+                      "Careers (dream jobs)",
+                      custom.careers,
+                      "e.g. Designer, Developer, Photographer",
+                    ],
+                    ["cars", "Cars", custom.cars, "e.g. Jeep, Tesla, Porsche"],
+                    ["kids", "# of Kids", custom.kids, "e.g. 0,1,2,3"],
+                    ["pets", "# of Pets", custom.pets, "e.g. 0,1,2,3"],
+                    [
+                      "petKinds",
+                      "Kind of Pet",
+                      custom.petKinds,
+                      "e.g. Cat, Dog, Bird",
+                    ],
+                    [
+                      "wealth",
+                      "Wealth",
+                      custom.wealth,
+                      "e.g. Rich, Comfortable, Modest",
+                    ],
+                    [
+                      "cities",
+                      "Cities",
+                      custom.cities,
+                      "e.g. New York, London, Tokyo",
+                    ],
+                    [
+                      "hobbies",
+                      "Hobbies",
+                      custom.hobbies,
+                      "e.g. Photography, Music, Gaming",
+                    ],
                   ] as const
-                ).map(([key, label, val]) => (
-                  <div key={key}>
+                ).map(([key, label, val, placeholder]) => (
+                  <div
+                    key={key}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      background: "#fff",
+                      padding: 12,
+                      borderRadius: 8,
+                      border: "1px solid #e6edf6",
+                      boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.02)",
+                    }}
+                  >
                     <label
                       style={{
                         fontSize: 13,
-                        fontWeight: 600,
+                        fontWeight: 700,
                         color: "#1e2a4a",
                       }}
                     >
                       {label}
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       value={val}
+                      placeholder={placeholder as string}
                       onChange={(e) =>
                         setCustom((prev) => ({
                           ...prev,
@@ -327,13 +381,23 @@ export function MASHGame() {
                       }
                       style={{
                         width: "100%",
-                        marginTop: 6,
-                        padding: 10,
-                        border: "2px solid #cbd5ea",
+                        minHeight: 110,
+                        resize: "vertical",
+                        padding: 12,
+                        border: "2px solid #f3f4f6",
                         borderRadius: 6,
                         fontSize: 14,
+                        fontFamily: "'Courier New', monospace",
+                        backgroundImage:
+                          "repeating-linear-gradient(to bottom, transparent, transparent 28px, rgba(229,231,235,0.8) 29px)",
+                        backgroundColor: "#fff",
+                        outline: "none",
                       }}
                     />
+                    <div style={{ fontSize: 12, color: "#9ca3af" }}>
+                      Tip: Put one option per line (press Enter). Each line is
+                      treated as a distinct option.
+                    </div>
                   </div>
                 ))}
               </div>

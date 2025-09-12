@@ -1,39 +1,49 @@
-import { WeatherData, LocationData } from '@/types';
+import { WeatherData, LocationData } from "@/types";
 
 // Using OpenWeatherMap API - replace with your own API key
-const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || 'demo_key';
-const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || "demo_key";
+const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
-export async function fetchWeatherData(location: LocationData): Promise<WeatherData> {
+export async function fetchWeatherData(
+  location: LocationData
+): Promise<WeatherData> {
   try {
     const url = `${BASE_URL}?lat=${location.latitude}&lon=${location.longitude}&appid=${API_KEY}&units=metric`;
-    
+
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       throw new Error(`Weather API request failed: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     return {
       temperature: Math.round(data.main.temp),
       description: data.weather[0].description,
       location: data.name,
       humidity: data.main.humidity,
       windSpeed: data.wind.speed,
-      icon: data.weather[0].icon
+      icon: data.weather[0].icon,
+      // OpenWeather returns sunrise/sunset as unix timestamps (seconds) and timezone as shift in seconds
+      sunrise: data.sys?.sunrise,
+      sunset: data.sys?.sunset,
+      timezoneOffset: data.timezone,
     };
   } catch (error) {
-    console.error('Error fetching weather data:', error);
+    console.error("Error fetching weather data:", error);
     // Return mock data for demo purposes
     return {
       temperature: 22,
-      description: 'partly cloudy',
-      location: 'Demo Location',
+      description: "partly cloudy",
+      location: "Demo Location",
       humidity: 65,
       windSpeed: 5.2,
-      icon: '02d'
+      icon: "02d",
+      // Provide demo sunrise/sunset (today morning/evening) and zero timezone offset
+      sunrise: Math.floor(Date.now() / 1000) - 6 * 3600,
+      sunset: Math.floor(Date.now() / 1000) + 6 * 3600,
+      timezoneOffset: 0,
     };
   }
 }
@@ -42,10 +52,10 @@ export async function fetchWeatherData(location: LocationData): Promise<WeatherD
 export function getMockWeatherData(): WeatherData {
   return {
     temperature: 22,
-    description: 'partly cloudy',
-    location: 'Demo Location',
+    description: "partly cloudy",
+    location: "Demo Location",
     humidity: 65,
     windSpeed: 5.2,
-    icon: '02d'
+    icon: "02d",
   };
 }

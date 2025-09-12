@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function SkeletonDanceWindow() {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -7,14 +7,14 @@ export function SkeletonDanceWindow() {
   const [muted, setMuted] = useState(true);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [showPlaylist, setShowPlaylist] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const videoLibrary = [
     {
       id: 1,
       title: "Skeleton Dance Party",
       duration: "2:34",
-      description:
-        "Our signature viral dance video featuring animated skeletons",
+      description: "1920's viral dance video featuring animated skeletons",
       thumbnail: "💀",
       tags: ["Viral", "Animation", "Dance"],
       views: "12.5K",
@@ -49,7 +49,9 @@ export function SkeletonDanceWindow() {
   // (allowed because we start muted)
   useEffect(() => {
     const t = setTimeout(() => {
-      try { videoRef.current?.play().catch(() => {}); } catch {}
+      try {
+        videoRef.current?.play().catch(() => {});
+      } catch {}
     }, 200);
     return () => clearTimeout(t);
   }, []);
@@ -156,7 +158,10 @@ export function SkeletonDanceWindow() {
                 <button
                   onClick={() => {
                     setIsPlaying(true);
-                    setTimeout(() => videoRef.current?.play().catch(() => {}), 50);
+                    setTimeout(
+                      () => videoRef.current?.play().catch(() => {}),
+                      50
+                    );
                   }}
                   style={{
                     padding: "12px 24px",
@@ -173,26 +178,86 @@ export function SkeletonDanceWindow() {
                 </button>
               </div>
             ) : (
-              <div style={{ width: "100%", height: "100%", position: "relative" }}>
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  poster="/images/Background:night.png"
-                  onPause={() => setIsPlaying(false)}
-                  onPlay={() => setIsPlaying(true)}
+              <div
+                style={{ width: "100%", height: "100%", position: "relative" }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    opacity: ready ? 1 : 0,
+                    transition: "opacity 600ms ease",
+                  }}
                 >
-                  <source
-                    src={
-                      process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
-                      "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
-                    }
-                    type="video/mp4"
-                  />
-                </video>
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    poster="/images/Background:night.png"
+                    onLoadedData={() => setReady(true)}
+                    onCanPlay={() => setReady(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onPlay={() => setIsPlaying(true)}
+                  >
+                    {process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL && (
+                      <source
+                        src={process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL}
+                        type="video/mp4"
+                      />
+                    )}
+                    <source src="/videos/skeleton.mp4" type="video/mp4" />
+                    <source
+                      src="https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
+                </div>
+                {!ready && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                      opacity: 0.7,
+                      fontSize: 14,
+                    }}
+                  >
+                    Loading… 💀
+                  </div>
+                )}
+                {!ready && (
+                  <div style={{ position: "absolute", right: 10, bottom: 10 }}>
+                    <a
+                      href={
+                        process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
+                        "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        padding: "6px 10px",
+                        background: "#ffffff22",
+                        border: "1px solid #ffffff33",
+                        borderRadius: 6,
+                        color: "#fff",
+                        fontSize: 12,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Open video ↗
+                    </a>
+                  </div>
+                )}
                 {/* No controls overlay; system volume applies */}
               </div>
             )}

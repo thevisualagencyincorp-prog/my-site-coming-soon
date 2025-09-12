@@ -5,6 +5,10 @@ export interface WeatherData {
   humidity: number;
   windSpeed: number;
   icon: string;
+  // Unix timestamps (seconds since epoch) for sunrise/sunset and timezone offset in seconds
+  sunrise?: number;
+  sunset?: number;
+  timezoneOffset?: number;
 }
 
 export interface LocationData {
@@ -16,7 +20,7 @@ export interface GeolocationState {
   loading: boolean;
   error: string | null;
   location: LocationData | null;
-  permission: 'granted' | 'denied' | 'prompt' | null;
+  permission: "granted" | "denied" | "prompt" | null;
 }
 
 export interface TimeData {

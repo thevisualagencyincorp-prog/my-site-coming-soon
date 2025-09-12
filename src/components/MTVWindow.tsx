@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 export function MTVWindow() {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const [ready, setReady] = useState(false);
   const src =
     "https://ia800500.us.archive.org/18/items/mtv-00s-non-stop-y-2-ks-1h-03112023/MTV%2000s%20-%20Non-Stop%20Y2KS%20%281h%29%2803112023%29.mp4";
 
@@ -35,14 +36,41 @@ export function MTVWindow() {
         </span>
       </div>
       <div style={{ flex: 1, position: "relative", background: "#000" }}>
-        <video
-          ref={ref}
-          src={src}
-          autoPlay
-          muted={muted}
-          playsInline
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            opacity: ready ? 1 : 0,
+            transition: "opacity 600ms ease",
+          }}
+        >
+          <video
+            ref={ref}
+            src={src}
+            autoPlay
+            muted={muted}
+            playsInline
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            onLoadedData={() => setReady(true)}
+            onCanPlay={() => setReady(true)}
+          />
+        </div>
+        {!ready && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              opacity: 0.7,
+              fontSize: 14,
+            }}
+          >
+            Loading… 📺
+          </div>
+        )}
         <div style={{ position: "absolute", bottom: 10, left: 10, display: "flex", gap: 8 }}>
           <button
             onClick={() => setMuted((m) => !m)}

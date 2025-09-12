@@ -6,6 +6,7 @@ export function FunnyCatWindow() {
   const [currentCat, setCurrentCat] = useState(0);
   const [likes, setLikes] = useState(0);
   const [muted, setMuted] = useState(true);
+  const [videoReady, setVideoReady] = useState(false);
 
   const cats = [
     { name: "Raven", emoji: "🐈‍⬛", action: "Elegant prowls", description: "Black cat" },
@@ -117,20 +118,71 @@ export function FunnyCatWindow() {
               </button>
             </div>
           ) : (
-            <div style={{ width: "100%", height: "100%", position: "relative" }}>
-              <video
-                autoPlay
-                muted
-                playsInline
-                loop
-                onError={(e) => {
-                  // Hide video on error to avoid black box
-                  (e.currentTarget.style.display = 'none');
+            <div style={{ width: "100%", height: "100%", position: "relative", background: "#000" }}>
+              {/* Fade-in wrapper for local/hosted MP4 */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  opacity: videoReady ? 1 : 0,
+                  transition: "opacity 600ms ease",
                 }}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               >
-                <source src={process.env.NEXT_PUBLIC_CATS_VIDEO_URL || "/videos/cats.mp4"} type="video/mp4" />
-              </video>
+                <video
+                  autoPlay
+                  muted
+                  playsInline
+                  loop
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  onLoadedData={() => setVideoReady(true)}
+                  onCanPlay={() => setVideoReady(true)}
+                >
+                  {/* Prefer local file under public/videos, or allow env override */}
+                  {process.env.NEXT_PUBLIC_CATS_VIDEO_URL && (
+                    <source src={process.env.NEXT_PUBLIC_CATS_VIDEO_URL} type="video/mp4" />
+                  )}
+                  <source src="/videos/cats.mp4" type="video/mp4" />
+                </video>
+              </div>
+
+              {/* Subtle placeholder while loading */}
+              {!videoReady && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontSize: 14,
+                    opacity: 0.7,
+                  }}
+                >
+                  Loading… 🐱
+                </div>
+              )}
+              {/* External fallback link if local video missing */}
+              {!videoReady && (
+                <div style={{ position: "absolute", right: 10, bottom: 10 }}>
+                  <a
+                    href="https://youtu.be/uwmeH6Rnj2E"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      padding: "6px 10px",
+                      background: "#ffffff22",
+                      border: "1px solid #ffffff33",
+                      borderRadius: 6,
+                      color: "#fff",
+                      fontSize: 12,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Open on YouTube ↗
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>
