@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { WeatherData } from '@/types';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { fetchWeatherData, getMockWeatherData } from '@/lib/weather';
+import { useState, useEffect } from "react";
+import { WeatherData } from "@/types";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { fetchWeatherData, getMockWeatherData } from "@/lib/weather";
 
 export function WeatherWidget() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -29,7 +29,7 @@ export function WeatherWidget() {
           .then(setWeather)
           .catch(console.error);
       }, 10 * 60 * 1000); // 10 minutes
-      
+
       return () => clearInterval(interval);
     }
   }, [geolocation.location, weather]);
@@ -38,7 +38,7 @@ export function WeatherWidget() {
     geolocation.requestLocation();
   };
 
-  if (geolocation.permission === 'denied') {
+  if (geolocation.permission === "denied") {
     return (
       <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20">
         <div className="text-white/90 mb-4">
@@ -67,7 +67,7 @@ export function WeatherWidget() {
             disabled={geolocation.loading}
             className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-sm font-medium transition-colors disabled:opacity-50"
           >
-            {geolocation.loading ? 'Getting location...' : 'Allow Location'}
+            {geolocation.loading ? "Getting location..." : "Allow Location"}
           </button>
           {geolocation.error && (
             <p className="text-xs text-red-300 mt-2">{geolocation.error}</p>
@@ -90,17 +90,34 @@ export function WeatherWidget() {
 
   const getWeatherIcon = (icon: string) => {
     const iconMap: Record<string, string> = {
-      '01d': '☀️', '01n': '🌙',
-      '02d': '⛅', '02n': '☁️',
-      '03d': '☁️', '03n': '☁️',
-      '04d': '☁️', '04n': '☁️',
-      '09d': '🌧️', '09n': '🌧️',
-      '10d': '🌦️', '10n': '🌧️',
-      '11d': '⛈️', '11n': '⛈️',
-      '13d': '🌨️', '13n': '🌨️',
-      '50d': '🌫️', '50n': '🌫️',
+      "01d": "☀️",
+      "01n": "🌙",
+      "02d": "⛅",
+      "02n": "☁️",
+      "03d": "☁️",
+      "03n": "☁️",
+      "04d": "☁️",
+      "04n": "☁️",
+      "09d": "🌧️",
+      "09n": "🌧️",
+      "10d": "🌦️",
+      "10n": "🌧️",
+      "11d": "⛈️",
+      "11n": "⛈️",
+      "13d": "🌨️",
+      "13n": "🌨️",
+      "50d": "🌫️",
+      "50n": "🌫️",
     };
-    return iconMap[icon] || '🌤️';
+    return iconMap[icon] || "🌤️";
+  };
+
+  const formatLocalTime = (unixSeconds?: number, tzOffsetSeconds?: number) => {
+    if (!unixSeconds) return "--:--";
+    const utcMs = unixSeconds * 1000;
+    const offsetMs = (tzOffsetSeconds || 0) * 1000;
+    const local = new Date(utcMs + offsetMs);
+    return local.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
@@ -108,11 +125,22 @@ export function WeatherWidget() {
       <div className="text-white">
         <div className="text-4xl mb-2">{getWeatherIcon(weather.icon)}</div>
         <div className="text-3xl font-bold mb-1">{weather.temperature}°C</div>
-        <div className="text-sm text-white/90 capitalize mb-2">{weather.description}</div>
+        <div className="text-sm text-white/90 capitalize mb-2">
+          {weather.description}
+        </div>
         <div className="text-xs text-white/70">{weather.location}</div>
         <div className="flex justify-between mt-3 pt-3 border-t border-white/20 text-xs text-white/70">
           <span>💧 {weather.humidity}%</span>
           <span>💨 {weather.windSpeed} m/s</span>
+        </div>
+
+        <div className="flex justify-between mt-2 text-xs text-white/70">
+          <span>
+            🌅 {formatLocalTime(weather.sunrise, weather.timezoneOffset)}
+          </span>
+          <span>
+            🌇 {formatLocalTime(weather.sunset, weather.timezoneOffset)}
+          </span>
         </div>
       </div>
     </div>

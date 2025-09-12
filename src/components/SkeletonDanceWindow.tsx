@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function SkeletonDanceWindow() {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -50,7 +50,9 @@ export function SkeletonDanceWindow() {
   // (allowed because we start muted)
   useEffect(() => {
     const t = setTimeout(() => {
-      try { videoRef.current?.play().catch(() => {}); } catch {}
+      try {
+        videoRef.current?.play().catch(() => {});
+      } catch {}
     }, 200);
     return () => clearTimeout(t);
   }, []);
@@ -157,7 +159,10 @@ export function SkeletonDanceWindow() {
                 <button
                   onClick={() => {
                     setIsPlaying(true);
-                    setTimeout(() => videoRef.current?.play().catch(() => {}), 50);
+                    setTimeout(
+                      () => videoRef.current?.play().catch(() => {}),
+                      50
+                    );
                   }}
                   style={{
                     padding: "12px 24px",
@@ -174,7 +179,9 @@ export function SkeletonDanceWindow() {
                 </button>
               </div>
             ) : (
-              <div style={{ width: "100%", height: "100%", position: "relative" }}>
+              <div
+                style={{ width: "100%", height: "100%", position: "relative" }}
+              >
                 <div
                   style={{
                     position: "absolute",
@@ -189,18 +196,28 @@ export function SkeletonDanceWindow() {
                     muted
                     loop
                     playsInline
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
                     poster="/images/Background:night.png"
                     onLoadedData={() => setReady(true)}
                     onCanPlay={() => setReady(true)}
                     onPause={() => setIsPlaying(false)}
                     onPlay={() => setIsPlaying(true)}
                   >
-                  {process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL && (
-                    <source src={process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL} type="video/mp4" />
-                  )}
-                  <source src="/videos/skeleton.mp4" type="video/mp4" />
-                  <source src="https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4" type="video/mp4" />
+                    {process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL && (
+                      <source
+                        src={process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL}
+                        type="video/mp4"
+                      />
+                    )}
+                    <source src="/videos/skeleton.mp4" type="video/mp4" />
+                    <source
+                      src="https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
+                      type="video/mp4"
+                    />
                   </video>
                 </div>
                 {!ready && (
