@@ -7,6 +7,7 @@ export function SkeletonDanceWindow() {
   const [muted, setMuted] = useState(true);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [showPlaylist, setShowPlaylist] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const videoLibrary = [
     {
@@ -174,17 +175,27 @@ export function SkeletonDanceWindow() {
               </div>
             ) : (
               <div style={{ width: "100%", height: "100%", position: "relative" }}>
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  poster="/images/Background:night.png"
-                  onPause={() => setIsPlaying(false)}
-                  onPlay={() => setIsPlaying(true)}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    opacity: ready ? 1 : 0,
+                    transition: "opacity 600ms ease",
+                  }}
                 >
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    poster="/images/Background:night.png"
+                    onLoadedData={() => setReady(true)}
+                    onCanPlay={() => setReady(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onPlay={() => setIsPlaying(true)}
+                  >
                   <source
                     src={
                       process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
@@ -192,7 +203,24 @@ export function SkeletonDanceWindow() {
                     }
                     type="video/mp4"
                   />
-                </video>
+                  </video>
+                </div>
+                {!ready && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                      opacity: 0.7,
+                      fontSize: 14,
+                    }}
+                  >
+                    Loading… 💀
+                  </div>
+                )}
                 {/* No controls overlay; system volume applies */}
               </div>
             )}
