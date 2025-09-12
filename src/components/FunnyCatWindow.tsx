@@ -7,6 +7,7 @@ export function FunnyCatWindow() {
   const [likes, setLikes] = useState(0);
   const [muted, setMuted] = useState(true);
   const [embedReady, setEmbedReady] = useState(false);
+  const [embedHintShown, setEmbedHintShown] = useState(false);
 
   const cats = [
     { name: "Raven", emoji: "🐈‍⬛", action: "Elegant prowls", description: "Black cat" },
@@ -162,6 +163,28 @@ export function FunnyCatWindow() {
                   }}
                 >
                   Loading… 🐱
+                </div>
+              )}
+              {/* Fallback hint to open externally if the embed is blocked */}
+              {!embedReady && (
+                <div style={{ position: "absolute", right: 10, bottom: 10 }}>
+                  <a
+                    href="https://youtu.be/uwmeH6Rnj2E"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      padding: "6px 10px",
+                      background: "#ffffff22",
+                      border: "1px solid #ffffff33",
+                      borderRadius: 6,
+                      color: "#fff",
+                      fontSize: 12,
+                      textDecoration: "none",
+                    }}
+                    onMouseEnter={() => setEmbedHintShown(true)}
+                  >
+                    Open on YouTube ↗
+                  </a>
                 </div>
               )}
             </div>

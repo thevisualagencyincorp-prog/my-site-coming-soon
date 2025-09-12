@@ -221,6 +221,29 @@ export function SkeletonDanceWindow() {
                     Loading… 💀
                   </div>
                 )}
+                {!ready && (
+                  <div style={{ position: "absolute", right: 10, bottom: 10 }}>
+                    <a
+                      href={
+                        process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
+                        "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        padding: "6px 10px",
+                        background: "#ffffff22",
+                        border: "1px solid #ffffff33",
+                        borderRadius: 6,
+                        color: "#fff",
+                        fontSize: 12,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Open video ↗
+                    </a>
+                  </div>
+                )}
                 {/* No controls overlay; system volume applies */}
               </div>
             )}
