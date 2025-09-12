@@ -466,7 +466,7 @@ export default function Page() {
     } catch {}
   }, [windows]);
 
-  // Show Clippy shortly after the desktop loads
+  // Show Clippy shortly after the desktop loads (after loading screen completes)
   useEffect(() => {
     if (isLoading) return;
     const t = window.setTimeout(() => {
