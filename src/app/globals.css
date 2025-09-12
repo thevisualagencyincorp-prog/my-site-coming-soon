@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* Desktop-window chrome palette (tuned to match background blues) */
+  --win-title-start: #0f2b6e; /* dark navy */
+  --win-title-mid: #1f4bd1; /* mid blue */
+  --win-title-end: #2b6cff; /* royal blue */
+  --win-border: #0b2a5e; /* outline/navy */
+  --win-shadow-1: 8px 8px 0 rgba(11, 42, 94, 1);
+  --win-shadow-2: 0 14px 40px rgba(0, 0, 0, 0.3);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    /* slightly different title colors for night */
+    --win-title-start: #021028;
+    --win-title-mid: #07356a;
+    --win-title-end: #1b4fe0;
+    --win-border: #031833;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Courier New", "Lucida Console", "Monaco", "Menlo", monospace;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  transition: background 400ms ease-in-out, color 400ms ease-in-out;
+}
+
+/* Scumner.world inspired typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Courier New", "Lucida Console", "Monaco", "Menlo", monospace;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+p,
+span,
+div {
+  font-family: "Courier New", "Lucida Console", "Monaco", "Menlo", monospace;
+  font-weight: 400;
+}
+
+/* Custom animations */
+.animate-desktop-pop {
+  transition: all 0.7s ease-in-out;
+}
+
+@keyframes bounce-dino {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-12px);
+  }
+  40% {
+    transform: translateY(0);
+  }
+  60% {
+    transform: translateY(-8px);
+  }
+  80% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes textGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes textGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-bounce-dino {
+  animation: bounce-dino 1.8s infinite;
+}
+
+/* BSOD lightweight animations and classes */
+@keyframes bsod-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes bsod-flicker {
+  0%, 100% { opacity: 0.98; }
+  10% { opacity: 1; }
+  20% { opacity: 0.97; }
+  30% { opacity: 1; }
+  40% { opacity: 0.99; }
+  50% { opacity: 1; }
+  60% { opacity: 0.98; }
+  70% { opacity: 1; }
+  80% { opacity: 0.97; }
+  90% { opacity: 1; }
+}
+@keyframes bsod-scan {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 200px; }
+}
+@keyframes bsod-barberpole {
+  0% { background-position: 0 0; }
+  100% { background-position: 24px 0; }
+}
+
+.bsod-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.5) 0px,
+    rgba(255,255,255,0.5) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: bsod-scan 6s linear infinite;
+  will-change: background-position;
+}
+.bsod-blink { animation: bsod-blink 1.2s steps(2, end) infinite; }
+.bsod-flicker { animation: bsod-flicker 8s infinite; }
+.bsod-barber {
+  background: repeating-linear-gradient(
+    45deg,
+    #fff 0,
+    #fff 6px,
+    #cfd2ff 6px,
+    #cfd2ff 12px
+  );
+  animation: bsod-barberpole 1s linear infinite;
+  background-size: 24px 24px;
+  will-change: background-position, transform;
+}
+.bsod-progressInner { transition: width 0.3s ease; }
+
+/* Keep it light on mobile */
+@media (max-width: 640px) {
+  .bsod-scanlines { display: none; }
+  .bsod-flicker { animation: none; }
+}
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bsod-blink, .bsod-flicker, .bsod-barber { animation: none !important; }
+  .bsod-progressInner { transition: none; }
+}
