@@ -8,6 +8,7 @@
     "christian-kohler.path-intellisense",
     "ms-vscode.vscode-json",
     "yoavbls.pretty-ts-errors",
-    "usernamehw.errorlens"
+    "usernamehw.errorlens",
+    "kisstkondoros.vscode-gutter-preview"
   ]
 }
