@@ -15,7 +15,7 @@
   },
   {
     "key": "about",
-    "label": "MEET MARKETING BADDIES",
+    "label": "Meet Marketing Baddies in Your Area",
     "iconSrc": "/images/icons/about.svg",
     "x": 24,
     "y": 216
@@ -28,20 +28,6 @@
     "y": 288
   },
   {
-    "key": "virus",
-    "label": "Promos/Alerts",
-    "iconSrc": "/images/icons/virus.svg",
-    "x": 120,
-    "y": 216
-  },
-  {
-    "key": "newsletter",
-    "label": "Newsletter",
-    "iconSrc": "/images/icons/newsletter.svg",
-    "x": 216,
-    "y": 72
-  },
-  {
     "key": "portfolio",
     "label": "Portfolio",
     "iconSrc": "/globe.svg",
@@ -52,8 +38,8 @@
     "key": "trash",
     "label": "Trash",
     "iconSrc": "/window.svg",
-    "x": 312,
-    "y": 144
+    "x": 24,
+    "y": 432
   },
   {
     "key": "mysteryClub",

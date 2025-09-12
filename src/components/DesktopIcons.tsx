@@ -22,7 +22,7 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   const initialIcons: IconItem[] = [
     { key: "aol", label: "Messenger", iconSrc: "/images/icons/aol.svg", x: 24, y: 96 },
     { key: "mash", label: "MASH", iconSrc: "/images/icons/mash.svg", x: 24, y: 176 },
-    { key: "about", label: "MEET MARKETING BADDIES", iconSrc: "/images/icons/about.svg", x: 24, y: 256 },
+    { key: "about", label: "Meet Marketing Baddies in Your Area", iconSrc: "/images/icons/about.svg", x: 24, y: 256 },
     { key: "faq", label: "Help & Tips", iconSrc: "/images/icons/faq.svg", x: 24, y: 336 },
     { key: "notes", label: "Sticky Notes", iconSrc: "/images/icons/notes.svg", x: 120, y: 96 },
     { key: "mysteryClub", label: "Mystery Club", iconSrc: "/images/icons/mystery.svg", x: 120, y: 176 },
@@ -68,7 +68,14 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
             y: typeof d.y === "number" ? d.y : base.y,
           });
         });
-        setItems(Array.from(byKey.values()));
+        const EXCLUDED: WindowKey[] = [
+          "clippy",
+          "ads",
+          "instaAd",
+          "newsletter",
+          "virus",
+        ];
+        setItems(Array.from(byKey.values()).filter((i) => !EXCLUDED.includes(i.key)));
       })
       .catch(() => {});
     return () => {
@@ -170,7 +177,7 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       style={{ position: "relative", width: "100%", height: 0 }}
     >
       {items
-        .filter((item) => item.key !== ("faq" as WindowKey) && item.key !== ("ads" as WindowKey))
+        .filter((item) => !["clippy", "ads", "instaAd", "newsletter", "virus", "faq"].includes(item.key))
         .map((item) => {
           const pos = { x: item.x, y: item.y };
           return (

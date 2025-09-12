@@ -251,6 +251,11 @@ export default function Page() {
   // Pop-up cycle manager (run after loading is complete)
   useEffect(() => {
     if (isLoading) return;
+    // Always show one initial promo after boot so it’s visible at least once
+    const firstPromo = window.setTimeout(() => {
+      openWindow("ads");
+      window.setTimeout(() => setWindows((w) => ({ ...w, ads: { ...w.ads, open: false } })), 8000);
+    }, 1500);
     // Copy of the inspo popup pattern: three popups at 2s, 6s, 10s (relative),
     // auto-close after 5s, and repeat the whole sequence every 30s while the user remains idle.
     const sequence: { key: WindowKey; offset: number }[] = [
@@ -318,6 +323,7 @@ export default function Page() {
     window.addEventListener("keydown", onUserInteract, { once: true });
 
     return () => {
+      clearTimeout(firstPromo);
       clearTimeout(initialStart);
       clearSeq();
       clearRepeat();
@@ -677,8 +683,26 @@ export default function Page() {
                   );
                 })}
               </div>
-              {/* Indicators tray (clock/date/weather) pinned to the right */}
+              {/* Indicators tray (clock/date/weather + static wifi/battery) pinned to the right */}
               <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-md border border-white/5 text-white text-sm">
+                {/* WiFi indicator */}
+                <span className="inline-flex items-center" title="Wi‑Fi Connected">
+                  <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden>
+                    <path d="M1 4c4-4 10-4 14 0" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.4"/>
+                    <path d="M3 6c3-3 7-3 10 0" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
+                    <path d="M5 8c2-2 4-2 6 0" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                    <circle cx="8" cy="10" r="1" fill="currentColor" />
+                  </svg>
+                </span>
+                {/* Battery indicator */}
+                <span className="inline-flex items-center" title="Battery 78%">
+                  <svg width="22" height="12" viewBox="0 0 22 12" aria-hidden>
+                    <rect x="1" y="2" width="18" height="8" rx="2" ry="2" stroke="currentColor" fill="none" strokeWidth="1" />
+                    <rect x="2.5" y="3.5" width="13.5" height="5" rx="1" fill="currentColor" opacity="0.85"/>
+                    <rect x="19.5" y="4" width="2" height="4" rx="1" fill="currentColor" />
+                  </svg>
+                  <span className="ml-1 text-xs">78%</span>
+                </span>
                 <span className="font-mono mr-2">
                   <DigitalClockOnlyTime />
                 </span>

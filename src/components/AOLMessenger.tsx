@@ -573,20 +573,43 @@ export function AOLMessenger() {
                         budget {briefFields.budget}. Contact: {briefFields.name}{" "}
                         ({briefFields.email}).
                       </div>
-                      <button
-                        onClick={handleBriefSend}
-                        style={{
-                          marginTop: "8px",
-                          padding: "6px 12px",
-                          background: "#ffcc00",
-                          border: "1px solid #caa002",
-                          borderRadius: "3px",
-                          fontWeight: "700",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Send Brief
-                      </button>
+                      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                        <button
+                          onClick={handleBriefSend}
+                          style={{
+                            padding: "6px 12px",
+                            background: "#ffcc00",
+                            border: "1px solid #caa002",
+                            borderRadius: "3px",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Save Brief
+                        </button>
+                        <a
+                          href={
+                            (() => {
+                              const subject = encodeURIComponent("Brief Us — The Agency OS");
+                              const body = encodeURIComponent(
+                                `Brand: ${briefFields.brand}\nProject: ${briefFields.project}\nVibe: ${briefFields.vibe}\nGoals: ${briefFields.goals}\nTimeline: ${briefFields.timeline}\nBudget: ${briefFields.budget}\nContact: ${briefFields.name} <${briefFields.email}>\n\n(Generated from the Brief Us panel)`
+                              );
+                              return `mailto:hello@meettheagency.com?subject=${subject}&body=${body}`;
+                            })()
+                          }
+                          style={{
+                            padding: "6px 12px",
+                            background: "#2b5fb8",
+                            border: "1px solid #1b3a73",
+                            borderRadius: "3px",
+                            fontWeight: 700,
+                            color: "#fff",
+                            textDecoration: "none",
+                          }}
+                        >
+                          Email Brief
+                        </a>
+                      </div>
                     </div>
                   </>
                 ) : (

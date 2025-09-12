@@ -7,8 +7,17 @@ export function ClippyWindow() {
   const [isTyping, setIsTyping] = useState(false);
   const [typedIndex, setTypedIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 70 });
-  const [showBubble, setShowBubble] = useState(true);
+  const [position, setPosition] = useState<{ x: number; y: number }>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("clippy_pos_v1");
+        if (raw) return JSON.parse(raw) as { x: number; y: number };
+      } catch {}
+    }
+    return { x: 50, y: 70 };
+  });
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [showBubble, setShowBubble] = useState(false);
   const [hasOnboarded, setHasOnboarded] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("clippy_onboarded_v1") === "1";
@@ -52,13 +61,26 @@ export function ClippyWindow() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Start near the top-center so Clippy is visible but out of the way
+  // Place Clippy near the desktop icons by default; honor saved position if present
   useEffect(() => {
-    const clippyW = isMobile ? 96 : 120;
-    const w = window.innerWidth || 1200;
-    setPosition({ x: Math.max(12, Math.floor((w - clippyW) / 2)), y: 64 });
+    try {
+      const raw = localStorage.getItem("clippy_pos_v1");
+      if (raw) return; // keep saved placement
+    } catch {}
+    // Roughly to the right of the first two icon columns
+    const x = 216 + 24; // matches DesktopIcons default cols spacing
+    const y = 96; // near top row of icons
+    setPosition({ x, y });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // After image loads, allow the bubble to appear
+  useEffect(() => {
+    if (imgLoaded) {
+      const t = setTimeout(() => setShowBubble(true), 600);
+      return () => clearTimeout(t);
+    }
+  }, [imgLoaded]);
 
   // natural typing: type per char with slight jitter; hold after complete based on length
   useEffect(() => {
@@ -250,6 +272,7 @@ export function ClippyWindow() {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    try { localStorage.setItem("clippy_pos_v1", JSON.stringify(position)); } catch {}
   };
 
   const currentMsg = messages[currentMessage];
@@ -322,7 +345,7 @@ export function ClippyWindow() {
             onClick={() => setShowBubble((v) => !v)}
           >
             {/* Processed Clippy image with transparent background */}
-            {clippySrc ? (
+            {clippySrc && (
               <img
                 src={clippySrc}
                 alt="Clippy Assistant"
@@ -337,16 +360,16 @@ export function ClippyWindow() {
                     "float 6s ease-in-out infinite, wave 4s ease-in-out infinite",
                   imageRendering: "auto",
                   pointerEvents: "none",
+                  visibility: imgLoaded ? 'visible' : 'hidden',
                 }}
+                onLoad={() => setImgLoaded(true)}
                 onAnimationEnd={() => setVisibleOnce(true)}
               />
-            ) : (
-              <div style={{ width: 120, height: 120, background: "#0078d4", borderRadius: 12 }} />
             )}
           </div>
 
           {/* Speech Bubble */}
-          {showBubble && (
+          {imgLoaded && showBubble && (
           <div
             style={{
               position: "absolute",

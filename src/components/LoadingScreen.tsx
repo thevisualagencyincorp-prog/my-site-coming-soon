@@ -48,8 +48,10 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       style={{
         // Quote the path so spaces render correctly
         backgroundImage: 'url("/Loading:boot page.png")',
-        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
+        backgroundSize: 'contain',
+        backgroundColor: '#0b1535',
         opacity: fading ? 0 : 1,
         transition: 'opacity 800ms ease',
         pointerEvents: 'none',
