@@ -477,14 +477,38 @@ export default function Page() {
 
   
 
-  // Auto day/night background selection
+  // Auto day/night background selection (live switch at 07:00 and 19:00)
   const [bgImage, setBgImage] = useState("/images/Background:day.png");
   useEffect(() => {
-    const hour = new Date().getHours();
-    const isDay = hour >= 7 && hour < 19;
-    setBgImage(
-      isDay ? "/images/Background:day.png" : "/images/Background:night.png"
-    );
+    const setByClock = () => {
+      const hour = new Date().getHours();
+      const isDay = hour >= 7 && hour < 19;
+      setBgImage(
+        isDay ? "/images/Background:day.png" : "/images/Background:night.png"
+      );
+    };
+    const scheduleNextFlip = (): number => {
+      const now = new Date();
+      const next = new Date(now.getTime());
+      if (now.getHours() < 7) {
+        next.setHours(7, 0, 0, 0);
+      } else if (now.getHours() < 19) {
+        next.setHours(19, 0, 0, 0);
+      } else {
+        next.setDate(next.getDate() + 1);
+        next.setHours(7, 0, 0, 0);
+      }
+      const ms = Math.max(1000, next.getTime() - now.getTime());
+      return window.setTimeout(() => {
+        setByClock();
+        // chain another flip
+        timer = scheduleNextFlip();
+      }, ms);
+    };
+
+    setByClock();
+    let timer = scheduleNextFlip();
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (
