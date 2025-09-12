@@ -6,8 +6,7 @@ export function FunnyCatWindow() {
   const [currentCat, setCurrentCat] = useState(0);
   const [likes, setLikes] = useState(0);
   const [muted, setMuted] = useState(true);
-  const [embedReady, setEmbedReady] = useState(false);
-  const [embedHintShown, setEmbedHintShown] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
 
   const cats = [
     { name: "Raven", emoji: "🐈‍⬛", action: "Elegant prowls", description: "Black cat" },
@@ -120,36 +119,34 @@ export function FunnyCatWindow() {
             </div>
           ) : (
             <div style={{ width: "100%", height: "100%", position: "relative", background: "#000" }}>
-              {/* Fade-in wrapper */}
+              {/* Fade-in wrapper for local/hosted MP4 */}
               <div
                 style={{
                   position: "absolute",
                   inset: 0,
-                  opacity: embedReady ? 1 : 0,
+                  opacity: videoReady ? 1 : 0,
                   transition: "opacity 600ms ease",
                 }}
               >
-                {/* YouTube embed of curated cats clip (no controls, autoplay muted) */}
-                <iframe
-                  title="Curated Cats"
-                  src={
-                    "https://www.youtube-nocookie.com/embed/uwmeH6Rnj2E?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=uwmeH6Rnj2E"
-                  }
-                  onLoad={() => setEmbedReady(true)}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    border: 0,
-                  }}
-                />
+                <video
+                  autoPlay
+                  muted
+                  playsInline
+                  loop
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  onLoadedData={() => setVideoReady(true)}
+                  onCanPlay={() => setVideoReady(true)}
+                >
+                  {/* Prefer local file under public/videos, or allow env override */}
+                  {process.env.NEXT_PUBLIC_CATS_VIDEO_URL && (
+                    <source src={process.env.NEXT_PUBLIC_CATS_VIDEO_URL} type="video/mp4" />
+                  )}
+                  <source src="/videos/cats.mp4" type="video/mp4" />
+                </video>
               </div>
 
               {/* Subtle placeholder while loading */}
-              {!embedReady && (
+              {!videoReady && (
                 <div
                   style={{
                     position: "absolute",
@@ -165,8 +162,8 @@ export function FunnyCatWindow() {
                   Loading… 🐱
                 </div>
               )}
-              {/* Fallback hint to open externally if the embed is blocked */}
-              {!embedReady && (
+              {/* External fallback link if local video missing */}
+              {!videoReady && (
                 <div style={{ position: "absolute", right: 10, bottom: 10 }}>
                   <a
                     href="https://youtu.be/uwmeH6Rnj2E"
@@ -181,7 +178,6 @@ export function FunnyCatWindow() {
                       fontSize: 12,
                       textDecoration: "none",
                     }}
-                    onMouseEnter={() => setEmbedHintShown(true)}
                   >
                     Open on YouTube ↗
                   </a>

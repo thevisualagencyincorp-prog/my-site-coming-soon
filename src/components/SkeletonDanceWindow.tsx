@@ -196,13 +196,11 @@ export function SkeletonDanceWindow() {
                     onPause={() => setIsPlaying(false)}
                     onPlay={() => setIsPlaying(true)}
                   >
-                  <source
-                    src={
-                      process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
-                      "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
-                    }
-                    type="video/mp4"
-                  />
+                  {process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL && (
+                    <source src={process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL} type="video/mp4" />
+                  )}
+                  <source src="/videos/skeleton.mp4" type="video/mp4" />
+                  <source src="https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4" type="video/mp4" />
                   </video>
                 </div>
                 {!ready && (
