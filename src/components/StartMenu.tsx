@@ -62,8 +62,18 @@ const menuItems: {
   { key: "vibeCheck", label: "Vibe Check", icon: "✨", category: "Tools" },
   { key: "portfolio", label: "Portfolio", icon: "🌐", category: "Studio" },
   { key: "trash", label: "Trash", icon: "🗑️", category: "Studio" },
-  { key: "adMaker", label: "Agency AI — Ad Maker", icon: "🖼️", category: "Tools" },
-  { key: "book", label: "Get on our calendar", icon: "🗓️", category: "Communication" },
+  {
+    key: "adMaker",
+    label: "Agency AI — Ad Maker",
+    icon: "🖼️",
+    category: "Tools",
+  },
+  {
+    key: "book",
+    label: "Get on our calendar",
+    icon: "🗓️",
+    category: "Communication",
+  },
   { key: "mtv", label: "MTV 00s", icon: "📺", category: "Fun" },
   {
     key: "newsletter",
@@ -106,7 +116,7 @@ export function StartMenu({
       <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(60%_60%_at_20%_0%,rgba(255,255,255,0.35),transparent_60%)]" />
       <div className="relative p-4" onClick={(e) => e.stopPropagation()}>
         <div
-          className="mb-3 text-lg font-bold text-black dark:text-white"
+          className="mb-3 text-lg font-bold text-white dark:text-white"
           style={{ fontFamily: "Tahoma, Geneva, Verdana, sans-serif" }}
         >
           THE AGENCY OS™
@@ -183,7 +193,6 @@ export function StartMenu({
             </button>
           </div>
         )}
-
       </div>
     </div>
   );
