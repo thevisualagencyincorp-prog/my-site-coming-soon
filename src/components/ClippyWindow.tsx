@@ -239,11 +239,10 @@ export function ClippyWindow() {
     }
     // Try preferred candidates in order
     const candidates = [
+      "/images/clippy-1.png",
+      "/images/clippy.png",
       "/brand/clippy.png",
       "/brand/icons/clippy.png",
-      "/images/Clippy-1.png",
-      "/images/clippy.png",
-      "/images/icons/Clippy-1.png",
       "/images/icons/clippy-1.png",
       "/images/icons/clippy.svg",
     ];

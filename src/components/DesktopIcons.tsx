@@ -389,9 +389,9 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
     // Prefer pre-cut PNG if available for Clippy (check multiple candidates)
     if (src.toLowerCase().includes("clippy") || keyId === "clippy") {
       const candidates = [
-        "/images/Clippy-1.png",
+        "/images/clippy-1.png",
         "/images/clippy.png",
-        "/images/icons/Clippy-1.png",
+        "/brand/clippy.png",
         "/images/icons/clippy-1.png",
         "/images/icons/clippy.svg",
       ];
