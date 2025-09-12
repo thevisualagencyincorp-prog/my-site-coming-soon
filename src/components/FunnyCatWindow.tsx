@@ -6,6 +6,7 @@ export function FunnyCatWindow() {
   const [currentCat, setCurrentCat] = useState(0);
   const [likes, setLikes] = useState(0);
   const [muted, setMuted] = useState(true);
+  const [embedReady, setEmbedReady] = useState(false);
 
   const cats = [
     { name: "Raven", emoji: "🐈‍⬛", action: "Elegant prowls", description: "Black cat" },
@@ -117,23 +118,52 @@ export function FunnyCatWindow() {
               </button>
             </div>
           ) : (
-            <div style={{ width: "100%", height: "100%", position: "relative" }}>
-              {/* YouTube embed of curated cats clip (no controls, autoplay muted) */}
-              <iframe
-                title="Curated Cats"
-                src={
-                  "https://www.youtube-nocookie.com/embed/uwmeH6Rnj2E?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=uwmeH6Rnj2E"
-                }
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
+            <div style={{ width: "100%", height: "100%", position: "relative", background: "#000" }}>
+              {/* Fade-in wrapper */}
+              <div
                 style={{
                   position: "absolute",
                   inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  border: 0,
+                  opacity: embedReady ? 1 : 0,
+                  transition: "opacity 600ms ease",
                 }}
-              />
+              >
+                {/* YouTube embed of curated cats clip (no controls, autoplay muted) */}
+                <iframe
+                  title="Curated Cats"
+                  src={
+                    "https://www.youtube-nocookie.com/embed/uwmeH6Rnj2E?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=uwmeH6Rnj2E"
+                  }
+                  onLoad={() => setEmbedReady(true)}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    border: 0,
+                  }}
+                />
+              </div>
+
+              {/* Subtle placeholder while loading */}
+              {!embedReady && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontSize: 14,
+                    opacity: 0.7,
+                  }}
+                >
+                  Loading… 🐱
+                </div>
+              )}
             </div>
           )}
         </div>
