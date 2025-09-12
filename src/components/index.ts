@@ -11,7 +11,7 @@ export { BootImage } from "./BootImage";
 export { AOLMessenger } from "./AOLMessenger";
 export { AboutWindow } from "./AboutWindow";
 export { FAQWindow } from "./FAQWindow";
-export { MASHGame } from "./MASHGame";
+export { default as MASHGame } from "./MASHGame";
 export { CreativeWizard } from "./CreativeWizard";
 export { MetricsWindow } from "./MetricsWindow";
 export { SkeletonDanceWindow } from "./SkeletonDanceWindow";

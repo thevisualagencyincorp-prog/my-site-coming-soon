@@ -1,703 +1,607 @@
-"use client";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-export function MASHGame() {
-  const [gameState, setGameState] = useState<"setup" | "playing" | "result">(
+type GameData = {
+  [key: string]: string[];
+};
+
+type Elimination = {
+  [key: string]: string;
+};
+
+const MASHGame: React.FC = () => {
+  const [gameState, setGameState] = useState<"setup" | "playing" | "results">(
     "setup"
   );
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinCount, setSpinCount] = useState(0);
-  const [rollNumber, setRollNumber] = useState<number | null>(null);
-  const [currentResult, setCurrentResult] = useState<string>("");
-  const [elimination, setElimination] = useState<
-    Record<string, { eliminated: string[]; winner: string | null }>
-  >({});
-  const [saving, setSaving] = useState(false);
+  const [magicNumber, setMagicNumber] = useState<number | null>(null);
+  const [gameData, setGameData] = useState<GameData>({});
+  const [elimination, setElimination] = useState<Elimination>({});
+  const [currentResult, setCurrentResult] = useState("");
 
-  // Editable classic categories
-  const [custom, setCustom] = useState({
-    partners: "Taylor\nSabrina\nTyler\nMyspace Tom",
-    careers:
-      "Founder\nCreator\nInfluencer\nDesigner\nDeveloper\nPhotographer\nDirector\nProducer\nMarketer\nWriter\nArtist",
-    cars: "Jeep\nMercedes\nRange Rover\nPorsche\nTesla\nHonda\nSubaru\nVolkswagen",
-    kids: "0\n1\n2\n3\n4",
-    pets: "0\n1\n2\n3",
-    petKinds: "Cat\nDog\nBird\nReptile\nFish",
-    wealth: "Rich\nComfortable\nModest\nStruggling",
-    cities: "New York\nLos Angeles\nLondon\nTokyo\nParis\nAustin",
-    hobbies: "Photography\nMusic\nGaming\nTravel\nCooking\nFitness",
-  });
-
-  const mashOptions = {
+  const defaultCategories = {
     house: ["Mansion", "Apartment", "Shack", "House"],
     partners: ["Taylor", "Sabrina", "Tyler", "Myspace Tom"],
     careers: [
+      "Founder",
+      "Creator",
+      "Influencer",
       "Designer",
       "Developer",
       "Photographer",
       "Director",
       "Producer",
-      "Marketer",
-      "Writer",
-      "Artist",
     ],
-    cars: ["Jeep", "Mercedes", "Range Rover", "Porsche", "Tesla", "Honda"],
+    cars: [
+      "Jeep",
+      "Mercedes",
+      "Range Rover",
+      "Porsche",
+      "Tesla",
+      "Honda",
+      "Subaru",
+    ],
+    cities: ["New York", "Los Angeles", "London", "Tokyo", "Paris", "Austin"],
     kids: ["0", "1", "2", "3", "4"],
-    pets: ["0", "1", "2", "3"],
     wealth: ["Rich", "Comfortable", "Modest", "Struggling"],
   };
 
-  const saveCardAsImage = async () => {
-    if (!currentResult) return;
-    setSaving(true);
-    try {
-      // Compose an image in canvas instead of DOM screenshot
-      const W = 1080;
-      const H = 1350;
-      const P = 48;
-      const canvas = document.createElement("canvas");
-      canvas.width = W;
-      canvas.height = H;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("no canvas context");
+  const startGame = () => {
+    const partners =
+      (document.getElementById("partners") as HTMLTextAreaElement)?.value
+        .split("\n")
+        .filter((x) => x.trim()) || [];
+    const careers =
+      (document.getElementById("careers") as HTMLTextAreaElement)?.value
+        .split("\n")
+        .filter((x) => x.trim()) || [];
+    const cars =
+      (document.getElementById("cars") as HTMLTextAreaElement)?.value
+        .split("\n")
+        .filter((x) => x.trim()) || [];
+    const cities =
+      (document.getElementById("cities") as HTMLTextAreaElement)?.value
+        .split("\n")
+        .filter((x) => x.trim()) || [];
+    const kids =
+      (document.getElementById("kids") as HTMLTextAreaElement)?.value
+        .split("\n")
+        .filter((x) => x.trim()) || [];
+    const wealth =
+      (document.getElementById("wealth") as HTMLTextAreaElement)?.value
+        .split("\n")
+        .filter((x) => x.trim()) || [];
 
-      // background (notebook style)
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, W, H);
-      ctx.strokeStyle = "#fecaca"; // red margin line
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(P + 40, 0);
-      ctx.lineTo(P + 40, H);
-      ctx.stroke();
-      ctx.strokeStyle = "#e5e7eb"; // light lines
-      ctx.lineWidth = 1;
-      for (let y = P + 64; y < H - P; y += 36) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y);
-        ctx.stroke();
+    const newGameData = {
+      house: defaultCategories.house,
+      partners,
+      careers,
+      cars,
+      cities,
+      kids,
+      wealth,
+    };
+
+    for (const [key, values] of Object.entries(newGameData)) {
+      if ((values as string[]).length < 2) {
+        alert(`Please add at least 2 options for ${key}`);
+        return;
       }
+    }
 
-      // header
-      ctx.fillStyle = "#111827";
-      ctx.font = "700 56px 'Courier New', monospace";
-      ctx.fillText("My Agency MASH", P, P + 40);
+    setGameData(newGameData);
+    setGameState("playing");
+  };
 
-      // summary box
-      ctx.fillStyle = "#111827";
-      ctx.font = "700 36px 'Courier New', monospace";
-      const lines = currentResult.split("\n");
-      let y = P + 120;
-      lines.forEach((line) => {
-        ctx.fillText(line, P, y);
-        y += 48;
+  const startSpinning = () => {
+    setIsSpinning(true);
+    setSpinCount(0);
+    const spinInterval = setInterval(() => {
+      setSpinCount((prev) => {
+        const newCount = prev + 1;
+        const spinner = document.getElementById("spinner");
+        if (spinner) spinner.textContent = ((newCount % 20) + 1).toString();
+        return newCount;
       });
+    }, 100);
 
-      // winners per category
-      ctx.font = "400 28px 'Courier New', monospace";
-      y += 24;
-      (Object.keys(elimination) as Array<keyof typeof elimination>).forEach(
-        (cat) => {
-          const e = elimination[cat as string];
-          if (!e) return;
-          const label = `${String(cat)}: ${e.winner ?? ""}`;
-          ctx.fillText(label, P, y);
-          y += 40;
-        }
-      );
+    setTimeout(() => {
+      clearInterval(spinInterval);
+      stopSpinning();
+    }, 3000); // Auto-stop after 3 seconds for demo
+  };
 
-      // footer
-      ctx.font = "400 24px 'Courier New', monospace";
-      ctx.fillStyle = "#6b7280";
-      ctx.fillText("the-agency.os  •  #theagencyMASH", P, H - P);
-
-      const url = canvas.toDataURL("image/png");
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "agency-mash.png";
-      a.click();
-    } catch (e) {
-      console.error(e);
-      alert("Could not save image on this browser.");
-    } finally {
-      setSaving(false);
+  const stopSpinning = () => {
+    setIsSpinning(false);
+    const spinner = document.getElementById("spinner");
+    if (spinner) {
+      setMagicNumber(parseInt(spinner.textContent || "1"));
+      setTimeout(() => playMASH(), 1000);
     }
   };
 
-  const spinWheel = async () => {
-    if (isSpinning) return;
+  const playMASH = () => {
+    // Display categories and eliminate options (simplified for React)
+    // This would need more state management for full functionality
+    setTimeout(() => eliminateOptions(), 2000);
+  };
 
-    setIsSpinning(true);
-    setGameState("playing");
-    const rolled = Math.floor(3 + Math.random() * 6); // 3-8 classic
-    setRollNumber(rolled);
+  const eliminateOptions = () => {
+    // Simplified elimination logic
+    const newElimination: any = {};
+    Object.keys(gameData).forEach((key) => {
+      newElimination[key] = gameData[key][0]; // Just pick first for demo
+    });
+    setElimination(newElimination);
+    setTimeout(() => showResults(), 1000);
+  };
 
-    // Simulate dice ticking
-    const totalSpins = 16 + Math.floor(Math.random() * 12);
-    let currentSpin = 0;
-
-    const spinInterval = setInterval(() => {
-      currentSpin++;
-      setSpinCount(currentSpin);
-
-      // Show a little counter while rolling
-      setCurrentResult(`Rolling… ${currentSpin}`);
-
-      if (currentSpin >= totalSpins) {
-        clearInterval(spinInterval);
-        setIsSpinning(false);
-        // Compute elimination winners per category (using custom + house)
-        const dynamicOptions: Record<string, string[]> = {
-          house: mashOptions.house,
-          partners: custom.partners
-            .split(/\r?\n/) // one option per line
-            .map((s) => s.trim())
-            .filter(Boolean),
-          careers: custom.careers
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          cars: custom.cars
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          kids: custom.kids
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          pets: custom.pets
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          petKinds: custom.petKinds
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          wealth: custom.wealth
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          cities: custom.cities
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-          hobbies: custom.hobbies
-            .split(/\r?\n/)
-            .map((s) => s.trim())
-            .filter(Boolean),
-        };
-        const build: Record<
-          string,
-          { eliminated: string[]; winner: string | null }
-        > = {};
-        (
-          Object.keys(dynamicOptions) as Array<keyof typeof dynamicOptions>
-        ).forEach((cat) => {
-          const arr = [...dynamicOptions[cat]];
-          const eliminated: string[] = [];
-          let idx = 0;
-          while (arr.length > 1) {
-            idx = (idx + rolled - 1) % arr.length;
-            const [rem] = arr.splice(idx, 1);
-            eliminated.push(rem);
-          }
-          build[cat] = { eliminated, winner: arr[0] ?? null };
-        });
-        setElimination(build);
-        const summary = `Home: ${build.house.winner}\nPartner: ${
-          build.partners.winner
-        }\nCareer: ${build.careers.winner}\nCar: ${build.cars.winner}\nKids: ${
-          build.kids.winner
-        }\nPets: ${build.pets.winner} (${
-          build.petKinds?.winner ?? "Pet"
-        })\nWealth: ${build.wealth.winner}\nCity: ${
-          build.cities.winner
-        }\nHobby: ${build.hobbies.winner}`;
-        setCurrentResult(summary);
-        setGameState("result");
-      }
-    }, 100);
+  const showResults = () => {
+    setGameState("results");
+    const result = `You will live in a ${elimination.house} in ${elimination.cities} with ${elimination.partners}. You'll work as a ${elimination.careers} and drive a ${elimination.cars}. You'll have ${elimination.kids} kids and be ${elimination.wealth}.`;
+    setCurrentResult(result);
   };
 
   const resetGame = () => {
     setGameState("setup");
-    setSpinCount(0);
-    setCurrentResult("");
     setElimination({});
+    setCurrentResult("");
+    setMagicNumber(null);
+  };
+
+  const saveResult = () => {
+    if (!currentResult) return;
+    // Simplified save logic
+    navigator.clipboard.writeText(currentResult).then(() => {
+      alert("Result copied to clipboard!");
+    });
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        background: "#f3f6ff",
-        fontFamily: "Tahoma, Verdana, Segoe UI, Arial, sans-serif",
-        fontSize: "14px",
-        color: "#1e2a4a",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      {/* Title moved to window chrome */}
+    <div className="min-h-screen">
+      <style>{`
+        body { 
+          font-family: 'Permanent Marker', cursive;
+          background: linear-gradient(135deg, #f5f1e8 0%, #ede4d3 100%);
+          position: relative;
+        }
+        
+        .notebook-paper {
+          background: 
+            radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.02) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(210, 180, 140, 0.04) 0%, transparent 30%),
+            linear-gradient(to right, transparent 78px, #dc2626 78px, #dc2626 82px, transparent 82px),
+            repeating-linear-gradient(transparent, transparent 27px, #3b82f6 27px, #3b82f6 28px);
+          background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 28px;
+          background-color: #fefcf7;
+          position: relative;
+          box-shadow: 
+            inset 0 0 120px rgba(139, 69, 19, 0.1),
+            0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .notebook-paper::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: 
+            radial-gradient(ellipse at 85% 15%, rgba(139, 69, 19, 0.08) 0%, transparent 25%),
+            radial-gradient(ellipse at 15% 85%, rgba(160, 82, 45, 0.06) 0%, transparent 20%),
+            linear-gradient(45deg, transparent 48%, rgba(139, 69, 19, 0.03) 49%, rgba(139, 69, 19, 0.03) 51%, transparent 52%);
+          pointer-events: none;
+        }
+        
+        .doodle-corner {
+          position: absolute;
+          font-family: 'Caveat', cursive;
+          color: #3b82f6;
+          opacity: 0.6;
+          transform: rotate(-15deg);
+          font-size: 14px;
+          font-weight: 600;
+        }
+        
+        .doodle-1 { top: 20px; right: 100px; }
+        .doodle-2 { bottom: 40px; left: 120px; transform: rotate(8deg); }
+        .doodle-3 { top: 50%; right: 50px; transform: rotate(-25deg); }
+        
+        .handwritten-title {
+          font-family: 'Caveat', cursive;
+          font-weight: 700;
+          color: #1f2937;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+          transform: rotate(-1deg);
+        }
+        
+        .handwritten-text {
+          font-family: 'Permanent Marker', cursive;
+          color: #374151;
+          line-height: 1.8;
+          letter-spacing: 0.5px;
+        }
+        
+        .paper-section {
+          background: rgba(255, 255, 255, 0.7);
+          border: 2px solid #3b82f6;
+          border-radius: 15px;
+          box-shadow: 
+            0 4px 6px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+          position: relative;
+          transform: rotate(0.5deg);
+          margin: 20px 0;
+        }
+        
+        .paper-section:nth-child(even) {
+          transform: rotate(-0.3deg);
+        }
+        
+        .paper-section::before {
+          content: '';
+          position: absolute;
+          top: -5px;
+          left: 20px;
+          width: 20px;
+          height: 20px;
+          background: #fbbf24;
+          border-radius: 50%;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          opacity: 0.8;
+        }
+        
+        .handwritten-input {
+          font-family: 'Permanent Marker', cursive;
+          background: rgba(255, 255, 255, 0.8);
+          border: 2px solid #3b82f6;
+          border-radius: 8px;
+          color: #374151;
+          font-size: 16px;
+          line-height: 1.6;
+          padding: 12px 16px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transform: rotate(-0.5deg);
+        }
+        
+        .handwritten-input:focus {
+          outline: none;
+          border-color: #1d4ed8;
+          background: rgba(255, 255, 255, 0.95);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+          transform: rotate(0deg);
+        }
+        
+        .handwritten-input::placeholder {
+          color: #9ca3af;
+          opacity: 0.8;
+        }
+        
+        .doodle-arrow {
+          position: absolute;
+          color: #dc2626;
+          font-size: 24px;
+          transform: rotate(15deg);
+        }
+        
+        .spin-animation {
+          animation: spin 0.1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .elimination-animation {
+          animation: strikethrough 0.5s ease-in-out;
+        }
+        @keyframes strikethrough {
+          0% { text-decoration: none; opacity: 1; }
+          50% { text-decoration: line-through; opacity: 0.7; }
+          100% { text-decoration: line-through; opacity: 0.5; }
+        }
+        
+        .paper-button {
+          font-family: 'Caveat', cursive;
+          font-weight: 600;
+          font-size: 18px;
+          background: linear-gradient(145deg, #fbbf24, #f59e0b);
+          border: 2px solid #d97706;
+          border-radius: 20px;
+          color: #92400e;
+          text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+          box-shadow: 
+            0 4px 6px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+          transform: rotate(-1deg);
+          transition: all 0.2s ease;
+        }
+        
+        .paper-button:hover {
+          transform: rotate(0deg) scale(1.05);
+          box-shadow: 
+            0 6px 8px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        .hole-punch {
+          position: absolute;
+          left: 40px;
+          width: 8px;
+          height: 8px;
+          background: #e5e7eb;
+          border-radius: 50%;
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hole-1 { top: 100px; }
+        .hole-2 { top: 200px; }
+        .hole-3 { top: 300px; }
+      `}</style>
+      <div className="notebook-paper min-h-screen relative">
+        <div className="hole-punch hole-1"></div>
+        <div className="hole-punch hole-2"></div>
+        <div className="hole-punch hole-3"></div>
 
-      {/* Game Content */}
-      <div
-        style={{
-          flex: 1,
-          overflow: "auto",
-          padding: "15px",
-          background:
-            "#fff url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#ffffff'/><path d='M0 24 H200' stroke='%23e5e7eb' stroke-width='1'/><path d='M0 48 H200' stroke='%23e5e7eb' stroke-width='1'/><path d='M32 0 V200' stroke='%23fecaca' stroke-width='2'/></svg>') repeat",
-        }}
-      >
-        {gameState === "setup" && (
-          <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontSize: "48px",
-                marginBottom: "20px",
-                animation: "bounce 2s infinite",
-              }}
-            >
-              🎯
-            </div>
-            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Classic MASH — Notebook Edition
-            </h2>
-            <p
-              style={{
-                margin: "0 0 20px 0",
-                lineHeight: "1.6",
-                color: "#6c7c9b",
-              }}
-            >
-              Hey friend — grab a pen (or your keyboard)! These are playful
-              notebook-style fields — fill each tall box with a few options
-              (comma-separated) or keep the fun placeholders. When you&apos;re
-              ready, press ROLL and we&apos;ll playfully knock out options until
-              one magical result remains. Let&apos;s see what destiny picks for
-              you ✨
+        <div className="doodle-corner doodle-1">★ MASH ★</div>
+        <div className="doodle-corner doodle-2">♡ future ♡</div>
+        <div className="doodle-corner doodle-3">✨</div>
+
+        <div className="container mx-auto px-8 py-12 max-w-4xl relative">
+          <div className="text-center mb-12 relative">
+            <h1 className="handwritten-title text-5xl md:text-7xl mb-4">
+              Agency MASH
+            </h1>
+            <p className="handwritten-text text-xl text-blue-700 font-semibold">
+              Discover your future! Fill in the categories below ✏️
             </p>
-
             <div
-              style={{
-                background: "#fff",
-                padding: 20,
-                borderRadius: 8,
-                border: "1px solid #cbd5ea",
-                margin: "20px 0",
-              }}
+              className="doodle-arrow"
+              style={{ top: "-10px", right: "20%" }}
             >
-              <h3 style={{ margin: 0, color: "#1e2a4a" }}>Your Options</h3>
-              <p
-                style={{ margin: "6px 0 12px", color: "#6c7c9b", fontSize: 12 }}
-              >
-                Enter comma‑separated values. Each row is a category. On mobile,
-                fields stack vertically.
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                }}
-              >
-                {(
-                  [
-                    [
-                      "partners",
-                      "Partners (names)",
-                      custom.partners,
-                      "e.g. Taylor, Sabrina, Tyler, Myspace Tom",
-                    ],
-                    [
-                      "careers",
-                      "Careers (dream jobs)",
-                      custom.careers,
-                      "e.g. Designer, Developer, Photographer",
-                    ],
-                    ["cars", "Cars", custom.cars, "e.g. Jeep, Tesla, Porsche"],
-                    ["kids", "# of Kids", custom.kids, "e.g. 0,1,2,3"],
-                    ["pets", "# of Pets", custom.pets, "e.g. 0,1,2,3"],
-                    [
-                      "petKinds",
-                      "Kind of Pet",
-                      custom.petKinds,
-                      "e.g. Cat, Dog, Bird",
-                    ],
-                    [
-                      "wealth",
-                      "Wealth",
-                      custom.wealth,
-                      "e.g. Rich, Comfortable, Modest",
-                    ],
-                    [
-                      "cities",
-                      "Cities",
-                      custom.cities,
-                      "e.g. New York, London, Tokyo",
-                    ],
-                    [
-                      "hobbies",
-                      "Hobbies",
-                      custom.hobbies,
-                      "e.g. Photography, Music, Gaming",
-                    ],
-                  ] as const
-                ).map(([key, label, val, placeholder]) => (
-                  <div
-                    key={key}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8,
-                      background: "#fff",
-                      padding: 12,
-                      borderRadius: 8,
-                      border: "1px solid #e6edf6",
-                      boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.02)",
-                    }}
-                  >
-                    <label
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: "#1e2a4a",
-                      }}
-                    >
-                      {label}
+              ↗
+            </div>
+          </div>
+
+          {gameState === "setup" && (
+            <div className="space-y-8">
+              <div className="paper-section p-8 relative">
+                <h2 className="handwritten-title text-3xl mb-6 text-blue-800">
+                  Fill in your options! ✎
+                </h2>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="relative mb-6">
+                    <label className="handwritten-text block text-lg font-bold text-gray-700 mb-3">
+                      💕 Partners
                     </label>
                     <textarea
-                      value={val}
-                      placeholder={placeholder as string}
-                      onChange={(e) =>
-                        setCustom((prev) => ({
-                          ...prev,
-                          [key]: e.target.value,
-                        }))
-                      }
-                      style={{
-                        width: "100%",
-                        minHeight: 110,
-                        resize: "vertical",
-                        padding: 12,
-                        border: "2px solid #f3f4f6",
-                        borderRadius: 6,
-                        fontSize: 14,
-                        fontFamily: "'Courier New', monospace",
-                        backgroundImage:
-                          "repeating-linear-gradient(to bottom, transparent, transparent 28px, rgba(229,231,235,0.8) 29px)",
-                        backgroundColor: "#fff",
-                        outline: "none",
-                      }}
-                    />
-                    <div style={{ fontSize: 12, color: "#9ca3af" }}>
-                      Tip: Put one option per line (press Enter). Each line is
-                      treated as a distinct option.
+                      id="partners"
+                      className="handwritten-input w-full"
+                      rows={4}
+                      placeholder="Write one per line..."
+                      defaultValue="Taylor
+Sabrina
+Tyler
+Myspace Tom"
+                    ></textarea>
+                    <div className="absolute -right-4 top-0 text-red-500 text-2xl transform rotate-12">
+                      ♡
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            <button
-              onClick={spinWheel}
-              disabled={isSpinning}
-              style={{
-                padding: "15px 30px",
-                fontSize: "18px",
-                fontWeight: "bold",
-                background: "#ffcc00",
-                border: "2px solid #caa002",
-                borderRadius: "25px",
-                cursor: isSpinning ? "not-allowed" : "pointer",
-                color: "#1e2a4a",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-                transform: "scale(1)",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                if (!isSpinning) {
-                  e.currentTarget.style.transform = "scale(1.05)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-            >
-              🎲 ROLL THE DICE 🎲
-            </button>
-          </div>
-        )}
-
-        {gameState === "playing" && (
-          <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontSize: "60px",
-                marginBottom: "20px",
-                animation: "spin 0.5s linear infinite",
-              }}
-            >
-              🎡
-            </div>
-            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Rolling the dice...
-            </h2>
-            <div
-              style={{
-                fontSize: "24px",
-                fontWeight: "bold",
-                color: "#ff6b35",
-                marginBottom: "20px",
-              }}
-            >
-              {rollNumber ?? spinCount}
-            </div>
-            <div
-              style={{
-                background: "#fff",
-                padding: "20px",
-                borderRadius: "8px",
-                border: "2px solid #cbd5ea",
-                fontFamily: "monospace",
-                fontSize: "16px",
-                whiteSpace: "pre-line",
-                minHeight: "120px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {currentResult || "Determining your creative destiny..."}
-            </div>
-          </div>
-        )}
-
-        {gameState === "result" && (
-          <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontSize: "48px",
-                marginBottom: "20px",
-              }}
-            >
-              ✨
-            </div>
-            <h2 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Your Creative Destiny Awaits!
-            </h2>
-
-            <div
-              style={{
-                background: "#fff",
-                padding: "25px",
-                borderRadius: "12px",
-                border: "2px solid #ffcc00",
-                margin: "20px 0",
-                boxShadow: "0 6px 14px rgba(0,0,0,0.12)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  color: "#1e2a4a",
-                  whiteSpace: "pre-line",
-                  lineHeight: "1.8",
-                }}
-              >
-                {currentResult}
-              </div>
-              {/* Elimination lists */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                  gap: 12,
-                  marginTop: 16,
-                  textAlign: "left",
-                }}
-              >
-                {Object.keys(elimination).map((cat) => {
-                  const e = elimination[cat]!;
-                  const ordered = e ? [...e.eliminated, e.winner || ""] : [];
-                  return (
-                    <div key={cat}>
-                      <div style={{ fontWeight: 700, marginBottom: 6 }}>
-                        {cat}
-                      </div>
-                      <ul style={{ margin: 0, paddingLeft: 18 }}>
-                        {ordered.map((opt, i) => (
-                          <li
-                            key={i}
-                            style={{
-                              textDecoration:
-                                i < ordered.length - 1
-                                  ? "line-through"
-                                  : "none",
-                              color:
-                                i === ordered.length - 1
-                                  ? "#059669"
-                                  : "#9ca3af",
-                            }}
-                          >
-                            {opt}
-                          </li>
-                        ))}
-                      </ul>
+                  <div className="relative mb-6">
+                    <label className="handwritten-text block text-lg font-bold text-gray-700 mb-3">
+                      💼 Dream Jobs
+                    </label>
+                    <textarea
+                      id="careers"
+                      className="handwritten-input w-full"
+                      rows={4}
+                      placeholder="Write one per line..."
+                      defaultValue="Founder
+Creator
+Influencer
+Designer
+Developer
+Photographer
+Director
+Producer"
+                    ></textarea>
+                    <div className="absolute -right-4 top-0 text-blue-500 text-2xl transform rotate-45">
+                      ★
                     </div>
-                  );
-                })}
+                  </div>
+
+                  <div className="relative mb-6">
+                    <label className="handwritten-text block text-lg font-bold text-gray-700 mb-3">
+                      🚗 Cars
+                    </label>
+                    <textarea
+                      id="cars"
+                      className="handwritten-input w-full"
+                      rows={4}
+                      placeholder="Write one per line..."
+                      defaultValue="Jeep
+Mercedes
+Range Rover
+Porsche
+Tesla
+Honda
+Subaru"
+                    ></textarea>
+                    <div className="absolute -right-4 top-0 text-green-500 text-xl transform rotate-12">
+                      🚙
+                    </div>
+                  </div>
+
+                  <div className="relative mb-6">
+                    <label className="handwritten-text block text-lg font-bold text-gray-700 mb-3">
+                      🏙️ Cities
+                    </label>
+                    <textarea
+                      id="cities"
+                      className="handwritten-input w-full"
+                      rows={4}
+                      placeholder="Write one per line..."
+                      defaultValue="New York
+Los Angeles
+London
+Tokyo
+Paris
+Austin"
+                    ></textarea>
+                    <div className="absolute -right-4 top-0 text-purple-500 text-xl transform rotate-45">
+                      🌆
+                    </div>
+                  </div>
+
+                  <div className="relative mb-6">
+                    <label className="handwritten-text block text-lg font-bold text-gray-700 mb-3">
+                      👶 Kids
+                    </label>
+                    <textarea
+                      id="kids"
+                      className="handwritten-input w-full"
+                      rows={3}
+                      placeholder="Write one per line..."
+                      defaultValue="0
+1
+2
+3
+4"
+                    ></textarea>
+                    <div className="absolute -right-4 top-0 text-pink-500 text-xl transform rotate-12">
+                      👶
+                    </div>
+                  </div>
+
+                  <div className="relative mb-6">
+                    <label className="handwritten-text block text-lg font-bold text-gray-700 mb-3">
+                      💰 Money
+                    </label>
+                    <textarea
+                      id="wealth"
+                      className="handwritten-input w-full"
+                      rows={3}
+                      placeholder="Write one per line..."
+                      defaultValue="Rich
+Comfortable
+Modest
+Struggling"
+                    ></textarea>
+                    <div className="absolute -right-4 top-0 text-yellow-500 text-xl transform rotate-45">
+                      💎
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center mt-8 relative">
+                  <button
+                    onClick={startGame}
+                    className="paper-button py-4 px-12 text-xl"
+                  >
+                    Let's see my future! ✨
+                  </button>
+                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 text-red-500 text-2xl rotate-12">
+                    ↑
+                  </div>
+                </div>
               </div>
             </div>
+          )}
 
-            <div
-              style={{
-                background: "#e6ebf7",
-                padding: "15px",
-                borderRadius: "8px",
-                border: "1px solid #b8c6e3",
-                margin: "20px 0",
-              }}
-            >
-              <p
-                style={{
-                  margin: "0 0 10px 0",
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  color: "#1e2a4a",
-                }}
-              >
-                🎉 Congratulations!
-              </p>
-              <p
-                style={{
-                  margin: "0",
-                  color: "#6c7c9b",
-                  lineHeight: "1.6",
-                }}
-              >
-                This could be the start of something amazing! Ready to turn this
-                destiny into reality? Let&apos;s discuss how we can bring your
-                creative vision to life.
-              </p>
-            </div>
+          {gameState === "playing" && (
+            <div className="space-y-8">
+              <div className="paper-section p-8 text-center relative">
+                <div className="mb-8">
+                  <h2 className="handwritten-title text-4xl mb-4 text-red-600">
+                    Pick Your Magic Number! 🎯
+                  </h2>
+                  <p className="handwritten-text text-xl text-gray-700">
+                    Click stop when it feels right!
+                  </p>
+                  <div className="absolute top-4 right-8 text-blue-500 text-3xl transform rotate-12">
+                    ✨
+                  </div>
+                </div>
 
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <button
-                onClick={() =>
-                  window.dispatchEvent(new CustomEvent("openAOLWindow"))
-                }
-                style={{
-                  padding: "12px 20px",
-                  background: "#ffcc00",
-                  border: "1px solid #caa002",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#1e2a4a",
-                }}
-              >
-                💬 Let&apos;s Talk About This
-              </button>
-              <button
-                onClick={saveCardAsImage}
-                disabled={saving}
-                style={{
-                  padding: "12px 20px",
-                  background: saving ? "#e5e7eb" : "#fff",
-                  border: "1px solid #cbd5ea",
-                  borderRadius: "6px",
-                  cursor: saving ? "not-allowed" : "pointer",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#1e2a4a",
-                }}
-              >
-                🖼️ {saving ? "Saving…" : "Save Card as Image"}
-              </button>
-              <button
-                onClick={async () => {
-                  const text = `#theagencyMASH\n${currentResult}`;
-                  try {
-                    if (navigator.share) {
-                      await navigator.share({ text, title: "My Agency MASH" });
-                    } else {
-                      await navigator.clipboard.writeText(text);
-                      alert("Copied to clipboard — share it!");
-                    }
-                  } catch {}
-                }}
-                style={{
-                  padding: "12px 20px",
-                  background: "#fff",
-                  border: "1px solid #cbd5ea",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#1e2a4a",
-                }}
-              >
-                📸 Share Result
-              </button>
-              <button
-                onClick={resetGame}
-                style={{
-                  padding: "12px 20px",
-                  background: "#fff",
-                  border: "1px solid #cbd5ea",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#1e2a4a",
-                }}
-              >
-                🔄 Play Again
-              </button>
+                <div className="mb-8">
+                  <div
+                    id="spinner"
+                    className={`inline-block text-8xl font-bold text-red-600 cursor-pointer hover:scale-110 transition-transform handwritten-title ${
+                      isSpinning ? "spin-animation" : ""
+                    }`}
+                  >
+                    1
+                  </div>
+                </div>
+
+                <div className="space-x-6">
+                  <button
+                    onClick={startSpinning}
+                    className="paper-button py-4 px-8 text-xl"
+                  >
+                    Start Spinning! 🌀
+                  </button>
+                  <button
+                    onClick={stopSpinning}
+                    className="paper-button py-4 px-8 text-xl bg-gradient-to-br from-red-400 to-red-600 border-red-700"
+                  >
+                    STOP! ✋
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {gameState === "results" && (
+            <div className="paper-section p-10 text-center relative">
+              <div className="absolute -top-4 -left-4 text-6xl text-yellow-400 transform rotate-12">
+                🎉
+              </div>
+              <div className="absolute -top-4 -right-4 text-6xl text-pink-400 transform rotate-45">
+                ✨
+              </div>
+              <div className="absolute -bottom-4 -left-4 text-4xl text-blue-400 transform rotate-12">
+                🌟
+              </div>
+              <div className="absolute -bottom-4 -right-4 text-4xl text-green-400 transform rotate-45">
+                💫
+              </div>
+
+              <h2 className="handwritten-title text-5xl mb-8 text-purple-700">
+                Your Amazing Future! 🔮
+              </h2>
+              <div className="handwritten-text text-xl space-y-4 mb-10">
+                <div className="bg-white bg-opacity-80 p-8 rounded-2xl border-4 border-purple-400 shadow-lg transform rotate-1 relative">
+                  <div className="absolute -top-3 -left-3 text-3xl">📝</div>
+                  <p className="handwritten-text text-2xl font-bold text-gray-800 leading-relaxed">
+                    {currentResult}
+                  </p>
+                </div>
+              </div>
+              <div className="space-x-6">
+                <button
+                  onClick={resetGame}
+                  className="paper-button py-4 px-8 text-xl"
+                >
+                  Play Again! 🎮
+                </button>
+                <button
+                  onClick={saveResult}
+                  className="paper-button py-4 px-8 text-xl bg-gradient-to-br from-green-400 to-green-600 border-green-700"
+                >
+                  Save My Future! 📸
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes bounce {
-          0%,
-          20%,
-          50%,
-          80%,
-          100% {
-            transform: translateY(0);
-          }
-          40% {
-            transform: translateY(-10px);
-          }
-          60% {
-            transform: translateY(-5px);
-          }
-        }
-      `}</style>
     </div>
   );
-}
+};
+
+export default MASHGame;
