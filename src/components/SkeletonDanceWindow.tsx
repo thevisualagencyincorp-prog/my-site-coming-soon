@@ -14,8 +14,7 @@ export function SkeletonDanceWindow() {
       id: 1,
       title: "Skeleton Dance Party",
       duration: "2:34",
-      description:
-        "Our signature viral dance video featuring animated skeletons",
+      description: "1920's viral dance video featuring animated skeletons",
       thumbnail: "💀",
       tags: ["Viral", "Animation", "Dance"],
       views: "12.5K",

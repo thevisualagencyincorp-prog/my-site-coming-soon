@@ -3,35 +3,38 @@ import { useState, useEffect, useRef } from "react";
 
 export function AOLMessenger() {
   const [activeTab, setActiveTab] = useState("taylor");
-  const initialMessages: Record<string, Array<{ who: string; text: string; me: boolean; timestamp: number }>> = {
+  const initialMessages: Record<
+    string,
+    Array<{ who: string; text: string; me: boolean; timestamp: number }>
+  > = {
     taylor: [
       {
         who: "Taylor Nation",
-        text: "Happy Sept ’25! We’ve been raving about your OS site — it feels like we’re chatting with best friends ✨",
+        text: "BTW, Trav LOVED the engagement location suggestion, the moodboards were genius! He said yes to all the florals!✨",
         me: false,
-        timestamp: Date.now() - 1000 * 60 * 120,
+        timestamp: new Date(2025, 8, 10).getTime() - 1000 * 60 * 120,
       },
       {
         who: "You",
-        text: "We adore you back! What are you dreaming up?",
+        text: "OMG YAY!! SO happy to hear that! We can't wait to see the pics 🥹💖 Britt's crying, I want to see the ring he had made!",
         me: true,
-        timestamp: Date.now() - 1000 * 60 * 118,
+        timestamp: new Date(2025, 8, 10).getTime() - 1000 * 60 * 118,
       },
       {
         who: "Taylor Nation",
-        text: "We want a playful microsite + tour visuals refresh — something only your creative brain could do.",
+        text: "Heyyy our fav engaged lady wanted us to reach out about a playful microsite + (possible) tour visuals for Life of A Showgirl. Something only your creative brains can do...",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 115,
       },
       {
         who: "You",
-        text: "We’ll bring the sparkle. Sending a mini brief + mood sparks in a sec.",
+        text: "YASSS we got you/her.. we will send a mini brief + mood sparks by EOD!",
         me: true,
         timestamp: Date.now() - 1000 * 60 * 112,
       },
       {
         who: "Taylor Nation",
-        text: "Perfect — your enthusiasm and taste are exactly why we come to you.",
+        text: "Perfect you ladies are the literal best! We love your enthusiasm, fresh perspectives, and taste, that's exactly why we come to you.",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 110,
       },
@@ -39,19 +42,19 @@ export function AOLMessenger() {
     sabrina: [
       {
         who: "Sabrina Team",
-        text: "Besties! We need cheeky visuals for September 2025 promos — fun, flirty, elevated.",
+        text: "Heyyy Besties! We need cheeky visuals for that secret thing we talked about last week...fun, flirty, elevated. You know how we do.",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 90,
       },
       {
         who: "You",
-        text: "Say less. Think glossy type + motion stickers + candy‑color palette?",
+        text: "Yall are too kind! We do what we can for our girl Brina! For this top secret project, we were thinking glossy type + motion stickers + candy color palette?",
         me: true,
         timestamp: Date.now() - 1000 * 60 * 88,
       },
       {
         who: "Sabrina Team",
-        text: "Exactly. This is why we always ping you first — you get it.",
+        text: "YASSSSSSS, this is why we always run ideas by the best, you just get it.",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 86,
       },
@@ -59,19 +62,19 @@ export function AOLMessenger() {
     tyler: [
       {
         who: "Tyler",
-        text: "Yo fam — need a weird‑cool landing for a drop. You’re our people.",
+        text: "Yo fam... I need a weird‑cool landing for a coming drop...obviously you’re my people.",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 75,
       },
       {
         who: "You",
-        text: "Let’s make it playful but intentional. Send constraints + timing.",
+        text: "Heyyyy Ty of course bro! Let’s make it playful but intentional. Send your constraints + timing.",
         me: true,
         timestamp: Date.now() - 1000 * 60 * 74,
       },
       {
         who: "Tyler",
-        text: "Constraints: none 😂 Timing: soon. Love your energy.",
+        text: "Constraints: none 😂 Timing: soon. Love your energy can't wait to see what yall create, send when you can. Love yall!",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 72,
       },
@@ -79,13 +82,13 @@ export function AOLMessenger() {
     olivia: [
       {
         who: "Olivia Team",
-        text: "Hey besties — quick question: can you mock a zine‑style lyric page this week?",
+        text: "Hey besties, quick question: can you mock a zine‑style lyric page by the end of this week?",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 60,
       },
       {
         who: "You",
-        text: "Yes yes yes. We’ll sketch ideas tonight and send in the AM.",
+        text: "We got you! Sketching ideas as we speak and will send in the AM. Let's set a video call tomorrow to chat through it all!",
         me: true,
         timestamp: Date.now() - 1000 * 60 * 59,
       },
@@ -93,13 +96,13 @@ export function AOLMessenger() {
     xo: [
       {
         who: "XO Team",
-        text: "Team! You’re our go‑to for concept decks — can we book you for a September sprint?",
+        text: "Hey Ash! Hey Britt! Since you’re our go‑to for concept decks, concert visuals, and merch can we get on your books for a October sprint?",
         me: false,
         timestamp: Date.now() - 1000 * 60 * 48,
       },
       {
         who: "You",
-        text: "Locked. We’ve got fresh ideas queued and coffee ready.",
+        text: "Absolutely friend sending a cal link now! We’ve got fresh ideas queued, the mario games & the coffee ready.",
         me: true,
         timestamp: Date.now() - 1000 * 60 * 47,
       },
@@ -150,9 +153,9 @@ export function AOLMessenger() {
 
   const tracks = [
     "Taylor Swift — Fortnight",
-    "Sabrina Carpenter — Please Please Please",
-    "Tyler, the Creator — WUSYANAME",
-    "Olivia Rodrigo — bad idea right?",
+    "Sabrina Carpenter — Manchild",
+    "Tyler, the Creator — STOP Playing With Me",
+    "Olivia Rodrigo — Bad Idea Right?",
     "The Weeknd — Blinding Lights",
   ];
 
@@ -205,14 +208,14 @@ export function AOLMessenger() {
     setTypingStates((prev) => ({ ...prev, [chatKey]: true }));
 
     const lines = [
-      "Love this direction — feels very you. We’ll sketch a cute path forward.",
-      "Heard. What’s the heartbeat here — timeline, must‑haves, any no‑gos?",
-      "We can prototype this week and keep it playful but intentional.",
-      "Saving inspo to the deck right now — want a mini mood later today?",
-      "Noted, bestie. We’ll spin up options and make it feel iconic.",
+      "OMG, you guys are absolute geniuses! We always come to you first because your vibes are unmatched — can't wait to see what you create!",
+      "YASSS, this is why we love working with you! Your energy is everything, and you just get it. Let's make magic happen!",
+      "Besties, you're our go-to for a reason — your fresh perspectives and killer taste always blow us away. Sending love and excitement!",
+      "Heard loud and clear! We rave about you to everyone because you're the best at turning ideas into iconic vibes. Let's chat deets soon!",
+      "Ahh, you're the dream team! We come running to you first for your enthusiasm and brilliance — can't wait for the sparks to fly!",
     ];
     const first = lines[Math.floor(Math.random() * lines.length)];
-    const second = "Cool if we hop on a 10‑min call later today?";
+    const second = "Cool if we hop on a call later today?";
 
     setTimeout(() => {
       setTypingStates((prev) => ({ ...prev, [chatKey]: false }));
@@ -242,7 +245,13 @@ export function AOLMessenger() {
   };
 
   const handleBriefSend = () => {
-    const summary = `Brief received!\nBrand: ${briefFields.brand}\nProject: ${briefFields.project}\nVibe: ${briefFields.vibe}\nGoals: ${briefFields.goals}\nTimeline: ${briefFields.timeline}\nBudget: ${briefFields.budget}\nCompetitor: ${briefFields.competitor || "[competitor]"}\nPinterest: ${briefFields.pinterest || "[board link]"}`;
+    const summary = `Brief received!\nBrand: ${briefFields.brand}\nProject: ${
+      briefFields.project
+    }\nVibe: ${briefFields.vibe}\nGoals: ${briefFields.goals}\nTimeline: ${
+      briefFields.timeline
+    }\nBudget: ${briefFields.budget}\nCompetitor: ${
+      briefFields.competitor || "[competitor]"
+    }\nPinterest: ${briefFields.pinterest || "[board link]"}`;
     addMessage("brief", "System", summary);
   };
 
@@ -296,7 +305,14 @@ export function AOLMessenger() {
           }}
         />
         <span style={{ opacity: 0.9, marginRight: 6 }}>Now Playing:</span>
-        <div style={{ position: "relative", overflow: "hidden", flex: 1, height: 16 }}>
+        <div
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            flex: 1,
+            height: 16,
+          }}
+        >
           <div className="aol-ticker">
             <span className="aol-tick">{tracks[nowPlayingIndex]} • </span>
             <span className="aol-tick" aria-hidden>
@@ -424,48 +440,448 @@ export function AOLMessenger() {
                   <>
                     {/* Brief Us Panel */}
                     {/* Intake: name, contact, links */}
-                    <div style={{ background: "#fff", border: "1px solid #cbd5ea", borderRadius: 8, padding: 12, margin: "10px 12px" }}>
-                      <div style={{ fontWeight: 700, marginBottom: 8, color: "#1e2a4a" }}>Intake</div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                        <input placeholder="Business / Artist Name" value={briefFields.brand} onChange={(e)=>setBriefFields(p=>({...p,brand:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Your Name" value={briefFields.name} onChange={(e)=>setBriefFields(p=>({...p,name:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Email" type="email" value={briefFields.email} onChange={(e)=>setBriefFields(p=>({...p,email:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Phone" value={briefFields.phone} onChange={(e)=>setBriefFields(p=>({...p,phone:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Website" value={briefFields.website} onChange={(e)=>setBriefFields(p=>({...p,website:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Instagram" value={briefFields.instagram} onChange={(e)=>setBriefFields(p=>({...p,instagram:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="TikTok" value={briefFields.tiktok} onChange={(e)=>setBriefFields(p=>({...p,tiktok:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="X / Twitter" value={briefFields.xhandle} onChange={(e)=>setBriefFields(p=>({...p,xhandle:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
+                    <div
+                      style={{
+                        background: "#fff",
+                        border: "1px solid #cbd5ea",
+                        borderRadius: 8,
+                        padding: 12,
+                        margin: "10px 12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          marginBottom: 8,
+                          color: "#1e2a4a",
+                        }}
+                      >
+                        Intake
+                      </div>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: 8,
+                        }}
+                      >
+                        <input
+                          placeholder="Business / Artist Name"
+                          value={briefFields.brand}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              brand: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Your Name"
+                          value={briefFields.name}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              name: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Email"
+                          type="email"
+                          value={briefFields.email}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              email: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Phone"
+                          value={briefFields.phone}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              phone: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Website"
+                          value={briefFields.website}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              website: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Instagram"
+                          value={briefFields.instagram}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              instagram: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="TikTok"
+                          value={briefFields.tiktok}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              tiktok: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="X / Twitter"
+                          value={briefFields.xhandle}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              xhandle: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
                       </div>
                     </div>
 
                     {/* Creative Lab: strategy cues */}
-                    <div style={{ background: "#fff", border: "1px solid #cbd5ea", borderRadius: 8, padding: 12, margin: "10px 12px" }}>
-                      <div style={{ fontWeight: 700, marginBottom: 8, color: "#1e2a4a" }}>Creative Lab</div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                        <input placeholder="Project" value={briefFields.project} onChange={(e)=>setBriefFields(p=>({...p,project:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Primary Goal" value={briefFields.goals} onChange={(e)=>setBriefFields(p=>({...p,goals:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Timeline" value={briefFields.timeline} onChange={(e)=>setBriefFields(p=>({...p,timeline:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Budget" value={briefFields.budget} onChange={(e)=>setBriefFields(p=>({...p,budget:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Audience(s)" value={briefFields.audiences} onChange={(e)=>setBriefFields(p=>({...p,audiences:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Vibe / adjectives" value={briefFields.vibe} onChange={(e)=>setBriefFields(p=>({...p,vibe:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Brand voice" value={briefFields.brandVoice} onChange={(e)=>setBriefFields(p=>({...p,brandVoice:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Deliverables" value={briefFields.deliverables} onChange={(e)=>setBriefFields(p=>({...p,deliverables:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Palette" value={briefFields.palette} onChange={(e)=>setBriefFields(p=>({...p,palette:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Typography" value={briefFields.typography} onChange={(e)=>setBriefFields(p=>({...p,typography:e.target.value}))} style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="References (links)" value={briefFields.references} onChange={(e)=>setBriefFields(p=>({...p,references:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-                        <input placeholder="Constraints / must‑haves" value={briefFields.constraints} onChange={(e)=>setBriefFields(p=>({...p,constraints:e.target.value}))} style={{ gridColumn: "1 / -1", padding: 8, border: "1px solid #8aa1c5", borderRadius: 6 }} />
+                    <div
+                      style={{
+                        background: "#fff",
+                        border: "1px solid #cbd5ea",
+                        borderRadius: 8,
+                        padding: 12,
+                        margin: "10px 12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          marginBottom: 8,
+                          color: "#1e2a4a",
+                        }}
+                      >
+                        Creative Lab
+                      </div>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: 8,
+                        }}
+                      >
+                        <input
+                          placeholder="Project"
+                          value={briefFields.project}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              project: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Primary Goal"
+                          value={briefFields.goals}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              goals: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Timeline"
+                          value={briefFields.timeline}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              timeline: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Budget"
+                          value={briefFields.budget}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              budget: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Audience(s)"
+                          value={briefFields.audiences}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              audiences: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Vibe / adjectives"
+                          value={briefFields.vibe}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              vibe: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Brand voice"
+                          value={briefFields.brandVoice}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              brandVoice: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Deliverables"
+                          value={briefFields.deliverables}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              deliverables: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Palette"
+                          value={briefFields.palette}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              palette: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Typography"
+                          value={briefFields.typography}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              typography: e.target.value,
+                            }))
+                          }
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="References (links)"
+                          value={briefFields.references}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              references: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <input
+                          placeholder="Constraints / must‑haves"
+                          value={briefFields.constraints}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              constraints: e.target.value,
+                            }))
+                          }
+                          style={{
+                            gridColumn: "1 / -1",
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                          }}
+                        />
                       </div>
                     </div>
 
                     {/* Mad Libs (fun outro) */}
-                    <div style={{ background: "#fff", border: "1px solid #cbd5ea", borderRadius: 8, padding: 12, margin: "10px 12px" }}>
-                      <div style={{ fontWeight: 700, marginBottom: 8, color: "#1e2a4a" }}>Mad Lib</div>
-                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                        <input value={briefFields.madlibWho} onChange={(e)=>setBriefFields(p=>({...p,madlibWho:e.target.value}))} placeholder="We / I / Brand" style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6, width: 120 }} />
+                    <div
+                      style={{
+                        background: "#fff",
+                        border: "1px solid #cbd5ea",
+                        borderRadius: 8,
+                        padding: 12,
+                        margin: "10px 12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          marginBottom: 8,
+                          color: "#1e2a4a",
+                        }}
+                      >
+                        Mad Lib
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 6,
+                          flexWrap: "wrap",
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          value={briefFields.madlibWho}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              madlibWho: e.target.value,
+                            }))
+                          }
+                          placeholder="We / I / Brand"
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                            width: 120,
+                          }}
+                        />
                         <span style={{ color: "#6c7c9b" }}>exist to</span>
-                        <input value={briefFields.madlibDo} onChange={(e)=>setBriefFields(p=>({...p,madlibDo:e.target.value}))} placeholder="help [audience] [outcome]" style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6, minWidth: 240 }} />
+                        <input
+                          value={briefFields.madlibDo}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              madlibDo: e.target.value,
+                            }))
+                          }
+                          placeholder="help [audience] [outcome]"
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                            minWidth: 240,
+                          }}
+                        />
                         <span style={{ color: "#6c7c9b" }}>so they can</span>
-                        <input value={briefFields.madlibWhy} onChange={(e)=>setBriefFields(p=>({...p,madlibWhy:e.target.value}))} placeholder="[benefit]" style={{ padding: 8, border: "1px solid #8aa1c5", borderRadius: 6, minWidth: 200 }} />
+                        <input
+                          value={briefFields.madlibWhy}
+                          onChange={(e) =>
+                            setBriefFields((p) => ({
+                              ...p,
+                              madlibWhy: e.target.value,
+                            }))
+                          }
+                          placeholder="[benefit]"
+                          style={{
+                            padding: 8,
+                            border: "1px solid #8aa1c5",
+                            borderRadius: 6,
+                            minWidth: 200,
+                          }}
+                        />
                         <span style={{ color: "#6c7c9b" }}>. ✨</span>
                       </div>
                     </div>
@@ -473,7 +889,8 @@ export function AOLMessenger() {
                       style={{
                         flex: 1,
                         padding: "12px",
-                        background: "#fffef6 url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'#fffef6\'/><path d=\'M0 20 H200\' stroke=\'#e7e1c5\' stroke-width=\'1\'/><path d=\'M0 40 H200\' stroke=\'#e7e1c5\' stroke-width=\'1\'/><path d=\'M40 0 V200\' stroke=\'#eec1c1\' stroke-width=\'2\'/></svg>') repeat",
+                        background:
+                          "#fffef6 url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#fffef6'/><path d='M0 20 H200' stroke='#e7e1c5' stroke-width='1'/><path d='M0 40 H200' stroke='#e7e1c5' stroke-width='1'/><path d='M40 0 V200' stroke='#eec1c1' stroke-width='2'/></svg>') repeat",
                         borderTop: "1px dashed #cbd5ea",
                         lineHeight: "1.8",
                       }}
@@ -586,8 +1003,7 @@ export function AOLMessenger() {
                       >
                         {briefFields.pinterest}
                       </span>
-                      .
-                      . We&apos;re aiming to share this around{" "}
+                      . . We&apos;re aiming to share this around{" "}
                       <span
                         contentEditable
                         suppressContentEditableWarning
@@ -673,8 +1089,11 @@ export function AOLMessenger() {
                         {briefFields.project} that feels {briefFields.vibe} to{" "}
                         {briefFields.goals}. Launching {briefFields.timeline},
                         budget {briefFields.budget}. Contact: {briefFields.name}{" "}
-                        ({briefFields.email}). Voice: {briefFields.brandVoice}. Audience: {briefFields.audiences}. Deliverables: {briefFields.deliverables}.
-                        Mad Lib: {briefFields.madlibWho} {briefFields.madlibDo} so they can {briefFields.madlibWhy}.
+                        ({briefFields.email}). Voice: {briefFields.brandVoice}.
+                        Audience: {briefFields.audiences}. Deliverables:{" "}
+                        {briefFields.deliverables}. Mad Lib:{" "}
+                        {briefFields.madlibWho} {briefFields.madlibDo} so they
+                        can {briefFields.madlibWhy}.
                       </div>
                       <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
                         <button
@@ -691,38 +1110,44 @@ export function AOLMessenger() {
                           Save Brief
                         </button>
                         <a
-                          href={
-                            (() => {
-                              const subject = encodeURIComponent("Brief Us — The Agency OS");
-                              const bodyRaw = [
-                                `Business/Artist: ${briefFields.brand}`,
-                                `Contact: ${briefFields.name} <${briefFields.email}> ${briefFields.phone ? ' | ' + briefFields.phone : ''}`,
-                                `Website: ${briefFields.website}`,
-                                `Socials: IG ${briefFields.instagram}  TT ${briefFields.tiktok}  X ${briefFields.xhandle}`,
-                                ``,
-                                `Project: ${briefFields.project}`,
-                                `Goals: ${briefFields.goals}`,
-                                `Timeline: ${briefFields.timeline}`,
-                                `Budget: ${briefFields.budget}`,
-                                `Audience(s): ${briefFields.audiences}`,
-                                `Vibe: ${briefFields.vibe}`,
-                                `Voice: ${briefFields.brandVoice}`,
-                                `Deliverables: ${briefFields.deliverables}`,
-                                `Palette: ${briefFields.palette}`,
-                                `Typography: ${briefFields.typography}`,
-                                `References: ${briefFields.references}`,
-                                `Constraints: ${briefFields.constraints}`,
-                                `Competitor: ${briefFields.competitor}`,
-                                `Pinterest: ${briefFields.pinterest}`,
-                                ``,
-                                `Mad Lib: ${briefFields.madlibWho} ${briefFields.madlibDo} so they can ${briefFields.madlibWhy}.`,
-                                ``,
-                                `(Generated from the Brief Us panel in The Agency OS)`
-                              ].join('\n');
-                              const body = encodeURIComponent(bodyRaw);
-                              return `mailto:hello@meettheagency.com?subject=${subject}&body=${body}`;
-                            })()
-                          }
+                          href={(() => {
+                            const subject = encodeURIComponent(
+                              "Brief Us — The Agency OS"
+                            );
+                            const bodyRaw = [
+                              `Business/Artist: ${briefFields.brand}`,
+                              `Contact: ${briefFields.name} <${
+                                briefFields.email
+                              }> ${
+                                briefFields.phone
+                                  ? " | " + briefFields.phone
+                                  : ""
+                              }`,
+                              `Website: ${briefFields.website}`,
+                              `Socials: IG ${briefFields.instagram}  TT ${briefFields.tiktok}  X ${briefFields.xhandle}`,
+                              ``,
+                              `Project: ${briefFields.project}`,
+                              `Goals: ${briefFields.goals}`,
+                              `Timeline: ${briefFields.timeline}`,
+                              `Budget: ${briefFields.budget}`,
+                              `Audience(s): ${briefFields.audiences}`,
+                              `Vibe: ${briefFields.vibe}`,
+                              `Voice: ${briefFields.brandVoice}`,
+                              `Deliverables: ${briefFields.deliverables}`,
+                              `Palette: ${briefFields.palette}`,
+                              `Typography: ${briefFields.typography}`,
+                              `References: ${briefFields.references}`,
+                              `Constraints: ${briefFields.constraints}`,
+                              `Competitor: ${briefFields.competitor}`,
+                              `Pinterest: ${briefFields.pinterest}`,
+                              ``,
+                              `Mad Lib: ${briefFields.madlibWho} ${briefFields.madlibDo} so they can ${briefFields.madlibWhy}.`,
+                              ``,
+                              `(Generated from the Brief Us panel in The Agency OS)`,
+                            ].join("\n");
+                            const body = encodeURIComponent(bodyRaw);
+                            return `mailto:hello@meettheagency.com?subject=${subject}&body=${body}`;
+                          })()}
                           style={{
                             padding: "6px 12px",
                             background: "#2b5fb8",
@@ -778,7 +1203,11 @@ export function AOLMessenger() {
                           </span>
                         </div>
                       ))}
-                      <div ref={(el) => { if (el) endRefs.current[tab] = el; }} />
+                      <div
+                        ref={(el) => {
+                          if (el) endRefs.current[tab] = el;
+                        }}
+                      />
                     </div>
 
                     {/* Composer */}
@@ -861,8 +1290,12 @@ export function AOLMessenger() {
           padding-left: 4px;
         }
         @keyframes aol-marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </div>

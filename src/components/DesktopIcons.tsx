@@ -21,14 +21,62 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const initialIcons: IconItem[] = [
-    { key: "aol", label: "Messenger", iconSrc: "/images/icons/aol.svg", x: 24, y: 96 },
-    { key: "mash", label: "MASH", iconSrc: "/images/icons/mash.svg", x: 24, y: 176 },
-    { key: "about", label: "Meet Marketing Baddies in Your Area", iconSrc: "/images/icons/about.svg", x: 24, y: 256 },
-    { key: "faq", label: "Help & Tips", iconSrc: "/images/icons/faq.svg", x: 24, y: 336 },
-    { key: "notes", label: "Sticky Notes", iconSrc: "/images/icons/notes.svg", x: 120, y: 96 },
-    { key: "mysteryClub", label: "Mystery Club", iconSrc: "/images/icons/mystery.svg", x: 120, y: 176 },
-    { key: "coffeeClub", label: "Coffee Club", iconSrc: "/images/icons/coffee.svg", x: 120, y: 256 },
-    { key: "portfolio", label: "Portfolio", iconSrc: "/globe.svg", x: 216, y: 96 },
+    {
+      key: "aol",
+      label: "Messenger",
+      iconSrc: "/images/icons/aol.svg",
+      x: 24,
+      y: 96,
+    },
+    {
+      key: "mash",
+      label: "MASH",
+      iconSrc: "/images/icons/mash.svg",
+      x: 24,
+      y: 176,
+    },
+    {
+      key: "about",
+      label: "Meet Marketing Baddies in Your Area",
+      iconSrc: "/images/icons/about.svg",
+      x: 24,
+      y: 256,
+    },
+    {
+      key: "faq",
+      label: "Help & Tips",
+      iconSrc: "/images/icons/faq.svg",
+      x: 24,
+      y: 336,
+    },
+    {
+      key: "notes",
+      label: "Sticky Notes",
+      iconSrc: "/images/icons/notes.svg",
+      x: 120,
+      y: 96,
+    },
+    {
+      key: "mysteryClub",
+      label: "Mystery Club",
+      iconSrc: "/images/icons/mystery.svg",
+      x: 120,
+      y: 176,
+    },
+    {
+      key: "coffeeClub",
+      label: "Coffee Club",
+      iconSrc: "/images/icons/coffee.svg",
+      x: 120,
+      y: 256,
+    },
+    {
+      key: "portfolio",
+      label: "Portfolio",
+      iconSrc: "/globe.svg",
+      x: 216,
+      y: 96,
+    },
     { key: "trash", label: "Trash", iconSrc: "/window.svg", x: 216, y: 176 },
   ];
 
@@ -67,7 +115,9 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
         if (hadSavedRef.current) return;
         // Validate and merge: only known keys
         const byKey = new Map<WindowKey, IconItem>();
-        (items.length ? items : initialIcons).forEach((i) => byKey.set(i.key, i));
+        (items.length ? items : initialIcons).forEach((i) =>
+          byKey.set(i.key, i)
+        );
         (data as Partial<IconItem>[]).forEach((d) => {
           const key = d.key as WindowKey | undefined;
           if (!key || !byKey.has(key)) return;
@@ -87,7 +137,9 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
           "newsletter",
           "virus",
         ];
-        const merged = Array.from(byKey.values()).filter((i) => !EXCLUDED.includes(i.key));
+        const merged = Array.from(byKey.values()).filter(
+          (i) => !EXCLUDED.includes(i.key)
+        );
         // One-time auto-arrange to set an initial tidy layout for first-time visitors only
         const arranged = autoArrange(merged);
         setItems(arranged);
@@ -146,7 +198,10 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
     const vh = typeof window !== "undefined" ? window.innerHeight : 800;
     const COL_W = 100;
     const LEFT = 24;
-    const maxCols = Math.max(2, Math.min(6, Math.floor((vw - LEFT * 2) / COL_W)));
+    const maxCols = Math.max(
+      2,
+      Math.min(6, Math.floor((vw - LEFT * 2) / COL_W))
+    );
     const COL_X = Array.from({ length: maxCols }, (_v, i) => LEFT + i * COL_W);
     const usableH = Math.max(200, vh - TASKBAR - TOP - 16);
     const rowsPerCol = Math.max(1, Math.floor(usableH / V));
@@ -231,38 +286,90 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       className="pointer-events-none select-none"
       style={{ position: "relative", width: "100%", height: 0 }}
     >
+      {/* Render all icons except special items (trash handled separately) */}
       {items
-        .filter((item) => !["clippy", "ads", "instaAd", "newsletter", "virus", "faq"].includes(item.key))
+        .filter(
+          (item) =>
+            ![
+              "clippy",
+              "ads",
+              "instaAd",
+              "newsletter",
+              "virus",
+              "faq",
+              "trash",
+            ].includes(item.key)
+        )
         .map((item) => {
           const pos = { x: item.x, y: item.y };
           return (
             <button
-            key={item.key}
-            data-win-key={item.key}
-            onClick={() => onOpen(item.key)}
-            onMouseDown={(e) => startDrag(e, item.key)}
+              key={item.key}
+              data-win-key={item.key}
+              onClick={() => onOpen(item.key)}
+              onMouseDown={(e) => startDrag(e, item.key)}
+              className="group flex flex-col items-center w-20 focus:outline-none"
+              style={{
+                position: "absolute",
+                left: pos.x,
+                top: pos.y,
+                pointerEvents: "auto",
+              }}
+              aria-label={item.label}
+              title={item.label}
+            >
+              <div
+                className="w-12 h-12 rounded-lg bg-white/15 border border-white/20 backdrop-blur-sm flex items-center justify-center shadow-md group-hover:bg-white/25 transition-colors"
+                style={{ imageRendering: "pixelated" }}
+              >
+                <TransparentIcon
+                  keyId={item.key}
+                  src={assetPath(item.iconSrc)}
+                />
+              </div>
+              <span className="mt-1 text-[11px] leading-tight text-white/90 text-center drop-shadow">
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+
+      {/* Docked Trash - render fixed so it always stays bottom-right*/}
+      {(() => {
+        const trashItem = items.find((i) => i.key === ("trash" as WindowKey));
+        if (!trashItem) return null;
+        return (
+          <button
+            key={trashItem.key}
+            data-win-key={trashItem.key}
+            onClick={() => onOpen(trashItem.key)}
+            onMouseDown={(e) => startDrag(e, trashItem.key)}
             className="group flex flex-col items-center w-20 focus:outline-none"
             style={{
-              position: "absolute",
-              left: pos.x,
-              top: pos.y,
+              position: "fixed",
+              right: 24,
+              bottom: 96,
               pointerEvents: "auto",
+              zIndex: 1000,
             }}
-            aria-label={item.label}
-            title={item.label}
+            aria-label={trashItem.label}
+            title={trashItem.label}
           >
             <div
               className="w-12 h-12 rounded-lg bg-white/15 border border-white/20 backdrop-blur-sm flex items-center justify-center shadow-md group-hover:bg-white/25 transition-colors"
               style={{ imageRendering: "pixelated" }}
             >
-              <TransparentIcon keyId={item.key} src={assetPath(item.iconSrc)} />
+              <TransparentIcon
+                keyId={trashItem.key}
+                src={assetPath(trashItem.iconSrc)}
+              />
             </div>
             <span className="mt-1 text-[11px] leading-tight text-white/90 text-center drop-shadow">
-              {item.label}
+              {trashItem.label}
             </span>
           </button>
         );
-      })}
+      })()}
 
       {/* Right-click menu intentionally removed */}
     </div>
@@ -273,7 +380,7 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
   const [out, setOut] = useState<string | null>(null);
   useEffect(() => {
     // Only process if JPEG; otherwise use as-is
-    const cacheKey = `icon_transparent_${keyId}`;
+    const cacheKey = `<icon_transparent_1>Trash</icon_transparent_1>`;
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       setOut(cached);
@@ -293,7 +400,9 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
         const probe = new Image();
         probe.onload = () => {
           setOut(candidates[i]);
-          try { localStorage.setItem(cacheKey, candidates[i]); } catch {}
+          try {
+            localStorage.setItem(cacheKey, candidates[i]);
+          } catch {}
         };
         probe.onerror = () => tryNext(i + 1);
         probe.src = candidates[i];
@@ -323,12 +432,16 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
         const w = imageData.width;
         const h = imageData.height;
         const idx = (x: number, y: number) => (y * w + x) * 4;
-        const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+        const clamp = (n: number, min: number, max: number) =>
+          Math.max(min, Math.min(max, n));
         // corner samples
         const samples: number[][] = [];
         const patch = 4;
         const addPatch = (sx: number, sy: number) => {
-          let rr = 0, gg = 0, bb = 0, count = 0;
+          let rr = 0,
+            gg = 0,
+            bb = 0,
+            count = 0;
           for (let y = sy; y < sy + patch; y++) {
             for (let x = sx; x < sx + patch; x++) {
               const p = idx(clamp(x, 0, w - 1), clamp(y, 0, h - 1));
@@ -350,7 +463,8 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
           const db = c1[2] - c2[2];
           return dr * dr + dg * dg + db * db;
         };
-        const tol = 95, tol2 = tol * tol; // good default for icons
+        const tol = 95,
+          tol2 = tol * tol; // good default for icons
         const isBg = (x: number, y: number) => {
           const p = idx(x, y);
           const c = [data[p], data[p + 1], data[p + 2]];
@@ -367,8 +481,14 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
           visited[id] = 1;
           q.push(x, y);
         };
-        for (let x = 0; x < w; x++) { pushIf(x, 0); pushIf(x, h - 1); }
-        for (let y = 0; y < h; y++) { pushIf(0, y); pushIf(w - 1, y); }
+        for (let x = 0; x < w; x++) {
+          pushIf(x, 0);
+          pushIf(x, h - 1);
+        }
+        for (let y = 0; y < h; y++) {
+          pushIf(0, y);
+          pushIf(w - 1, y);
+        }
         while (q.length) {
           const y = q.pop() as number;
           const x = q.pop() as number;
@@ -381,7 +501,9 @@ function TransparentIcon({ src, keyId }: { src: string; keyId: string }) {
         }
         ctx.putImageData(imageData, 0, 0);
         const url = canvas.toDataURL("image/png");
-        try { localStorage.setItem(cacheKey, url); } catch {}
+        try {
+          localStorage.setItem(cacheKey, url);
+        } catch {}
         setOut(url);
       } catch {
         setOut(src);
