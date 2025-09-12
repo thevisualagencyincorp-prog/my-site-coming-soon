@@ -56,13 +56,15 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   const hadSavedRef = useRef<boolean>(hadSavedInit);
   const [items, setItems] = useState<IconItem[]>(initialState);
 
-  // Optional runtime override from /desktop-icons.json
+  // Optional runtime override from /desktop-icons.json (first-time only)
   useEffect(() => {
     let cancelled = false;
     fetch("/desktop-icons.json")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!data || cancelled) return;
+        // If the user (or a prior session) already has a saved layout, do not override it.
+        if (hadSavedRef.current) return;
         // Validate and merge: only known keys
         const byKey = new Map<WindowKey, IconItem>();
         (items.length ? items : initialIcons).forEach((i) => byKey.set(i.key, i));
@@ -86,10 +88,10 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
           "virus",
         ];
         const merged = Array.from(byKey.values()).filter((i) => !EXCLUDED.includes(i.key));
-        // Always auto-arrange based on viewport so spacing is neat and consistent
+        // One-time auto-arrange to set an initial tidy layout for first-time visitors only
         const arranged = autoArrange(merged);
         setItems(arranged);
-        // Persist as the active default and mark version so all users adopt it
+        hadSavedRef.current = true;
         try {
           localStorage.setItem("desktop_icons_v1", JSON.stringify(arranged));
           localStorage.setItem("desktop_icons_version", CURRENT_LAYOUT_VERSION);
@@ -99,19 +101,6 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  // Re-flow neatly on viewport resize to avoid awkward overlaps
-  useEffect(() => {
-    const onResize = () => {
-      try {
-        const savedVersion = localStorage.getItem("desktop_icons_version");
-        if (savedVersion !== CURRENT_LAYOUT_VERSION) return; // respect custom layouts
-      } catch {}
-      setItems((prev) => autoArrange(prev));
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   // Keep simple local positions; no need for an index map yet.
@@ -172,10 +161,10 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       arranged.push({ ...others[idx], x, y });
     }
     if (trash) {
-      // bottom-left above taskbar
+      // Place Trash bottom-right above the taskbar (near the system tray)
       arranged.push({
         ...trash,
-        x: COL_X[0],
+        x: COL_X[Math.max(0, COL_X.length - 1)],
         y: TOP + (rowsPerCol - 1) * V,
       });
     }
