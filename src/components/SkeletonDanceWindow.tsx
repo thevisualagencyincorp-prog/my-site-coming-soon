@@ -177,8 +177,8 @@ export function SkeletonDanceWindow() {
                 <video
                   ref={videoRef}
                   autoPlay
-                  controls
-                  muted={muted}
+                  muted
+                  loop
                   playsInline
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   poster="/images/Background:night.png"
@@ -193,22 +193,7 @@ export function SkeletonDanceWindow() {
                     type="video/mp4"
                   />
                 </video>
-                <div style={{ position: "absolute", bottom: 10, left: 10 }}>
-                  <button
-                    onClick={() => setMuted((m) => !m)}
-                    style={{
-                      padding: "6px 10px",
-                      background: "#ffffffcc",
-                      border: "1px solid #cbd5ea",
-                      borderRadius: 6,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      color: "#1e2a4a",
-                    }}
-                  >
-                    {muted ? "Unmute" : "Mute"}
-                  </button>
-                </div>
+                {/* No controls overlay; system volume applies */}
               </div>
             )}
           </div>

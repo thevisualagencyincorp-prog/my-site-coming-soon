@@ -32,6 +32,7 @@ import {
   ArchiveWindow,
   MTVWindow,
   BookWindow,
+  SocialAdMakerWindow,
 } from "@/components";
 import type { WindowKey } from "@/components/StartMenu";
 
@@ -68,7 +69,7 @@ export default function Page() {
       // start roughly centered; openWindow will also center
       pos: { x: 200, y: 160 },
       // larger, chat-friendly default size
-      size: { w: 720, h: 520 },
+      size: { w: 780, h: 640 },
     },
     ads: {
       open: false,
@@ -213,6 +214,14 @@ export default function Page() {
       z: 0,
       pos: { x: 240, y: 180 },
       size: { w: 640, h: 420 },
+    },
+    adMaker: {
+      open: false,
+      minimized: false,
+      maximized: false,
+      z: 0,
+      pos: { x: 220, y: 160 },
+      size: { w: 720, h: 560 },
     },
     instaAd: {
       open: false,
@@ -445,6 +454,18 @@ export default function Page() {
     return () => window.removeEventListener("resize", updateIsMobile);
   }, []);
 
+  // Notify global listeners (e.g., Clippy) of how many windows are open
+  useEffect(() => {
+    try {
+      const openCount = Object.entries(windows).reduce((acc, [k, v]) => {
+        // exclude overlay helpers
+        if (k === "clippy" || k === "bsod") return acc;
+        return acc + (v.open ? 1 : 0);
+      }, 0);
+      window.dispatchEvent(new CustomEvent("windowsOpenCount", { detail: openCount }));
+    } catch {}
+  }, [windows]);
+
   // Show Clippy shortly after the desktop loads
   useEffect(() => {
     if (isLoading) return;
@@ -604,6 +625,9 @@ export default function Page() {
                   />
                 </div>
               );
+              break;
+            case "adMaker":
+              content = <SocialAdMakerWindow />;
               break;
             case "trash":
               content = <ArchiveWindow />;

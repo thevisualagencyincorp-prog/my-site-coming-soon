@@ -31,3 +31,4 @@ export { ArchiveWindow } from "./ArchiveWindow";
 export { MTVWindow } from "./MTVWindow";
 export { BookWindow } from "./BookWindow";
 export { DesktopIcons } from "./DesktopIcons";
+export { SocialAdMakerWindow } from "./SocialAdMakerWindow";

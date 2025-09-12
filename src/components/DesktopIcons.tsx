@@ -17,6 +17,7 @@ interface DesktopIconsProps {
 }
 
 export function DesktopIcons({ onOpen }: DesktopIconsProps) {
+  const CURRENT_LAYOUT_VERSION = "2025-09-12-main-v2";
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const initialIcons: IconItem[] = [
@@ -36,15 +37,24 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   const ICON_W = 80; // approx button width
   const ICON_H = 80; // approx button height
 
-  const [items, setItems] = useState<IconItem[]>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const raw = window.localStorage.getItem("desktop_icons_v1");
-        if (raw) return JSON.parse(raw) as IconItem[];
-      } catch {}
-    }
-    return initialIcons;
-  });
+  // Detect saved layout once, before state init
+  let hadSavedInit = false;
+  let initialState: IconItem[] = initialIcons;
+  if (typeof window !== "undefined") {
+    try {
+      const savedVersion = window.localStorage.getItem("desktop_icons_version");
+      const raw = window.localStorage.getItem("desktop_icons_v1");
+      if (raw && savedVersion === CURRENT_LAYOUT_VERSION) {
+        hadSavedInit = true;
+        initialState = JSON.parse(raw) as IconItem[];
+      } else {
+        // Clear outdated layout to adopt the new default
+        window.localStorage.removeItem("desktop_icons_v1");
+      }
+    } catch {}
+  }
+  const hadSavedRef = useRef<boolean>(hadSavedInit);
+  const [items, setItems] = useState<IconItem[]>(initialState);
 
   // Optional runtime override from /desktop-icons.json
   useEffect(() => {
@@ -75,7 +85,13 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
           "newsletter",
           "virus",
         ];
-        setItems(Array.from(byKey.values()).filter((i) => !EXCLUDED.includes(i.key)));
+        const merged = Array.from(byKey.values()).filter((i) => !EXCLUDED.includes(i.key));
+        setItems(merged);
+        // Persist as the active default and mark version so all users adopt it
+        try {
+          localStorage.setItem("desktop_icons_v1", JSON.stringify(merged));
+          localStorage.setItem("desktop_icons_version", CURRENT_LAYOUT_VERSION);
+        } catch {}
       })
       .catch(() => {});
     return () => {
@@ -115,6 +131,37 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       localStorage.setItem("desktop_icons_v1", JSON.stringify(items));
     } catch {}
   }, [items]);
+
+  // Auto-arrange into neat columns with natural spacing
+  const autoArrange = (list: IconItem[]) => {
+    // Use natural left-to-right, top-to-bottom across stable list order (no alpha sort)
+    const COL_X = [24, 124, 224, 324];
+    const TOP = 96;
+    const V = 88; // vertical spacing that breathes
+    const TASKBAR = 64;
+    const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const usableH = Math.max(200, vh - TASKBAR - TOP - 16);
+    const rowsPerCol = Math.max(1, Math.floor(usableH / V));
+    const others = list.filter((i) => i.key !== ("trash" as WindowKey));
+    const trash = list.find((i) => i.key === ("trash" as WindowKey));
+    const arranged: IconItem[] = [];
+    for (let idx = 0; idx < others.length; idx++) {
+      const col = Math.floor(idx / rowsPerCol);
+      const row = idx % rowsPerCol;
+      const x = COL_X[Math.min(col, COL_X.length - 1)];
+      const y = TOP + row * V;
+      arranged.push({ ...others[idx], x, y });
+    }
+    if (trash) {
+      // bottom-left above taskbar
+      arranged.push({
+        ...trash,
+        x: COL_X[0],
+        y: TOP + (rowsPerCol - 1) * V,
+      });
+    }
+    return arranged;
+  };
 
   const startDrag = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,

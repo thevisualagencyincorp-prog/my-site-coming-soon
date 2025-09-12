@@ -23,6 +23,7 @@ export type WindowKey =
   | "trash"
   | "instaAd"
   | "mtv"
+  | "adMaker"
   | "book";
 
 interface StartMenuProps {
@@ -61,6 +62,7 @@ const menuItems: {
   { key: "vibeCheck", label: "Vibe Check", icon: "✨", category: "Tools" },
   { key: "portfolio", label: "Portfolio", icon: "🌐", category: "Studio" },
   { key: "trash", label: "Trash", icon: "🗑️", category: "Studio" },
+  { key: "adMaker", label: "Agency AI — Ad Maker", icon: "🖼️", category: "Tools" },
   { key: "book", label: "Get on our calendar", icon: "🗓️", category: "Communication" },
   { key: "mtv", label: "MTV 00s", icon: "📺", category: "Fun" },
   {

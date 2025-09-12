@@ -17,6 +17,15 @@ export function ClippyWindow() {
     return { x: 50, y: 70 };
   });
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [home, setHome] = useState<{ x: number; y: number }>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("clippy_home_v1");
+        if (raw) return JSON.parse(raw) as { x: number; y: number };
+      } catch {}
+    }
+    return { x: 50, y: 70 };
+  });
   const [showBubble, setShowBubble] = useState(false);
   const [hasOnboarded, setHasOnboarded] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -71,6 +80,7 @@ export function ClippyWindow() {
     const x = 216 + 24; // matches DesktopIcons default cols spacing
     const y = 96; // near top row of icons
     setPosition({ x, y });
+    setHome({ x, y });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,6 +91,19 @@ export function ClippyWindow() {
       return () => clearTimeout(t);
     }
   }, [imgLoaded]);
+
+  // When no windows are open, return to home position
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<number>;
+      const count = (ce && ce.detail) ?? 0;
+      if (typeof count === "number" && count <= 0) {
+        setPosition((prev) => (prev.x === home.x && prev.y === home.y ? prev : { x: home.x, y: home.y }));
+      }
+    };
+    window.addEventListener("windowsOpenCount", handler as EventListener);
+    return () => window.removeEventListener("windowsOpenCount", handler as EventListener);
+  }, [home]);
 
   // natural typing: type per char with slight jitter; hold after complete based on length
   useEffect(() => {
@@ -272,7 +295,11 @@ export function ClippyWindow() {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    try { localStorage.setItem("clippy_pos_v1", JSON.stringify(position)); } catch {}
+    try {
+      localStorage.setItem("clippy_pos_v1", JSON.stringify(position));
+      setHome(position);
+      localStorage.setItem("clippy_home_v1", JSON.stringify(position));
+    } catch {}
   };
 
   const currentMsg = messages[currentMessage];
@@ -340,9 +367,16 @@ export function ClippyWindow() {
               cursor: isDragging ? "grabbing" : "grab",
               zIndex: 1000,
               pointerEvents: "auto",
+              transition: "left 240ms ease, top 240ms ease",
             }}
             onMouseDown={handleMouseDown}
-            onClick={() => setShowBubble((v) => !v)}
+            onClick={() => {
+              // Make Clippy react: show bubble and advance to a fresh tip
+              setShowBubble(true);
+              setTypedIndex(0);
+              setIsTyping(true);
+              setCurrentMessage((p) => (p + 1) % messages.length);
+            }}
           >
             {/* Processed Clippy image with transparent background */}
             {clippySrc && (
