@@ -86,10 +86,12 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
           "virus",
         ];
         const merged = Array.from(byKey.values()).filter((i) => !EXCLUDED.includes(i.key));
-        setItems(merged);
+        // Always auto-arrange based on viewport so spacing is neat and consistent
+        const arranged = autoArrange(merged);
+        setItems(arranged);
         // Persist as the active default and mark version so all users adopt it
         try {
-          localStorage.setItem("desktop_icons_v1", JSON.stringify(merged));
+          localStorage.setItem("desktop_icons_v1", JSON.stringify(arranged));
           localStorage.setItem("desktop_icons_version", CURRENT_LAYOUT_VERSION);
         } catch {}
       })
@@ -97,6 +99,19 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  // Re-flow neatly on viewport resize to avoid awkward overlaps
+  useEffect(() => {
+    const onResize = () => {
+      try {
+        const savedVersion = localStorage.getItem("desktop_icons_version");
+        if (savedVersion !== CURRENT_LAYOUT_VERSION) return; // respect custom layouts
+      } catch {}
+      setItems((prev) => autoArrange(prev));
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   // Keep simple local positions; no need for an index map yet.
@@ -135,11 +150,15 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
   // Auto-arrange into neat columns with natural spacing
   const autoArrange = (list: IconItem[]) => {
     // Use natural left-to-right, top-to-bottom across stable list order (no alpha sort)
-    const COL_X = [24, 124, 224, 324];
+    const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
     const TOP = 96;
-    const V = 88; // vertical spacing that breathes
+    const V = 92; // vertical spacing that breathes
     const TASKBAR = 64;
     const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    const COL_W = 100;
+    const LEFT = 24;
+    const maxCols = Math.max(2, Math.min(6, Math.floor((vw - LEFT * 2) / COL_W)));
+    const COL_X = Array.from({ length: maxCols }, (_v, i) => LEFT + i * COL_W);
     const usableH = Math.max(200, vh - TASKBAR - TOP - 16);
     const rowsPerCol = Math.max(1, Math.floor(usableH / V));
     const others = list.filter((i) => i.key !== ("trash" as WindowKey));

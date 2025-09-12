@@ -295,8 +295,18 @@ export function AOLMessenger() {
             boxShadow: "0 0 6px #27c93f",
           }}
         />
-        <span style={{ opacity: 0.9 }}>Now Playing:</span>
-        <span style={{ fontWeight: 700 }}>{tracks[nowPlayingIndex]}</span>
+        <span style={{ opacity: 0.9, marginRight: 6 }}>Now Playing:</span>
+        <div style={{ position: "relative", overflow: "hidden", flex: 1, height: 16 }}>
+          <div className="aol-ticker">
+            <span className="aol-tick">{tracks[nowPlayingIndex]} • </span>
+            <span className="aol-tick" aria-hidden>
+              {tracks[nowPlayingIndex]} •
+            </span>
+            <span className="aol-tick" aria-hidden>
+              {tracks[nowPlayingIndex]} •
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -842,6 +852,19 @@ export function AOLMessenger() {
       </div>
 
       {/* Footer spacer removed (ticker moved to header) */}
+      <style jsx>{`
+        .aol-ticker {
+          display: inline-block;
+          white-space: nowrap;
+          will-change: transform;
+          animation: aol-marquee 18s linear infinite;
+          padding-left: 4px;
+        }
+        @keyframes aol-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </div>
   );
 }
