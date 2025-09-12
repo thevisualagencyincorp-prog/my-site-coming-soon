@@ -118,19 +118,22 @@ export function FunnyCatWindow() {
             </div>
           ) : (
             <div style={{ width: "100%", height: "100%", position: "relative" }}>
-              <video
-                autoPlay
-                muted
-                playsInline
-                loop
-                onError={(e) => {
-                  // Hide video on error to avoid black box
-                  (e.currentTarget.style.display = 'none');
+              {/* YouTube embed of curated cats clip (no controls, autoplay muted) */}
+              <iframe
+                title="Curated Cats"
+                src={
+                  "https://www.youtube-nocookie.com/embed/uwmeH6Rnj2E?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=uwmeH6Rnj2E"
+                }
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
                 }}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              >
-                <source src={process.env.NEXT_PUBLIC_CATS_VIDEO_URL || "/videos/cats.mp4"} type="video/mp4" />
-              </video>
+              />
             </div>
           )}
         </div>
