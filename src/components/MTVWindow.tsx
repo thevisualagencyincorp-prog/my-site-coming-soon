@@ -5,8 +5,19 @@ export function MTVWindow() {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState(false);
   const src =
     "https://ia800500.us.archive.org/18/items/mtv-00s-non-stop-y-2-ks-1h-03112023/MTV%2000s%20-%20Non-Stop%20Y2KS%20%281h%29%2803112023%29.mp4";
+
+  const handleVideoError = () => {
+    setError(true);
+    setReady(false);
+  };
+
+  const handleVideoLoad = () => {
+    setReady(true);
+    setError(false);
+  };
 
   return (
     <div
@@ -51,11 +62,12 @@ export function MTVWindow() {
             muted={muted}
             playsInline
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            onLoadedData={() => setReady(true)}
-            onCanPlay={() => setReady(true)}
+            onLoadedData={handleVideoLoad}
+            onCanPlay={handleVideoLoad}
+            onError={handleVideoError}
           />
         </div>
-        {!ready && (
+        {!ready && !error && (
           <div
             style={{
               position: "absolute",
@@ -69,6 +81,51 @@ export function MTVWindow() {
             }}
           >
             Loading… 📺
+          </div>
+        )}
+        {error && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              opacity: 0.8,
+              fontSize: 14,
+              textAlign: "center",
+              padding: "20px",
+            }}
+          >
+            <div style={{ fontSize: 24, marginBottom: 10 }}>📺</div>
+            <div>MTV Video Unavailable</div>
+            <div style={{ fontSize: 12, marginTop: 10, opacity: 0.7 }}>
+              The video stream may be temporarily unavailable.<br />
+              Please try again later.
+            </div>
+            <button
+              onClick={() => {
+                setError(false);
+                setReady(false);
+                if (ref.current) {
+                  ref.current.load();
+                }
+              }}
+              style={{
+                marginTop: 15,
+                padding: "8px 16px",
+                background: "#ffffff22",
+                border: "1px solid #ffffff33",
+                borderRadius: 6,
+                color: "#fff",
+                cursor: "pointer",
+                fontSize: 12,
+              }}
+            >
+              Retry
+            </button>
           </div>
         )}
         <div style={{ position: "absolute", bottom: 10, left: 10, display: "flex", gap: 8 }}>
