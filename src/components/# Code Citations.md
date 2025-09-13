@@ -1,193 +1,78 @@
 # Code Citations
 
-## License: unknown
+## License: MIT
 
-https://github.com/dwayne-roberts/beauty-case/blob/8ac0023706db5c9dbb3d7b3eef9e583a9460327a/src/func/animations/attention-seekers/_bounce.scss
-
-```
-{
-          0%, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
-```
-
-## License: unknown
-
-https://github.com/irvngt/grupoCriterio/blob/4186b632110e3f73b9cff17cc2e594e24d231c55/suguridad_themewp/style.scss
+<https://github.com/kyh/kyh.io/blob/01a5f620b3f4186644ce8d1fd39b79d60c97f144/app/layout.tsx>
 
 ```
-{
-          0%, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
+",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "
 ```
 
 ## License: MIT
 
-https://github.com/VinciProtocol/vinci-ui/blob/ede0e0ca8251b7ffd6fda28886221023d665b6c1/utils/style/keyframes/bounce.tsx
+<https://github.com/JHSeo-git/blog.seonest.net/blob/5e41a20166eb385d010abd0df5af659f0213a5da/src/app/layout.tsx>
 
 ```
-{
-          0%, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
-```
-
-## License: unknown
-
-https://github.com/dwayne-roberts/beauty-case/blob/8ac0023706db5c9dbb3d7b3eef9e583a9460327a/src/func/animations/attention-seekers/_bounce.scss
-
-```
-, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
-```
-
-## License: MIT
-
-https://github.com/VinciProtocol/vinci-ui/blob/ede0e0ca8251b7ffd6fda28886221023d665b6c1/utils/style/keyframes/bounce.tsx
-
-```
-, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
+",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "
 ```
 
 ## License: unknown
 
-https://github.com/dwayne-roberts/beauty-case/blob/8ac0023706db5c9dbb3d7b3eef9e583a9460327a/src/func/animations/attention-seekers/_bounce.scss
+<https://github.com/piratefresh/Creatorhub/blob/27500a457255cea2668beeab68a5d932c05a0d22/apps/web/app/layout.tsx>
 
 ```
-, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
-```
-
-## License: MIT
-
-https://github.com/VinciProtocol/vinci-ui/blob/ede0e0ca8251b7ffd6fda28886221023d665b6c1/utils/style/keyframes/bounce.tsx
-
-```
-, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
+",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "
 ```
 
 ## License: unknown
 
-https://github.com/dwayne-roberts/beauty-case/blob/8ac0023706db5c9dbb3d7b3eef9e583a9460327a/src/func/animations/attention-seekers/_bounce.scss
+<https://github.com/NTNUMovieFestival/NTNUMovieFestival.github.io/blob/76f4def465588edcd14bd60a8a67241070d58fa8/index.html>
 
 ```
-, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
-```
-
-## License: MIT
-
-https://github.com/VinciProtocol/vinci-ui/blob/ede0e0ca8251b7ffd6fda28886221023d665b6c1/utils/style/keyframes/bounce.tsx
-
-```
-, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -30px, 0);
-          }
-          70% {
-            transform: translate3d(0, -15px, 0);
-          }
-          90% {
-            transform: translate3d(0, -4px, 0);
-          }
-        }
-      `
+images/og.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content=
 ```

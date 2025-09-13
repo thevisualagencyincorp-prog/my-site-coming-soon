@@ -17,68 +17,73 @@ export function FAQWindow() {
       {
         question: "What is The Agency OS™?",
         answer:
-          "The Agency OS™ is our interactive desktop environment where you can explore our services, learn about our team, and connect with us. It's designed to give you a fun, retro Windows experience while showcasing our creative work.",
+          "The Agency OS™ is our interactive desktop environment showcasing our award-winning creative digital agency services. Experience our unique approach to web development, branding, and digital marketing through this retro Windows-inspired interface.",
       },
       {
         question: "How do I navigate the desktop?",
         answer:
-          "Click on any window icon to open it, or use the Start menu at the bottom left. You can move windows around by dragging their title bars, and close them with the X button in the top-right corner.",
+          "Click on any window icon to explore our services, or use the Start menu at the bottom left. You can move windows around by dragging their title bars, and close them with the X button in the top-right corner. It's designed to be intuitive and engaging!",
       },
       {
         question: "Is this a real operating system?",
         answer:
-          "No, this is a web-based interactive experience designed to showcase our agency's personality and services in a fun, memorable way!",
+          "No, this is a custom web-based interactive experience designed to showcase our agency's personality and comprehensive digital services in a memorable, engaging way that reflects our creative expertise.",
       },
     ],
     services: [
       {
-        question: "What services do you offer?",
+        question: "What digital agency services do you offer?",
         answer:
-          "We offer comprehensive creative services including brand identity design, website development, social media strategy, content creation, photography, and digital marketing solutions.",
+          "We offer comprehensive creative digital agency services including custom web development, app development, brand identity design, logo design, website design, e-commerce development, social media marketing, content creation, SEO services, digital advertising, photo/videography, photography services, video production, and complete digital marketing strategies.",
       },
       {
         question: "Do you work with all types of businesses?",
         answer:
-          "Absolutely! We work with startups, established businesses, non-profits, and creative individuals. Our approach is tailored to each client's unique needs and goals.",
+          "Absolutely! We work with startups, established businesses, e-commerce brands, non-profits, creative agencies, and individual entrepreneurs. Our approach is tailored to each client's unique needs, industry, and business goals.",
       },
       {
-        question: "Can you help with both digital and print design?",
+        question: "Do you offer photo/videography services?",
         answer:
-          "Yes! We handle everything from digital assets (websites, social media graphics) to print materials (business cards, brochures, packaging, etc.).",
+          "Yes! We provide professional photography services and video production for brands, including product photography, corporate headshots, event coverage, promotional videos, social media content, and commercial video production. Our photo/videography team captures your brand's story with creativity and technical excellence.",
+      },
+      {
+        question: "Can you develop mobile apps for my business?",
+        answer:
+          "Absolutely! We specialize in custom mobile app development for iOS and Android platforms. Whether you need a native app, cross-platform solution, or web application, our app development team creates user-friendly, scalable applications that drive engagement and business growth.",
       },
     ],
     process: [
       {
-        question: "How long does a typical project take?",
+        question: "How long does a typical web development project take?",
         answer:
-          "Project timelines vary based on scope and complexity. A simple logo design might take 1-2 weeks, while a full website could take 4-8 weeks. We'll give you a detailed timeline during our initial consultation.",
+          "Project timelines vary based on scope and complexity. A simple website design might take 2-4 weeks, while a complex e-commerce development project could take 8-12 weeks. Custom web applications may take 12-16 weeks. Mobile app development typically ranges from 8-20 weeks depending on complexity. We'll provide a detailed timeline during our free consultation.",
       },
       {
-        question: "What's your design process like?",
+        question: "What's your web design and development process like?",
         answer:
-          "We follow a collaborative process: Discovery → Strategy → Design → Feedback → Refinement → Delivery. We believe in transparent communication and regular check-ins throughout the project.",
+          "We follow a proven digital agency process: Discovery & Strategy → Wireframing & UX Design → Visual Design → Development → Testing & QA → Launch & Optimization. We believe in transparent communication, regular check-ins, and collaborative feedback throughout the entire project lifecycle.",
       },
       {
-        question: "Do you provide revisions?",
+        question: "Do you provide website maintenance and support?",
         answer:
-          "Yes! We include a set number of revisions in each project. Additional revisions can be accommodated for a small fee if needed.",
+          "Yes! We offer comprehensive website maintenance packages including security updates, performance optimization, content updates, SEO monitoring, and technical support. We also provide training so you can manage your own content.",
       },
     ],
     contact: [
       {
-        question: "How can I get in touch?",
+        question: "How can I get a quote for my web development project?",
         answer:
-          "You can reach us through our Messenger (click the AOL icon), email us at hello@meettheagency.com, or visit our website at meettheagency.com.",
+          "You can reach us through our Messenger (click the AOL icon), email us at hello@meettheagency.com, or visit our website at meettheagency.com. We offer free 30-minute discovery calls to discuss your project requirements and provide accurate quotes.",
       },
       {
-        question: "Do you offer free consultations?",
+        question: "Do you offer free consultations for digital marketing?",
         answer:
-          "Yes! We offer a free 15-minute discovery call to discuss your project and see if we're a good fit for each other.",
+          "Yes! We offer a free 30-minute strategy session to discuss your digital marketing goals, current challenges, and how our SEO services, social media marketing, digital advertising, photo/videography, and app development expertise can help grow your business.",
       },
       {
-        question: "What's your response time?",
+        question: "What's your response time for new project inquiries?",
         answer:
-          "We typically respond to inquiries within 24 hours during business days. For urgent matters, feel free to mention it in your message.",
+          "We typically respond to new project inquiries within 24 hours during business days. For urgent web development, app development, photo/videography, or digital marketing needs, feel free to mention it in your message and we'll prioritize accordingly.",
       },
     ],
   };

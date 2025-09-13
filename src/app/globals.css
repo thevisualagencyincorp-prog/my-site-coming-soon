@@ -38,7 +38,7 @@ body {
   font-weight: 400;
   letter-spacing: 0.5px;
   line-height: 1.4;
-  transition: background 400ms ease-in-out, color 400ms ease-in-out;
+  transition: 400ms ease-in-out, color 400ms ease-in-out;
 }
 
 /* Scumner.world inspired typography */

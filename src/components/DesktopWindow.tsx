@@ -301,8 +301,11 @@ export function DesktopWindow({
   const overlapsVert = (t1: number, b1: number, t2: number, b2: number) =>
     Math.min(b1, b2) - Math.max(t1, t2) > 0;
 
-  if (minimized) {
-    return null; // Don't render when minimized
+  // Check if we're on mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  if (minimized && isMobile) {
+    return null; // Don't render minimized windows on mobile
   }
 
   return (
@@ -456,13 +459,13 @@ export function DesktopWindow({
       </div>
       {/* Content */}
       <div
-        className="p-3 overflow-auto bg-white"
+        className="flex-1 overflow-auto bg-white"
         style={{
-          maxHeight: maximized
+          height: maximized
             ? "calc(100vh - 40px)"
             : typeof size.height === "number"
             ? (size.height as number) - 40
-            : "60vh",
+            : "calc(100% - 40px)",
         }}
       >
         {children}

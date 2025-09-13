@@ -80,23 +80,38 @@ export function AboutWindow() {
                 width={140}
                 height={140}
                 onError={(e) => {
-                  (e.currentTarget.style.display = 'none');
+                  e.currentTarget.style.display = "none";
                   const p = e.currentTarget.parentElement as HTMLElement;
-                  if (p) p.textContent = '👭';
+                  if (p) p.textContent = "👭";
                 }}
-                style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
               />
             </div>
             <h2 style={{ margin: "0 0 10px 0", color: "#1e2a4a" }}>
-              Meet The Agency
+              Meet The Agency OS™
             </h2>
             <p style={{ margin: "0 0 10px 0", lineHeight: "1.6" }}>
-              Your Business/Creative Besties™
+              Award-winning <strong>creative digital agency</strong>{" "}
+              specializing in <strong>web development</strong>,{" "}
+              <strong>app development</strong>, <strong>branding</strong>,{" "}
+              <strong>photo/videography</strong>, and <strong>digital marketing</strong>{" "}
+              solutions.
               <br />
-              We specialize in turning your vision into reality with creativity,
-              strategy, and a whole lot of heart.
+              We transform your vision into reality with innovative design,
+              strategic thinking, and unparalleled creativity.
             </p>
-            <div style={{ fontSize: "12px", color: "#6c7c9b", marginBottom: "20px" }}>
+            <div
+              style={{
+                fontSize: "12px",
+                color: "#6c7c9b",
+                marginBottom: "20px",
+              }}
+            >
               Photo: a peek at our team energy and vibe.
             </div>
             <div
@@ -109,12 +124,17 @@ export function AboutWindow() {
               }}
             >
               <h3 style={{ margin: "0 0 10px 0", color: "#1e2a4a" }}>
-                Our Mission
+                Our Mission: Digital Excellence
               </h3>
               <p style={{ margin: "0", lineHeight: "1.6" }}>
                 To create meaningful connections between brands and their
-                audiences through innovative design, compelling storytelling,
-                and strategic digital solutions.
+                audiences through innovative <strong>web design</strong>,
+                compelling <strong>content creation</strong>, strategic{" "}
+                <strong>SEO services</strong>, cutting-edge{" "}
+                <strong>app development</strong>, professional{" "}
+                <strong>photo/videography</strong>, and comprehensive{" "}
+                <strong>digital marketing</strong> solutions that drive real
+                results.
               </p>
             </div>
           </div>
@@ -123,7 +143,7 @@ export function AboutWindow() {
         {activeTab === "fun" && (
           <div>
             <h3 style={{ margin: "0 0 15px 0", color: "#1e2a4a" }}>
-              Fun Facts About Us
+              Why Choose The Agency OS™
             </h3>
             <div style={{ display: "grid", gap: "12px" }}>
               <div
@@ -135,8 +155,9 @@ export function AboutWindow() {
                 }}
               >
                 <span style={{ fontSize: "20px", marginRight: "8px" }}>🎨</span>
-                <strong>Creative Sisters:</strong> Two sisters who love bringing
-                ideas to life
+                <strong>Creative Excellence:</strong> Award-winning{" "}
+                <strong>graphic design</strong> and{" "}
+                <strong>brand identity</strong> specialists
               </div>
               <div
                 style={{
@@ -146,9 +167,10 @@ export function AboutWindow() {
                   border: "1px solid #cbd5ea",
                 }}
               >
-                <span style={{ fontSize: "20px", marginRight: "8px" }}>🍂</span>
-                <strong>Fall Obsessed:</strong> Pumpkin spice lattes are our
-                fuel
+                <span style={{ fontSize: "20px", marginRight: "8px" }}>💻</span>
+                <strong>Full-Service Agency:</strong> Complete{" "}
+                <strong>web development</strong>, <strong>SEO</strong>, and{" "}
+                <strong>digital marketing</strong> solutions
               </div>
               <div
                 style={{
@@ -158,9 +180,9 @@ export function AboutWindow() {
                   border: "1px solid #cbd5ea",
                 }}
               >
-                <span style={{ fontSize: "20px", marginRight: "8px" }}>☕</span>
-                <strong>Coffee Lovers:</strong> Our office runs on caffeine and
-                creativity
+                <span style={{ fontSize: "20px", marginRight: "8px" }}>📈</span>
+                <strong>Results-Driven:</strong> Data-backed strategies that
+                deliver measurable <strong>ROI</strong> and business growth
               </div>
               <div
                 style={{
@@ -170,9 +192,9 @@ export function AboutWindow() {
                   border: "1px solid #cbd5ea",
                 }}
               >
-                <span style={{ fontSize: "20px", marginRight: "8px" }}>🕵️</span>
-                <strong>Mystery + Aesthetics:</strong> We love the intrigue of
-                great design
+                <span style={{ fontSize: "20px", marginRight: "8px" }}>�</span>
+                <strong>Innovative Solutions:</strong> Cutting-edge technology
+                and creative approaches to complex challenges
               </div>
               <div
                 style={{
@@ -182,9 +204,10 @@ export function AboutWindow() {
                   border: "1px solid #cbd5ea",
                 }}
               >
-                <span style={{ fontSize: "20px", marginRight: "8px" }}>🐈</span>
-                <strong>Cat People:</strong> Our feline friends inspire our
-                creativity
+                <span style={{ fontSize: "20px", marginRight: "8px" }}>📸</span>
+                <strong>Photo/Videography:</strong> Professional{" "}
+                <strong>photography services</strong> and{" "}
+                <strong>video production</strong> for brands and businesses
               </div>
               <div
                 style={{
@@ -194,8 +217,22 @@ export function AboutWindow() {
                   border: "1px solid #cbd5ea",
                 }}
               >
-                <span style={{ fontSize: "20px", marginRight: "8px" }}>🎶</span>
-                <strong>Concert Goers:</strong> Music fuels our creative process
+                <span style={{ fontSize: "20px", marginRight: "8px" }}>📱</span>
+                <strong>App Development:</strong> Custom{" "}
+                <strong>mobile app development</strong> and{" "}
+                <strong>web applications</strong> that engage users
+              </div>
+              <div
+                style={{
+                  background: "#fff",
+                  padding: "12px",
+                  borderRadius: "6px",
+                  border: "1px solid #cbd5ea",
+                }}
+              >
+                <span style={{ fontSize: "20px", marginRight: "8px" }}>⚡</span>
+                <strong>Fast Turnaround:</strong> Efficient processes without
+                compromising quality or attention to detail
               </div>
               <div
                 style={{

@@ -526,11 +526,212 @@ export default function Page() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  // Dynamic meta tags based on active window
+  useEffect(() => {
+    const openWindows = Object.entries(windows).filter(
+      ([_, w]) => w.open && !w.minimized
+    );
+    if (openWindows.length === 0) {
+      // Reset to default when no windows are open
+      document.title =
+        "Creative Digital Agency | Custom Web Development & App Development Experts";
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute(
+          "content",
+          "Award-winning creative digital agency specializing in custom web development, mobile app development, brand identity design, and professional photo/videography services. Get a free quote for your next project."
+        );
+      }
+      return;
+    }
+
+    // Find the active window (highest z-index)
+    const activeWindow = openWindows.reduce((max, [key, window]) =>
+      window.z > max[1].z ? [key, window] : max
+    );
+
+    // Update title and description based on active window
+    const serviceMetaTags = {
+      about: {
+        title: "About The Agency OS™ | Creative Digital Agency Services",
+        description:
+          "Meet our award-winning creative digital agency in Kern County, CA. We specialize in web development, app development, branding, and photo/videography services serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
+      },
+      faq: {
+        title: "FAQ | Digital Agency Services & Process | The Agency OS™",
+        description:
+          "Learn about our web development process, app development services, branding expertise, and photo/videography capabilities. Serving Kern County, CA and surrounding areas including Tehachapi, Lancaster, Bakersfield, and more.",
+      },
+      aol: {
+        title: "Contact Us | Get a Free Quote | The Agency OS™",
+        description:
+          "Ready to start your project? Contact our Kern County, CA creative digital agency for a free consultation on web development, app development, or branding services. Serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
+      },
+      mash: {
+        title: "MASH Game | Fun Interactive Experience | The Agency OS™",
+        description:
+          "Take our fun MASH personality quiz while exploring our creative digital agency services and portfolio.",
+      },
+      newsletter: {
+        title: "Newsletter Signup | Stay Updated | The Agency OS™",
+        description:
+          "Subscribe to our newsletter for the latest updates on web development trends, app development tips, and creative digital agency insights.",
+      },
+      creativeWizard: {
+        title: "Creative Wizard | Project Planning Tool | The Agency OS™",
+        description:
+          "Use our interactive creative wizard to plan your next web development, app development, or branding project with our Kern County, CA digital agency. Serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
+      },
+      metrics: {
+        title: "Agency Metrics & Results | The Agency OS™",
+        description:
+          "View our digital agency performance metrics, client success stories, and proven results in web development and app development.",
+      },
+      skeleton: {
+        title: "Skeleton Dance | Fun Animation | The Agency OS™",
+        description:
+          "Enjoy our fun skeleton dance animation while learning about our creative digital agency services.",
+      },
+      funnyCat: {
+        title: "Funny Cat Videos | Entertainment | The Agency OS™",
+        description:
+          "Watch hilarious cat videos and memes while exploring our web development and app development services.",
+      },
+      virus: {
+        title: "Virus Alert | Security Demo | The Agency OS™",
+        description:
+          "Experience our interactive virus alert demo showcasing our expertise in secure web development and app development.",
+      },
+      bsod: {
+        title: "BSOD Simulator | Retro Experience | The Agency OS™",
+        description:
+          "Experience the classic Windows BSOD while learning about our modern web development and app development services.",
+      },
+      stickyNotes: {
+        title: "Sticky Notes | Project Planning | The Agency OS™",
+        description:
+          "Use our interactive sticky notes to plan your web development, app development, or branding project.",
+      },
+      clippy: {
+        title: "Clippy Assistant | Help & Support | The Agency OS™",
+        description:
+          "Get help from our friendly Clippy assistant for web development, app development, and digital agency services.",
+      },
+      vibeCheck: {
+        title: "Vibe Check | Brand Assessment | The Agency OS™",
+        description:
+          "Take our vibe check quiz to assess your brand's digital presence and discover our web development services.",
+      },
+      coffeeClub: {
+        title: "Coffee Club Waitlist | Community | The Agency OS™",
+        description:
+          "Join our coffee club community and connect with fellow entrepreneurs, web developers, and creative professionals.",
+      },
+      mysteryMurder: {
+        title: "Mystery Murder Club | Entertainment | The Agency OS™",
+        description:
+          "Join our mystery murder club for fun interactive stories while learning about our digital agency services.",
+      },
+      retroAd: {
+        title: "Retro Advertising | Nostalgia | The Agency OS™",
+        description:
+          "Experience retro advertising styles while exploring our modern web development and app development expertise.",
+      },
+      instaAd: {
+        title: "Instagram Ads | Social Media Marketing | The Agency OS™",
+        description:
+          "Learn about our Instagram advertising services and social media marketing expertise for your brand.",
+      },
+      archive: {
+        title: "Project Archive | Portfolio | The Agency OS™",
+        description:
+          "Browse our project archive showcasing web development, app development, and branding success stories.",
+      },
+      mtv: {
+        title: "MTV Style Experience | Entertainment | The Agency OS™",
+        description:
+          "Enjoy our MTV-inspired interactive experience while discovering our creative digital agency services.",
+      },
+      book: {
+        title: "Digital Agency Guide | Resources | The Agency OS™",
+        description:
+          "Read our comprehensive guide to web development, app development, and digital marketing strategies.",
+      },
+      socialAdMaker: {
+        title: "Social Ad Maker | Marketing Tools | The Agency OS™",
+        description:
+          "Create stunning social media ads with our interactive ad maker tool and digital marketing expertise.",
+      },
+    };
+
+    const activeKey = activeWindow[0] as keyof typeof serviceMetaTags;
+    const metaTag = serviceMetaTags[activeKey];
+
+    if (metaTag) {
+      document.title = metaTag.title;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute("content", metaTag.description);
+      }
+    }
+  }, [windows]);
+
   return (
     <>
       <Head>
-        <title>The Agency OS™ — The Agency</title>
+        <title>
+          The Agency OS™ — Creative Digital Agency | Web Design & Branding
+          Experts
+        </title>
+        <meta
+          name="description"
+          content="Award-winning creative digital agency specializing in web development, branding, marketing, and innovative digital solutions. Retro desktop experience meets modern expertise."
+        />
+        <meta
+          name="keywords"
+          content="creative digital agency, web development agency, branding agency, website design, digital marketing agency, creative agency, web design company, brand identity design"
+        />
+        <meta name="author" content="The Agency OS™" />
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="googlebot"
+          content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"
+        />
+        <meta
+          property="og:title"
+          content="The Agency OS™ — Creative Digital Agency | Web Design & Branding Experts"
+        />
+        <meta
+          property="og:description"
+          content="Award-winning creative digital agency specializing in web development, branding, marketing, and innovative digital solutions."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://the-agency-os.example.com" />
+        <meta
+          property="og:image"
+          content="https://the-agency-os.example.com/images/og.jpg"
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="The Agency OS™" />
+        <meta property="og:locale" content="en_US" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="The Agency OS™ — Creative Digital Agency | Web Design & Branding Experts"
+        />
+        <meta
+          name="twitter:description"
+          content="Award-winning creative digital agency specializing in web development, branding, marketing, and innovative digital solutions."
+        />
+        <meta
+          name="twitter:image"
+          content="https://the-agency-os.example.com/images/og.jpg"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="canonical" href="https://the-agency-os.example.com" />
+        <link rel="icon" href="/images/fcon.webp" />
+        <link rel="apple-touch-icon" href="/images/fcon.webp" />
       </Head>
 
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
@@ -722,6 +923,9 @@ export default function Page() {
             left: 12,
             right: 12,
             zIndex: 2000,
+            transform: isMobile ? "scale(0.85)" : "scale(1)",
+            transformOrigin: isMobile ? "center bottom" : "center bottom",
+            transition: "transform 0.3s ease",
           }}
           data-role="taskbar"
         >
