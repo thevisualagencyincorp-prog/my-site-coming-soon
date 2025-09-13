@@ -6,12 +6,30 @@ export function MTVWindow() {
   const [muted, setMuted] = useState(true);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
-  const src =
+  const primarySrc =
     "https://ia800500.us.archive.org/18/items/mtv-00s-non-stop-y-2-ks-1h-03112023/MTV%2000s%20-%20Non-Stop%20Y2KS%20%281h%29%2803112023%29.mp4";
 
+  // Alternative video sources to try if the main one fails
+  const fallbackSrcs = [
+    "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4", // Sample video for testing
+    // Add more fallback URLs here if needed
+  ];
+
+  const [currentSrcIndex, setCurrentSrcIndex] = useState(0);
+  const allSrcs = [primarySrc, ...fallbackSrcs];
+  const currentSrc = allSrcs[currentSrcIndex];
+
   const handleVideoError = () => {
-    setError(true);
-    setReady(false);
+    if (currentSrcIndex < allSrcs.length - 1) {
+      // Try next video source
+      setCurrentSrcIndex(prev => prev + 1);
+      setError(false);
+      setReady(false);
+    } else {
+      // All sources failed
+      setError(true);
+      setReady(false);
+    }
   };
 
   const handleVideoLoad = () => {
@@ -57,7 +75,7 @@ export function MTVWindow() {
         >
           <video
             ref={ref}
-            src={src}
+            src={currentSrc}
             autoPlay
             muted={muted}
             playsInline
@@ -65,6 +83,7 @@ export function MTVWindow() {
             onLoadedData={handleVideoLoad}
             onCanPlay={handleVideoLoad}
             onError={handleVideoError}
+            key={currentSrc} // Force re-render when src changes
           />
         </div>
         {!ready && !error && (
@@ -103,12 +122,13 @@ export function MTVWindow() {
             <div>MTV Video Unavailable</div>
             <div style={{ fontSize: 12, marginTop: 10, opacity: 0.7 }}>
               The video stream may be temporarily unavailable.<br />
-              Please try again later.
+              Click retry to try alternative sources.
             </div>
             <button
               onClick={() => {
                 setError(false);
                 setReady(false);
+                setCurrentSrcIndex(0); // Reset to primary source
                 if (ref.current) {
                   ref.current.load();
                 }
