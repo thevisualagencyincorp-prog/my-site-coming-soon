@@ -27,7 +27,6 @@ export function SocialAdMakerWindow() {
 
   useEffect(() => {
     draw();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size, product, vibe, slogan, cta, colors.join("|"), fontSize, brand]);
 
   const autoSlogan = () => {
@@ -64,25 +63,60 @@ export function SocialAdMakerWindow() {
     // product line
     ctx.fillStyle = "#ffffff";
     ctx.font = `600 ${Math.round(w * 0.045)}px Tahoma, Verdana, sans-serif`;
-    wrapText(ctx, `For: ${product}`, Math.round(w * 0.05), Math.round(h * 0.15), Math.round(w * 0.9), Math.round(w * 0.05));
+    wrapText(
+      ctx,
+      `For: ${product}`,
+      Math.round(w * 0.05),
+      Math.round(h * 0.15),
+      Math.round(w * 0.9),
+      Math.round(w * 0.05)
+    );
     // vibe line
     ctx.fillStyle = "#f2f2f2";
     ctx.font = `500 ${Math.round(w * 0.03)}px Tahoma, Verdana, sans-serif`;
-    wrapText(ctx, vibe, Math.round(w * 0.05), Math.round(h * 0.22), Math.round(w * 0.9), Math.round(w * 0.04));
+    wrapText(
+      ctx,
+      vibe,
+      Math.round(w * 0.05),
+      Math.round(h * 0.22),
+      Math.round(w * 0.9),
+      Math.round(w * 0.04)
+    );
     // slogan block
     ctx.fillStyle = dark;
-    ctx.fillRect(Math.round(w * 0.05), Math.round(h * 0.3), Math.round(w * 0.9), Math.round(h * 0.28));
+    ctx.fillRect(
+      Math.round(w * 0.05),
+      Math.round(h * 0.3),
+      Math.round(w * 0.9),
+      Math.round(h * 0.28)
+    );
     ctx.fillStyle = "#ffffff";
-    ctx.font = `800 ${Math.round((w * fontSize) / 1080)}px Tahoma, Verdana, sans-serif`;
-    wrapText(ctx, slogan || "Your modern‑retro headline", Math.round(w * 0.08), Math.round(h * 0.37), Math.round(w * 0.84), Math.round((w * fontSize) / 1080 * 1.1));
+    ctx.font = `800 ${Math.round(
+      (w * fontSize) / 1080
+    )}px Tahoma, Verdana, sans-serif`;
+    wrapText(
+      ctx,
+      slogan || "Your modern‑retro headline",
+      Math.round(w * 0.08),
+      Math.round(h * 0.37),
+      Math.round(w * 0.84),
+      Math.round(((w * fontSize) / 1080) * 1.1)
+    );
     // CTA pill
-    const pillW = Math.round(w * 0.42), pillH = Math.round(h * 0.07), px = Math.round(w * 0.55), py = Math.round(h * 0.62);
-    roundRect(ctx, px, py, pillW, pillH, Math.round(pillH/2));
+    const pillW = Math.round(w * 0.42),
+      pillH = Math.round(h * 0.07),
+      px = Math.round(w * 0.55),
+      py = Math.round(h * 0.62);
+    roundRect(ctx, px, py, pillW, pillH, Math.round(pillH / 2));
     ctx.fillStyle = accent;
     ctx.fill();
     ctx.fillStyle = "#111";
     ctx.font = `700 ${Math.round(w * 0.03)}px Tahoma, Verdana, sans-serif`;
-    ctx.fillText(cta, px + Math.round(pillW * 0.08), py + Math.round(pillH * 0.65));
+    ctx.fillText(
+      cta,
+      px + Math.round(pillW * 0.08),
+      py + Math.round(pillH * 0.65)
+    );
   };
 
   const download = () => {
@@ -93,28 +127,169 @@ export function SocialAdMakerWindow() {
   };
 
   return (
-    <div style={{ width: "100%", height: "100%", background: "#f3f6ff", color: "#1e2a4a", fontFamily: "Tahoma, Verdana, Segoe UI, Arial, sans-serif", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: 10, background: "#e6ebf7", borderBottom: "1px solid #cbd5ea", display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <select value={size} onChange={(e)=>setSize(e.target.value as SizeKey)} style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6 }}>
-          {Object.entries(SIZES).map(([k,v])=> <option value={k} key={k}>{v.label}</option>)}
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#f3f6ff",
+        color: "#1e2a4a",
+        fontFamily: "Tahoma, Verdana, Segoe UI, Arial, sans-serif",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          padding: 10,
+          background: "#e6ebf7",
+          borderBottom: "1px solid #cbd5ea",
+          display: "flex",
+          gap: 8,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <select
+          value={size}
+          onChange={(e) => setSize(e.target.value as SizeKey)}
+          style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6 }}
+        >
+          {Object.entries(SIZES).map(([k, v]) => (
+            <option value={k} key={k}>
+              {v.label}
+            </option>
+          ))}
         </select>
-        <input value={brand} onChange={(e)=>setBrand(e.target.value)} placeholder="Brand" style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6 }} />
-        <input value={product} onChange={(e)=>setProduct(e.target.value)} placeholder="Product / Offer" style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6, minWidth: 160 }} />
-        <input value={vibe} onChange={(e)=>setVibe(e.target.value)} placeholder="Vibe (adjectives)" style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6, minWidth: 220 }} />
-        <input value={slogan} onChange={(e)=>setSlogan(e.target.value)} placeholder="Slogan" style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6, minWidth: 220 }} />
-        <button onClick={autoSlogan} style={{ padding: "6px 10px", border: "1px solid #8aa1c5", background: "#fff", borderRadius: 6, cursor: "pointer" }}>Auto Slogan</button>
-        <input value={cta} onChange={(e)=>setCta(e.target.value)} placeholder="CTA" style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6, width: 120 }} />
-        <input value={palette} onChange={(e)=>setPalette(e.target.value)} placeholder="#bg,#accent,#light,#dark" style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6, minWidth: 220 }} />
-        <label style={{ fontSize: 12, color: "#6c7c9b" }}>Headline size
-          <input type="range" min={42} max={120} value={fontSize} onChange={(e)=>setFontSize(parseInt(e.target.value))} style={{ verticalAlign: "middle", marginLeft: 6 }} />
+        <input
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          placeholder="Brand"
+          style={{ padding: 6, border: "1px solid #8aa1c5", borderRadius: 6 }}
+        />
+        <input
+          value={product}
+          onChange={(e) => setProduct(e.target.value)}
+          placeholder="Product / Offer"
+          style={{
+            padding: 6,
+            border: "1px solid #8aa1c5",
+            borderRadius: 6,
+            minWidth: 160,
+          }}
+        />
+        <input
+          value={vibe}
+          onChange={(e) => setVibe(e.target.value)}
+          placeholder="Vibe (adjectives)"
+          style={{
+            padding: 6,
+            border: "1px solid #8aa1c5",
+            borderRadius: 6,
+            minWidth: 220,
+          }}
+        />
+        <input
+          value={slogan}
+          onChange={(e) => setSlogan(e.target.value)}
+          placeholder="Slogan"
+          style={{
+            padding: 6,
+            border: "1px solid #8aa1c5",
+            borderRadius: 6,
+            minWidth: 220,
+          }}
+        />
+        <button
+          onClick={autoSlogan}
+          style={{
+            padding: "6px 10px",
+            border: "1px solid #8aa1c5",
+            background: "#fff",
+            borderRadius: 6,
+            cursor: "pointer",
+          }}
+        >
+          Auto Slogan
+        </button>
+        <input
+          value={cta}
+          onChange={(e) => setCta(e.target.value)}
+          placeholder="CTA"
+          style={{
+            padding: 6,
+            border: "1px solid #8aa1c5",
+            borderRadius: 6,
+            width: 120,
+          }}
+        />
+        <input
+          value={palette}
+          onChange={(e) => setPalette(e.target.value)}
+          placeholder="#bg,#accent,#light,#dark"
+          style={{
+            padding: 6,
+            border: "1px solid #8aa1c5",
+            borderRadius: 6,
+            minWidth: 220,
+          }}
+        />
+        <label style={{ fontSize: 12, color: "#6c7c9b" }}>
+          Headline size
+          <input
+            type="range"
+            min={42}
+            max={120}
+            value={fontSize}
+            onChange={(e) => setFontSize(parseInt(e.target.value))}
+            style={{ verticalAlign: "middle", marginLeft: 6 }}
+          />
         </label>
-        <button onClick={download} style={{ marginLeft: "auto", padding: "6px 12px", background: "#ffcc00", border: "1px solid #caa002", borderRadius: 6, fontWeight: 700, cursor: "pointer" }}>Download PNG</button>
+        <button
+          onClick={download}
+          style={{
+            marginLeft: "auto",
+            padding: "6px 12px",
+            background: "#ffcc00",
+            border: "1px solid #caa002",
+            borderRadius: 6,
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          Download PNG
+        </button>
       </div>
-      <div style={{ flex: 1, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <canvas ref={canvasRef} style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }} />
+      <div
+        style={{
+          flex: 1,
+          background: "#111",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            background: "#000",
+          }}
+        />
       </div>
-      <div style={{ padding: 8, fontSize: 12, color: "#6c7c9b", background: "#f3f6ff", borderTop: "1px solid #cbd5ea" }}>
-        Tip: Pair with a friendly caption, 2–3 relevant hashtags, and alt text that describes the image clearly. Post when your audience is most active.
+      <div
+        style={{
+          padding: 8,
+          fontSize: 12,
+          color: "#6c7c9b",
+          background: "#f3f6ff",
+          borderTop: "1px solid #cbd5ea",
+        }}
+      >
+        Tip: Pair with a friendly caption, 2–3 relevant hashtags, and alt text
+        that describes the image clearly. Post when your audience is most
+        active.
       </div>
       <style jsx>{`
         /* no-op */
@@ -123,15 +298,22 @@ export function SocialAdMakerWindow() {
   );
 }
 
-function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
-  const words = text.split(' ');
-  let line = '';
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number
+) {
+  const words = text.split(" ");
+  let line = "";
   for (let n = 0; n < words.length; n++) {
-    const testLine = line + words[n] + ' ';
+    const testLine = line + words[n] + " ";
     const metrics = ctx.measureText(testLine);
     if (metrics.width > maxWidth && n > 0) {
       ctx.fillText(line, x, y);
-      line = words[n] + ' ';
+      line = words[n] + " ";
       y += lineHeight;
     } else {
       line = testLine;
@@ -140,7 +322,14 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
   ctx.fillText(line.trim(), x, y);
 }
 
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.lineTo(x + w - r, y);
@@ -152,4 +341,3 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.lineTo(x, y + r);
   ctx.quadraticCurveTo(x, y, x + r, y);
 }
-

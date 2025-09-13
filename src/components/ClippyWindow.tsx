@@ -50,16 +50,46 @@ export function ClippyWindow() {
   const SHOW_CONTROLS = process.env.NEXT_PUBLIC_CLIPPY_CONTROLS === "1";
 
   const messages = [
-    { text: "Hey there — I’m Clippy. Looks like you stumbled onto our desktop. Welcome to The Agency OS™! Up top: File / Edit / Help. Bottom left: Start. You can drag windows and click the icons.", type: "greeting" },
-    { text: "Quick tour: open ‘Start’ for apps; File / Edit / Help open fun windows; the icons on the desktop work too. Everything’s draggable.", type: "tip" },
-    { text: "Warm note: You’re doing great. Building a business or art isn’t easy — we’re in your corner.", type: "tip" },
-    { text: "Try MASH to manifest your future: home, partner, career, car, kids, pets. It gives you a cute share card. #theagencyMASH", type: "suggestion" },
-    { text: "Why us? We blend taste + strategy. We’ll help you look iconic and convert gently — like a best friend hyping you up.", type: "tip" },
-    { text: "Marketing tip: Put the promise in your first 3 words. Hooks win hearts. 💡", type: "tip" },
-    { text: "CTA tip: Make it specific — ‘Get the playlist’ > ‘Learn more’. 🎯", type: "tip" },
-    { text: "Need us? Pop open AOL Chat — let’s talk vibes, goals, and timing. 💬", type: "contact" },
-    { text: "Want a quick overview? I can open the FAQ for you.", type: "help" },
-    { text: "Self‑care: open Notes for tiny mindset boosts tailored to founders + artists. You got this. ☀️", type: "suggestion" },
+    {
+      text: "Hey there — I’m Clippy. Looks like you stumbled onto our desktop. Welcome to The Agency OS™! Up top: File / Edit / Help. Bottom left: Start. You can drag windows and click the icons.",
+      type: "greeting",
+    },
+    {
+      text: "Quick tour: open ‘Start’ for apps; File / Edit / Help open fun windows; the icons on the desktop work too. Everything’s draggable.",
+      type: "tip",
+    },
+    {
+      text: "Warm note: You’re doing great. Building a business or art isn’t easy — we’re in your corner.",
+      type: "tip",
+    },
+    {
+      text: "Try MASH to manifest your future: home, partner, career, car, kids, pets. It gives you a cute share card. #theagencyMASH",
+      type: "suggestion",
+    },
+    {
+      text: "Why us? We blend taste + strategy. We’ll help you look iconic and convert gently — like a best friend hyping you up.",
+      type: "tip",
+    },
+    {
+      text: "Marketing tip: Put the promise in your first 3 words. Hooks win hearts. 💡",
+      type: "tip",
+    },
+    {
+      text: "CTA tip: Make it specific — ‘Get the playlist’ > ‘Learn more’. 🎯",
+      type: "tip",
+    },
+    {
+      text: "Need us? Pop open AOL Chat — let’s talk vibes, goals, and timing. 💬",
+      type: "contact",
+    },
+    {
+      text: "Want a quick overview? I can open the FAQ for you.",
+      type: "help",
+    },
+    {
+      text: "Self‑care: open Notes for tiny mindset boosts tailored to founders + artists. You got this. ☀️",
+      type: "suggestion",
+    },
   ];
 
   // Slow down message cadence a bit so Clippy feels chill
@@ -81,7 +111,6 @@ export function ClippyWindow() {
     const y = 96; // near top row of icons
     setPosition({ x, y });
     setHome({ x, y });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // After image loads, allow the bubble to appear
@@ -98,11 +127,16 @@ export function ClippyWindow() {
       const ce = e as CustomEvent<number>;
       const count = (ce && ce.detail) ?? 0;
       if (typeof count === "number" && count <= 0) {
-        setPosition((prev) => (prev.x === home.x && prev.y === home.y ? prev : { x: home.x, y: home.y }));
+        setPosition((prev) =>
+          prev.x === home.x && prev.y === home.y
+            ? prev
+            : { x: home.x, y: home.y }
+        );
       }
     };
     window.addEventListener("windowsOpenCount", handler as EventListener);
-    return () => window.removeEventListener("windowsOpenCount", handler as EventListener);
+    return () =>
+      window.removeEventListener("windowsOpenCount", handler as EventListener);
   }, [home]);
 
   // natural typing: type per char with slight jitter; hold after complete based on length
@@ -137,7 +171,6 @@ export function ClippyWindow() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentMessage, showBubble]);
 
   const processImage = (src: string) => {
@@ -158,12 +191,16 @@ export function ClippyWindow() {
         const h = imageData.height;
         const data = imageData.data;
         const idx = (x: number, y: number) => (y * w + x) * 4;
-        const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+        const clamp = (n: number, min: number, max: number) =>
+          Math.max(min, Math.min(max, n));
         // Sample corners to determine background reference colors
         const samples: number[][] = [];
         const patch = 6;
         const addPatch = (sx: number, sy: number) => {
-          let rr = 0, gg = 0, bb = 0, count = 0;
+          let rr = 0,
+            gg = 0,
+            bb = 0,
+            count = 0;
           for (let y = sy; y < sy + patch; y++) {
             for (let x = sx; x < sx + patch; x++) {
               const p = idx(clamp(x, 0, w - 1), clamp(y, 0, h - 1));
@@ -205,8 +242,14 @@ export function ClippyWindow() {
           q.push(x, y);
         };
         // Seed with border pixels
-        for (let x = 0; x < w; x++) { pushIf(x, 0); pushIf(x, h - 1); }
-        for (let y = 0; y < h; y++) { pushIf(0, y); pushIf(w - 1, y); }
+        for (let x = 0; x < w; x++) {
+          pushIf(x, 0);
+          pushIf(x, h - 1);
+        }
+        for (let y = 0; y < h; y++) {
+          pushIf(0, y);
+          pushIf(w - 1, y);
+        }
         // BFS
         while (q.length) {
           const y = q.pop() as number;
@@ -271,7 +314,6 @@ export function ClippyWindow() {
     } else {
       setClippySrc(src);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avgThreshold, chromaThreshold]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -393,7 +435,7 @@ export function ClippyWindow() {
                     "float 6s ease-in-out infinite, wave 4s ease-in-out infinite",
                   imageRendering: "auto",
                   pointerEvents: "none",
-                  visibility: imgLoaded ? 'visible' : 'hidden',
+                  visibility: imgLoaded ? "visible" : "hidden",
                 }}
                 onLoad={() => setImgLoaded(true)}
                 onAnimationEnd={() => setVisibleOnce(true)}
@@ -403,64 +445,109 @@ export function ClippyWindow() {
 
           {/* Speech Bubble */}
           {imgLoaded && showBubble && (
-          <div
-            style={{
-              position: "absolute",
-              left: position.x + (isMobile ? 110 : 130),
-              top: position.y + 10,
-              background: "#fff",
-              border: "2px solid #0078d4",
-              borderRadius: "10px",
-              padding: "12px",
-              maxWidth: isMobile ? "220px" : "250px",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-              zIndex: 999,
-              animation: "bubble 0.3s ease-out",
-              pointerEvents: "auto",
-            }}
-          >
-            {/* Speech Bubble Tail */}
             <div
               style={{
                 position: "absolute",
-                left: "-10px",
-                top: "20px",
-                width: "0",
-                height: "0",
-                borderTop: "8px solid transparent",
-                borderBottom: "8px solid transparent",
-                borderRight: "10px solid #0078d4",
+                left: position.x + (isMobile ? 110 : 130),
+                top: position.y + 10,
+                background: "#fff",
+                border: "2px solid #0078d4",
+                borderRadius: "10px",
+                padding: "12px",
+                maxWidth: isMobile ? "220px" : "250px",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                zIndex: 999,
+                animation: "bubble 0.3s ease-out",
+                pointerEvents: "auto",
               }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                left: "-8px",
-                top: "20px",
-                width: "0",
-                height: "0",
-                borderTop: "8px solid transparent",
-                borderBottom: "8px solid transparent",
-                borderRight: "10px solid #fff",
-              }}
-            />
+            >
+              {/* Speech Bubble Tail */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-10px",
+                  top: "20px",
+                  width: "0",
+                  height: "0",
+                  borderTop: "8px solid transparent",
+                  borderBottom: "8px solid transparent",
+                  borderRight: "10px solid #0078d4",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-8px",
+                  top: "20px",
+                  width: "0",
+                  height: "0",
+                  borderTop: "8px solid transparent",
+                  borderBottom: "8px solid transparent",
+                  borderRight: "10px solid #fff",
+                }}
+              />
 
-            <div style={{ fontSize: "13px", color: "#1e2a4a", lineHeight: "1.4" }}>
-              <span>{currentMsg.text.slice(0, typedIndex)}</span>
-              {isTyping && <span style={{ animation: "blink 1s infinite" }}>▊</span>}
-            </div>
+              <div
+                style={{
+                  fontSize: "13px",
+                  color: "#1e2a4a",
+                  lineHeight: "1.4",
+                }}
+              >
+                <span>{currentMsg.text.slice(0, typedIndex)}</span>
+                {isTyping && (
+                  <span style={{ animation: "blink 1s infinite" }}>▊</span>
+                )}
+              </div>
 
-            {/* Action Buttons */}
-            <div style={{ marginTop: "10px", display: "flex", gap: "6px" }}>
-              {currentMsg.type === "help" && (
-                <>
+              {/* Action Buttons */}
+              <div style={{ marginTop: "10px", display: "flex", gap: "6px" }}>
+                {currentMsg.type === "help" && (
+                  <>
+                    <button
+                      onClick={() =>
+                        window.dispatchEvent(new CustomEvent("openFAQWindow"))
+                      }
+                      style={{
+                        padding: "4px 8px",
+                        background: "#0078d4",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "11px",
+                        color: "#fff",
+                      }}
+                    >
+                      Yes!
+                    </button>
+                    <button
+                      onClick={() =>
+                        setCurrentMessage(
+                          (currentMessage + 1) % messages.length
+                        )
+                      }
+                      style={{
+                        padding: "4px 8px",
+                        background: "#6c757d",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "11px",
+                        color: "#fff",
+                      }}
+                    >
+                      Maybe later
+                    </button>
+                  </>
+                )}
+                {currentMsg.type === "contact" && (
                   <button
                     onClick={() =>
-                      window.dispatchEvent(new CustomEvent("openFAQWindow"))
+                      window.dispatchEvent(new CustomEvent("openAOLWindow"))
                     }
                     style={{
                       padding: "4px 8px",
-                      background: "#0078d4",
+                      background: "#28a745",
                       border: "none",
                       borderRadius: "4px",
                       cursor: "pointer",
@@ -468,136 +555,109 @@ export function ClippyWindow() {
                       color: "#fff",
                     }}
                   >
-                    Yes!
+                    Open Messenger
                   </button>
+                )}
+                {currentMsg.type === "suggestion" && (
                   <button
                     onClick={() =>
-                      setCurrentMessage((currentMessage + 1) % messages.length)
+                      window.dispatchEvent(new CustomEvent("openMASHWindow"))
                     }
                     style={{
                       padding: "4px 8px",
-                      background: "#6c757d",
+                      background: "#ffcc00",
                       border: "none",
                       borderRadius: "4px",
                       cursor: "pointer",
                       fontSize: "11px",
-                      color: "#fff",
+                      color: "#000",
                     }}
                   >
-                    Maybe later
+                    Let&apos;s Play!
                   </button>
-                </>
-              )}
-              {currentMsg.type === "contact" && (
-                <button
-                  onClick={() =>
-                    window.dispatchEvent(new CustomEvent("openAOLWindow"))
-                  }
-                  style={{
-                    padding: "4px 8px",
-                    background: "#28a745",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "11px",
-                    color: "#fff",
-                  }}
-                >
-                  Open Messenger
-                </button>
-              )}
-              {currentMsg.type === "suggestion" && (
-                <button
-                  onClick={() =>
-                    window.dispatchEvent(new CustomEvent("openMASHWindow"))
-                  }
-                  style={{
-                    padding: "4px 8px",
-                    background: "#ffcc00",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "11px",
-                    color: "#000",
-                  }}
-                >
-                  Let&apos;s Play!
-                </button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
           )}
 
           {/* Control Panel (hidden unless NEXT_PUBLIC_CLIPPY_CONTROLS=1) */}
           {SHOW_CONTROLS && (
-          <div
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              background: "rgba(0,0,0,0.8)",
-              color: "#fff",
-              padding: "8px",
-              borderRadius: "4px",
-              fontSize: "11px",
-              zIndex: 1001,
-            }}
-          >
-            <div style={{ marginBottom: "5px", fontWeight: "bold" }}>
-              Clippy Controls
-            </div>
-            <button
-              onClick={() => setIsVisible(false)}
+            <div
               style={{
-                padding: "4px 8px",
-                background: "#dc3545",
-                border: "none",
-                borderRadius: "3px",
-                cursor: "pointer",
-                fontSize: "10px",
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                background: "rgba(0,0,0,0.8)",
                 color: "#fff",
-                marginRight: "5px",
+                padding: "8px",
+                borderRadius: "4px",
+                fontSize: "11px",
+                zIndex: 1001,
               }}
             >
-              Hide
-            </button>
-            <button
-              onClick={() =>
-                setCurrentMessage((currentMessage + 1) % messages.length)
-              }
-              style={{
-                padding: "4px 8px",
-                background: "#0078d4",
-                border: "none",
-                borderRadius: "3px",
-                cursor: "pointer",
-                fontSize: "10px",
-                color: "#fff",
-              }}
-            >
-              Next Tip
-            </button>
-            <div style={{ marginTop: 8 }}>
-              <div style={{ opacity: 0.8, marginBottom: 4 }}>BG Avg: {avgThreshold}</div>
-              <input
-                type="range"
-                min={160}
-                max={255}
-                value={avgThreshold}
-                onChange={(e) => setAvgThreshold(Number(e.currentTarget.value))}
-                style={{ width: 160 }}
-              />
-              <div style={{ opacity: 0.8, margin: "6px 0 4px" }}>Chroma: {chromaThreshold}</div>
-              <input
-                type="range"
-                min={0}
-                max={80}
-                value={chromaThreshold}
-                onChange={(e) => setChromaThreshold(Number(e.currentTarget.value))}
-                style={{ width: 160 }}
-              />
+              <div style={{ marginBottom: "5px", fontWeight: "bold" }}>
+                Clippy Controls
+              </div>
+              <button
+                onClick={() => setIsVisible(false)}
+                style={{
+                  padding: "4px 8px",
+                  background: "#dc3545",
+                  border: "none",
+                  borderRadius: "3px",
+                  cursor: "pointer",
+                  fontSize: "10px",
+                  color: "#fff",
+                  marginRight: "5px",
+                }}
+              >
+                Hide
+              </button>
+              <button
+                onClick={() =>
+                  setCurrentMessage((currentMessage + 1) % messages.length)
+                }
+                style={{
+                  padding: "4px 8px",
+                  background: "#0078d4",
+                  border: "none",
+                  borderRadius: "3px",
+                  cursor: "pointer",
+                  fontSize: "10px",
+                  color: "#fff",
+                }}
+              >
+                Next Tip
+              </button>
+              <div style={{ marginTop: 8 }}>
+                <div style={{ opacity: 0.8, marginBottom: 4 }}>
+                  BG Avg: {avgThreshold}
+                </div>
+                <input
+                  type="range"
+                  min={160}
+                  max={255}
+                  value={avgThreshold}
+                  onChange={(e) =>
+                    setAvgThreshold(Number(e.currentTarget.value))
+                  }
+                  style={{ width: 160 }}
+                />
+                <div style={{ opacity: 0.8, margin: "6px 0 4px" }}>
+                  Chroma: {chromaThreshold}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={80}
+                  value={chromaThreshold}
+                  onChange={(e) =>
+                    setChromaThreshold(Number(e.currentTarget.value))
+                  }
+                  style={{ width: 160 }}
+                />
+              </div>
             </div>
-          </div>
           )}
         </>
       )}
@@ -636,15 +696,32 @@ export function ClippyWindow() {
           }
         }
         @keyframes wave {
-          0%, 100% { transform: rotate(0deg) translateY(0); }
-          25% { transform: rotate(3deg) translateY(-1px); }
-          50% { transform: rotate(-3deg) translateY(0); }
-          75% { transform: rotate(2deg) translateY(1px); }
+          0%,
+          100% {
+            transform: rotate(0deg) translateY(0);
+          }
+          25% {
+            transform: rotate(3deg) translateY(-1px);
+          }
+          50% {
+            transform: rotate(-3deg) translateY(0);
+          }
+          75% {
+            transform: rotate(2deg) translateY(1px);
+          }
         }
         @keyframes bounceIn {
-          0% { opacity: 0; transform: scale(0.9); }
-          60% { opacity: 1; transform: scale(1.05); }
-          100% { transform: scale(1); }
+          0% {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          60% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          100% {
+            transform: scale(1);
+          }
         }
         @keyframes bubble {
           0% {

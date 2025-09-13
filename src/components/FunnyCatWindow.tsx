@@ -8,18 +8,65 @@ export function FunnyCatWindow() {
   const [muted, setMuted] = useState(true);
   const [videoReady, setVideoReady] = useState(false);
 
+  // Force muted and quick remount on first mount to improve autoplay reliability
+  useEffect(() => {
+    // Ensure we start muted (autoplay policies require muted autoplay)
+    setMuted(true);
+    // briefly reset videoReady to force iframe remount
+    setVideoReady(false);
+    const t = setTimeout(() => setVideoReady(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Playlist / video controls
+  const [currentVideoId, setCurrentVideoId] = useState<string | null>(
+    "J---aiyznGQ"
+  );
+  const [playlistMode, setPlaylistMode] = useState<"curated" | "dance">(
+    "curated"
+  );
+  const [playlistIndex, setPlaylistIndex] = useState(0);
+
+  const curatedVideos = [
+    { id: "J---aiyznGQ", title: "Keyboard Cat (Curated)" },
+  ];
+
+  const danceOffVideos = [
+    { id: "J---aiyznGQ", title: "Keyboard Cat (Dance Off playlist)" },
+  ];
+
   const cats = [
-    { name: "Raven", emoji: "🐈‍⬛", action: "Elegant prowls", description: "Black cat" },
-    { name: "Juniper", emoji: "🐈", action: "Window naps", description: "Gray/white cat" },
-    { name: "Huck", emoji: "🐾", action: "Cozy zoomies", description: "Brown cat" },
-    { name: "Billy", emoji: "😺", action: "Snack patrol", description: "Gray cat" },
+    {
+      name: "Raven",
+      emoji: "🐈‍⬛",
+      action: "Elegant prowls",
+      description: "Black cat",
+    },
+    {
+      name: "Juniper",
+      emoji: "🐈",
+      action: "Window naps",
+      description: "Gray/white cat",
+    },
+    {
+      name: "Flower",
+      emoji: "🐾",
+      action: "Cozy buscit maker",
+      description: "Moo Cat",
+    },
+    {
+      name: "Billy",
+      emoji: "😺",
+      action: "Snack patrol",
+      description: "Gray cat",
+    },
   ];
 
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
         setCurrentCat((prev) => (prev + 1) % cats.length);
-      }, 3000); // Change cat every 3 seconds
+      }, 5000); // Change cat every 5 seconds
 
       return () => clearInterval(interval);
     }
@@ -34,6 +81,11 @@ export function FunnyCatWindow() {
     "Cats can't taste sweetness",
     "Cats have a third eyelid called the haw",
     "Cats can rotate their ears 180 degrees",
+    "Cats have a special reflective layer behind their eyes called the tapetum lucidum, which helps them see in low light",
+    "Cats have over 20 vocalizations, while dogs only have about 10",
+    "The first cat in space was a French cat named Felicette in 1963",
+    "Cats have a Jacobson’s organ that allows them to taste smells",
+    "A cat's sense of smell is 14 times stronger than a human's",
   ];
 
   const randomFact = catFacts[Math.floor(Math.random() * catFacts.length)];
@@ -77,6 +129,76 @@ export function FunnyCatWindow() {
             overflow: "hidden",
           }}
         >
+          {/* Playlist controls */}
+          <div
+            style={{
+              position: "absolute",
+              top: 12,
+              left: 12,
+              zIndex: 20,
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <button
+              onClick={() => {
+                setPlaylistMode("curated");
+                setPlaylistIndex(0);
+                setCurrentVideoId(curatedVideos[0].id);
+              }}
+              style={{
+                padding: "6px 10px",
+                borderRadius: 6,
+                border: "1px solid #ddd",
+                background:
+                  playlistMode === "curated" ? "#ffefc2" : "#ffffffaa",
+              }}
+            >
+              Curated Cats
+            </button>
+            <button
+              onClick={() => {
+                setPlaylistMode("dance");
+                setPlaylistIndex(0);
+                setCurrentVideoId(danceOffVideos[0].id);
+              }}
+              style={{
+                padding: "6px 10px",
+                borderRadius: 6,
+                border: "1px solid #ddd",
+                background: playlistMode === "dance" ? "#ffefc2" : "#ffffffaa",
+              }}
+            >
+              Dance Off
+            </button>
+            <button
+              onClick={() => {
+                const list =
+                  playlistMode === "curated" ? curatedVideos : danceOffVideos;
+                const next = Math.max(0, playlistIndex - 1);
+                setPlaylistIndex(next);
+                setCurrentVideoId(list[next].id);
+              }}
+              style={{ padding: "6px 8px", borderRadius: 6 }}
+            >
+              ◀
+            </button>
+            <button
+              onClick={() => {
+                const list =
+                  playlistMode === "curated" ? curatedVideos : danceOffVideos;
+                const next = Math.min(list.length - 1, playlistIndex + 1);
+                setPlaylistIndex(next);
+                setCurrentVideoId(list[next].id);
+              }}
+              style={{ padding: "6px 8px", borderRadius: 6 }}
+            >
+              ▶
+            </button>
+          </div>
+
+          {/* (mute button removed from video overlay) */}
+
           {!isPlaying ? (
             <div style={{ textAlign: "center", color: "#fff" }}>
               <div
@@ -118,7 +240,14 @@ export function FunnyCatWindow() {
               </button>
             </div>
           ) : (
-            <div style={{ width: "100%", height: "100%", position: "relative", background: "#000" }}>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "relative",
+                background: "#000",
+              }}
+            >
               {/* Fade-in wrapper for local/hosted MP4 */}
               <div
                 style={{
@@ -128,21 +257,19 @@ export function FunnyCatWindow() {
                   transition: "opacity 600ms ease",
                 }}
               >
-                <video
-                  autoPlay
-                  muted
-                  playsInline
-                  loop
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  onLoadedData={() => setVideoReady(true)}
-                  onCanPlay={() => setVideoReady(true)}
-                >
-                  {/* Prefer local file under public/videos, or allow env override */}
-                  {process.env.NEXT_PUBLIC_CATS_VIDEO_URL && (
-                    <source src={process.env.NEXT_PUBLIC_CATS_VIDEO_URL} type="video/mp4" />
-                  )}
-                  <source src="/videos/cats.mp4" type="video/mp4" />
-                </video>
+                {/* Embedded YouTube video; mute controlled by state, controls hidden */}
+                <iframe
+                  key={`${currentVideoId}-${muted}`}
+                  title="Agency Kitties"
+                  src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${
+                    muted ? 1 : 0
+                  }&playsinline=1&loop=1&playlist=${currentVideoId}&controls=0&rel=0&modestbranding=1`}
+                  style={{ width: "100%", height: "100%", border: 0 }}
+                  frameBorder={0}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  onLoad={() => setVideoReady(true)}
+                />
               </div>
 
               {/* Subtle placeholder while loading */}
@@ -166,7 +293,7 @@ export function FunnyCatWindow() {
               {!videoReady && (
                 <div style={{ position: "absolute", right: 10, bottom: 10 }}>
                   <a
-                    href="https://youtu.be/uwmeH6Rnj2E"
+                    href="https://youtu.be/J---aiyznGQ"
                     target="_blank"
                     rel="noreferrer"
                     style={{
@@ -187,7 +314,67 @@ export function FunnyCatWindow() {
           )}
         </div>
 
-        {/* Cat Info Panel */}
+        {/* Curated preview (always visible above the cat list) */}
+        <div style={{ marginBottom: "15px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "8px",
+            }}
+          >
+            <div style={{ fontWeight: 700, color: "#1e2a4a" }}>
+              🐱 Curated Cats
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 12, color: "#6c7c9b" }}>Preview</div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMuted((m) => !m);
+                  // force iframe to reload briefly for mute change
+                  setVideoReady(false);
+                  setTimeout(() => setVideoReady(true), 50);
+                }}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 6,
+                  background: muted ? "#ffffffaa" : "#ffefc2",
+                  border: "1px solid #ddd",
+                  cursor: "pointer",
+                  fontSize: 12,
+                }}
+              >
+                {muted ? "Unmute" : "Mute"}
+              </button>
+            </div>
+          </div>
+          <div
+            style={{
+              borderRadius: 8,
+              overflow: "hidden",
+              border: "1px solid #e6ebf7",
+            }}
+          >
+            <iframe
+              key={`preview-${curatedVideos[0].id}`}
+              width={560}
+              height={315}
+              title="Curated Cats preview"
+              src={`https://www.youtube-nocookie.com/embed/${curatedVideos[0].id}?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&modestbranding=1`}
+              frameBorder={0}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              style={{ width: "100%", height: 180, border: 0 }}
+            />
+          </div>
+        </div>
+
+        {/* Mute control has been relocated beside the preview above */}
+
+        {/* Cats
+         Info Panel */}
         <div
           style={{
             background: "#fff",

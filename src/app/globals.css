@@ -133,28 +133,63 @@ div {
 
 /* BSOD lightweight animations and classes */
 @keyframes bsod-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 @keyframes bsod-flicker {
-  0%, 100% { opacity: 0.98; }
-  10% { opacity: 1; }
-  20% { opacity: 0.97; }
-  30% { opacity: 1; }
-  40% { opacity: 0.99; }
-  50% { opacity: 1; }
-  60% { opacity: 0.98; }
-  70% { opacity: 1; }
-  80% { opacity: 0.97; }
-  90% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.98;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.97;
+  }
+  30% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.99;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.98;
+  }
+  70% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.97;
+  }
+  90% {
+    opacity: 1;
+  }
 }
 @keyframes bsod-scan {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 200px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 200px;
+  }
 }
 @keyframes bsod-barberpole {
-  0% { background-position: 0 0; }
-  100% { background-position: 24px 0; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 24px 0;
+  }
 }
 
 .bsod-scanlines {
@@ -164,16 +199,20 @@ div {
   opacity: 0.06;
   background-image: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.5) 0px,
-    rgba(255,255,255,0.5) 1px,
+    rgba(255, 255, 255, 0.5) 0px,
+    rgba(255, 255, 255, 0.5) 1px,
     transparent 1px,
     transparent 3px
   );
   animation: bsod-scan 6s linear infinite;
   will-change: background-position;
 }
-.bsod-blink { animation: bsod-blink 1.2s steps(2, end) infinite; }
-.bsod-flicker { animation: bsod-flicker 8s infinite; }
+.bsod-blink {
+  animation: bsod-blink 1.2s steps(2, end) infinite;
+}
+.bsod-flicker {
+  animation: bsod-flicker 8s infinite;
+}
 .bsod-barber {
   background: repeating-linear-gradient(
     45deg,
@@ -186,15 +225,114 @@ div {
   background-size: 24px 24px;
   will-change: background-position, transform;
 }
-.bsod-progressInner { transition: width 0.3s ease; }
+.bsod-progressInner {
+  transition: width 0.3s ease;
+}
 
 /* Keep it light on mobile */
 @media (max-width: 640px) {
-  .bsod-scanlines { display: none; }
-  .bsod-flicker { animation: none; }
+  .bsod-scanlines {
+    display: none;
+  }
+  .bsod-flicker {
+    animation: none;
+  }
 }
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .bsod-blink, .bsod-flicker, .bsod-barber { animation: none !important; }
-  .bsod-progressInner { transition: none; }
+  .bsod-blink,
+  .bsod-flicker,
+  .bsod-barber {
+    animation: none !important;
+  }
+  .bsod-progressInner {
+    transition: none;
+  }
+}
+
+/* Clippy Animation Keyframes */
+@keyframes bounceIn {
+  0% {
+    transform: translateY(150%) scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-20px) scale(1.05);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(10px) scale(0.97);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(3deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(-3deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(2deg) scale(1.02);
+  }
+}
+
+/* Speech Bubble Styles */
+.speech-bubble {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e5e7eb;
+  max-width: 280px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.speech-bubble-content {
+  position: relative;
+  z-index: 2;
+}
+
+.speech-bubble-pointer {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #ffffff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.speech-bubble-pointer::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #e5e7eb;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

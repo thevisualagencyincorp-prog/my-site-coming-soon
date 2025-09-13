@@ -36,6 +36,13 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       y: 176,
     },
     {
+      key: "cat",
+      label: "Cats",
+      iconSrc: "/images/icons/cat.svg",
+      x: 24,
+      y: 256,
+    },
+    {
       key: "about",
       label: "Meet Marketing Baddies in Your Area",
       iconSrc: "/images/icons/about.svg",

@@ -19,6 +19,7 @@ export { FunnyCatWindow } from "./FunnyCatWindow";
 export { VirusAlertWindow } from "./VirusAlertWindow";
 export { BSODWindow } from "./BSODWindow";
 export { StickyNotesWindow } from "./StickyNotesWindow";
+export { ClippyAnimation } from "./ClippyAnimation";
 export { ClippyWindow } from "./ClippyWindow";
 export { InstagramPostsWindow } from "./InstagramPostsWindow";
 export { VibeCheckWindow } from "./VibeCheckWindow";
