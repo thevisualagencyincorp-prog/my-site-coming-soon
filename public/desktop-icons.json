@@ -28,6 +28,13 @@
     "y": 288
   },
   {
+    "key": "cat",
+    "label": "Cats",
+    "iconSrc": "/images/icons/cat.svg",
+    "x": 120,
+    "y": 72
+  },
+  {
     "key": "portfolio",
     "label": "Portfolio",
     "iconSrc": "/globe.svg",
