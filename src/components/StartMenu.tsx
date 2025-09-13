@@ -145,7 +145,7 @@ export function StartMenu({
 
         {Object.entries(groupedItems).map(([category, items]) => (
           <div key={category} className="mb-4">
-            <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">
+            <div className="text-sm font-semibold text-white mb-2 uppercase tracking-wide">
               {category}
             </div>
             <ul className="space-y-1">
