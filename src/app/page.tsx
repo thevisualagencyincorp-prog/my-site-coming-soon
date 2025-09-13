@@ -555,17 +555,17 @@ export default function Page() {
       about: {
         title: "About The Agency OS™ | Creative Digital Agency Services",
         description:
-          "Meet our award-winning creative digital agency in Kern County, CA. We specialize in web development, app development, branding, and photo/videography services serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
+          "Meet our award-winning creative digital agency in Kern County, CA. We specialize in web development, app development, branding, photo/videography, and comprehensive social media management serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
       },
       faq: {
         title: "FAQ | Digital Agency Services & Process | The Agency OS™",
         description:
-          "Learn about our web development process, app development services, branding expertise, and photo/videography capabilities. Serving Kern County, CA and surrounding areas including Tehachapi, Lancaster, Bakersfield, and more.",
+          "Learn about our web development process, app development services, branding expertise, photo/videography capabilities, and social media management strategies. Serving Kern County, CA and surrounding areas including Tehachapi, Lancaster, Bakersfield, and more.",
       },
       aol: {
         title: "Contact Us | Get a Free Quote | The Agency OS™",
         description:
-          "Ready to start your project? Contact our Kern County, CA creative digital agency for a free consultation on web development, app development, or branding services. Serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
+          "Ready to start your project? Contact our Kern County, CA creative digital agency for a free consultation on web development, app development, branding, or social media management services. Serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
       },
       mash: {
         title: "MASH Game | Fun Interactive Experience | The Agency OS™",
@@ -580,7 +580,7 @@ export default function Page() {
       creativeWizard: {
         title: "Creative Wizard | Project Planning Tool | The Agency OS™",
         description:
-          "Use our interactive creative wizard to plan your next web development, app development, or branding project with our Kern County, CA digital agency. Serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
+          "Use our interactive creative wizard to plan your next web development, app development, branding, or social media management project with our Kern County, CA digital agency. Serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
       },
       metrics: {
         title: "Agency Metrics & Results | The Agency OS™",

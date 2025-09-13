@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s | The Agency OS™",
   },
   description:
-    "Award-winning creative digital agency in Kern County, CA specializing in custom web development, mobile app development, brand identity design, and professional photo/videography services. Serving Tehachapi, Lancaster, Bakersfield, Edwards AFB, California City, Bear Valley Springs, Stallion Springs, Sand Canyon, LA County, and beyond. Get a free quote for your next project.",
+    "Award-winning creative digital agency in Kern County, CA specializing in custom web development, mobile app development, brand identity design, professional photo/videography services, and comprehensive social media management. Serving Tehachapi, Lancaster, Bakersfield, Edwards AFB, California City, Bear Valley Springs, Stallion Springs, Sand Canyon, LA County, and beyond. Get a free quote for your next project.",
   keywords: [
     "creative digital agency",
     "web development agency",
@@ -74,6 +74,21 @@ export const metadata: Metadata = {
     "digital agency services",
     "creative agency near me",
     "web design agency",
+    "social media agency",
+    "social media management",
+    "social media marketing agency",
+    "social media strategy",
+    "social media consulting",
+    "instagram management",
+    "facebook marketing",
+    "linkedin marketing",
+    "tiktok marketing",
+    "social media advertising",
+    "content creation agency",
+    "social media content",
+    "social media growth",
+    "social media analytics",
+    "social media optimization",
     "coming soon page",
     "interactive website",
     "retro design",
@@ -96,7 +111,7 @@ export const metadata: Metadata = {
     title:
       "Creative Digital Agency | Custom Web Development & App Development Experts",
     description:
-      "Award-winning creative digital agency in Kern County, CA specializing in custom web development, mobile app development, brand identity design, and professional photo/videography services. Serving Tehachapi, Lancaster, Bakersfield, Edwards AFB, California City, Bear Valley Springs, Stallion Springs, Sand Canyon, LA County, and beyond. Get a free quote for your next project.",
+      "Award-winning creative digital agency in Kern County, CA specializing in custom web development, mobile app development, brand identity design, professional photo/videography services, and comprehensive social media management. Serving Tehachapi, Lancaster, Bakersfield, Edwards AFB, California City, Bear Valley Springs, Stallion Springs, Sand Canyon, LA County, and beyond. Get a free quote for your next project.",
     url: "/",
     siteName: "The Agency OS™",
     images: [
@@ -115,7 +130,7 @@ export const metadata: Metadata = {
     title:
       "Creative Digital Agency | Custom Web Development & App Development Experts",
     description:
-      "Award-winning creative digital agency in Kern County, CA specializing in custom web development, mobile app development, brand identity design, and professional photo/videography services. Serving Tehachapi, Lancaster, Bakersfield, Edwards AFB, California City, Bear Valley Springs, Stallion Springs, Sand Canyon, LA County, and beyond.",
+      "Award-winning creative digital agency in Kern County, CA specializing in custom web development, mobile app development, brand identity design, professional photo/videography services, and comprehensive social media management. Serving Tehachapi, Lancaster, Bakersfield, Edwards AFB, California City, Bear Valley Springs, Stallion Springs, Sand Canyon, LA County, and beyond.",
     images: ["/images/og.jpg"],
   },
   manifest: "/manifest.json",
@@ -319,6 +334,20 @@ export default function RootLayout({
             },
           },
         },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Social Media Management",
+            description:
+              "Comprehensive social media strategy, content creation, community management, advertising, and analytics for Instagram, Facebook, LinkedIn, and TikTok",
+            serviceType: "Social Media",
+            provider: {
+              "@type": "Organization",
+              name: "The Agency OS™",
+            },
+          },
+        },
       ],
     },
     knowsAbout: [
@@ -332,6 +361,13 @@ export default function RootLayout({
       "UI/UX Design",
       "E-commerce Development",
       "Social Media Marketing",
+      "Social Media Management",
+      "Content Creation",
+      "Social Media Strategy",
+      "Instagram Management",
+      "Facebook Marketing",
+      "LinkedIn Marketing",
+      "TikTok Marketing",
     ],
   };
 
