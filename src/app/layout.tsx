@@ -33,7 +33,12 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "The Agency OS™",
     images: [
-      { url: "/images/og.jpg", width: 1200, height: 630, alt: "The Agency OS — #theagencyMASH" },
+      {
+        url: "/images/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "The Agency OS — #theagencyMASH",
+      },
     ],
     locale: "en_US",
     type: "website",
@@ -66,9 +71,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased font-sans">
-        {children}
-      </body>
+      <body className="antialiased font-sans">{children}</body>
     </html>
   );
 }

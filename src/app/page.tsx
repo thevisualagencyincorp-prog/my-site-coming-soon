@@ -52,202 +52,204 @@ export default function Page() {
     pos: { x: number; y: number };
     size: { w: number; h: number };
   };
-  const [windows, setWindows] = useState<Record<WindowKey, WindowState>>(() => ({
-    mash: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 120, y: 120 },
-      size: { w: 520, h: 420 },
-    },
-    aol: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      // start roughly centered; openWindow will also center
-      pos: { x: 200, y: 160 },
-      // larger, chat-friendly default size
-      size: { w: 780, h: 640 },
-    },
-    ads: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 260, y: 200 },
-      size: { w: 420, h: 300 },
-    },
-    contact: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 100, y: 220 },
-      size: { w: 420, h: 320 },
-    },
-    faq: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 120, y: 140 },
-      size: { w: 480, h: 360 },
-    },
-    about: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 140, y: 140 },
-      size: { w: 480, h: 360 },
-    },
-    creative: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 220, y: 140 },
-      size: { w: 520, h: 420 },
-    },
-    metrics: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 180, y: 180 },
-      size: { w: 520, h: 360 },
-    },
-    skeleton: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 260, y: 180 },
-      size: { w: 420, h: 300 },
-    },
-    cat: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 300, y: 180 },
-      size: { w: 420, h: 300 },
-    },
-    virus: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 320, y: 200 },
-      size: { w: 420, h: 300 },
-    },
-    bsod: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 0, y: 0 },
-      size: { w: 800, h: 600 },
-    },
-    notes: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 200, y: 200 },
-      size: { w: 380, h: 260 },
-    },
-    clippy: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 220, y: 220 },
-      size: { w: 340, h: 240 },
-    },
-    vibeCheck: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 240, y: 120 },
-      size: { w: 420, h: 320 },
-    },
-    newsletter: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 260, y: 120 },
-      size: { w: 420, h: 320 },
-    },
-    mysteryClub: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 280, y: 140 },
-      size: { w: 420, h: 320 },
-    },
-    coffeeClub: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 300, y: 160 },
-      size: { w: 380, h: 260 },
-    },
-    trash: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 320, y: 200 },
-      size: { w: 480, h: 360 },
-    },
-    portfolio: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 240, y: 180 },
-      size: { w: 640, h: 420 },
-    },
-    adMaker: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 220, y: 160 },
-      size: { w: 720, h: 560 },
-    },
-    instaAd: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 200, y: 140 },
-      size: { w: 360, h: 320 },
-    },
-    book: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 220, y: 160 },
-      size: { w: 520, h: 380 },
-    },
+  const [windows, setWindows] = useState<Record<WindowKey, WindowState>>(
+    () => ({
+      mash: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 120, y: 120 },
+        size: { w: 520, h: 420 },
+      },
+      aol: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        // start roughly centered; openWindow will also center
+        pos: { x: 200, y: 160 },
+        // larger, chat-friendly default size
+        size: { w: 780, h: 640 },
+      },
+      ads: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 260, y: 200 },
+        size: { w: 420, h: 300 },
+      },
+      contact: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 100, y: 220 },
+        size: { w: 420, h: 320 },
+      },
+      faq: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 120, y: 140 },
+        size: { w: 480, h: 360 },
+      },
+      about: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 140, y: 140 },
+        size: { w: 480, h: 360 },
+      },
+      creative: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 220, y: 140 },
+        size: { w: 520, h: 420 },
+      },
+      metrics: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 180, y: 180 },
+        size: { w: 520, h: 360 },
+      },
+      skeleton: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 260, y: 180 },
+        size: { w: 420, h: 300 },
+      },
+      cat: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 300, y: 180 },
+        size: { w: 420, h: 300 },
+      },
+      virus: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 320, y: 200 },
+        size: { w: 420, h: 300 },
+      },
+      bsod: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 0, y: 0 },
+        size: { w: 800, h: 600 },
+      },
+      notes: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 200, y: 200 },
+        size: { w: 380, h: 260 },
+      },
+      clippy: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 220, y: 220 },
+        size: { w: 340, h: 240 },
+      },
+      vibeCheck: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 240, y: 120 },
+        size: { w: 420, h: 320 },
+      },
+      newsletter: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 260, y: 120 },
+        size: { w: 420, h: 320 },
+      },
+      mysteryClub: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 280, y: 140 },
+        size: { w: 420, h: 320 },
+      },
+      coffeeClub: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 300, y: 160 },
+        size: { w: 380, h: 260 },
+      },
+      trash: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 320, y: 200 },
+        size: { w: 480, h: 360 },
+      },
+      portfolio: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 240, y: 180 },
+        size: { w: 640, h: 420 },
+      },
+      adMaker: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 220, y: 160 },
+        size: { w: 720, h: 560 },
+      },
+      instaAd: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 200, y: 140 },
+        size: { w: 360, h: 320 },
+      },
+      book: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 220, y: 160 },
+        size: { w: 520, h: 380 },
+      },
       mtv: {
-      open: false,
-      minimized: false,
-      maximized: false,
-      z: 0,
-      pos: { x: 220, y: 220 },
-      size: { w: 560, h: 360 },
-    },
-  }));
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 220, y: 220 },
+        size: { w: 560, h: 360 },
+      },
+    })
+  );
 
   const bringToFront = (key: WindowKey) => {
     nextZ.current += 1;
@@ -263,7 +265,10 @@ export default function Page() {
     // Always show one initial promo after boot so it’s visible at least once
     const firstPromo = window.setTimeout(() => {
       openWindow("ads");
-      window.setTimeout(() => setWindows((w) => ({ ...w, ads: { ...w.ads, open: false } })), 8000);
+      window.setTimeout(
+        () => setWindows((w) => ({ ...w, ads: { ...w.ads, open: false } })),
+        8000
+      );
     }, 1500);
     // Copy of the inspo popup pattern: three popups at 2s, 6s, 10s (relative),
     // auto-close after 5s, and repeat the whole sequence every 30s while the user remains idle.
@@ -387,13 +392,23 @@ export default function Page() {
       let desired = { x: base.x + offset.x, y: base.y + offset.y };
       const vw = typeof window !== "undefined" ? window.innerWidth : 1200;
       const vh = typeof window !== "undefined" ? window.innerHeight : 800;
-      // Center the AOL window on open for better visibility
-      if (key === "aol") {
+      const isMobileView = vw < 768;
+
+      // Center windows on mobile for better usability
+      if (isMobileView) {
         desired = {
           x: Math.max(0, Math.floor((vw - w[key].size.w) / 2)),
           y: Math.max(0, Math.floor((vh - TASKBAR_HEIGHT - w[key].size.h) / 2)),
         };
       }
+      // Center the AOL window on open for better visibility (both mobile and desktop)
+      else if (key === "aol") {
+        desired = {
+          x: Math.max(0, Math.floor((vw - w[key].size.w) / 2)),
+          y: Math.max(0, Math.floor((vh - TASKBAR_HEIGHT - w[key].size.h) / 2)),
+        };
+      }
+
       const maxX = Math.max(0, vw - w[key].size.w);
       const maxY = Math.max(0, vh - TASKBAR_HEIGHT - w[key].size.h);
       const clamped = {
@@ -462,7 +477,9 @@ export default function Page() {
         if (k === "clippy" || k === "bsod") return acc;
         return acc + (v.open ? 1 : 0);
       }, 0);
-      window.dispatchEvent(new CustomEvent("windowsOpenCount", { detail: openCount }));
+      window.dispatchEvent(
+        new CustomEvent("windowsOpenCount", { detail: openCount })
+      );
     } catch {}
   }, [windows]);
 
@@ -474,8 +491,6 @@ export default function Page() {
     }, 900);
     return () => window.clearTimeout(t);
   }, [isLoading]);
-
-  
 
   // Auto day/night background selection (live switch at 07:00 and 19:00)
   const [bgImage, setBgImage] = useState("/images/Background:day.png");
@@ -637,10 +652,32 @@ export default function Page() {
               break;
             case "portfolio":
               content = (
-                <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                  <div style={{ padding: 8, background: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontSize: 12, color: "#374151" }}>
-                    If the portfolio doesn’t load in this window, open it in a new tab: {" "}
-                    <a href="https://www.the-visual-archive.com" target="_blank" rel="noreferrer" style={{ color: "#2563eb", fontWeight: 600 }}>the-visual-archive.com ↗</a>
+                <div
+                  style={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: 8,
+                      background: "#f9fafb",
+                      borderBottom: "1px solid #e5e7eb",
+                      fontSize: 12,
+                      color: "#374151",
+                    }}
+                  >
+                    If the portfolio doesn’t load in this window, open it in a
+                    new tab:{" "}
+                    <a
+                      href="https://www.the-visual-archive.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "#2563eb", fontWeight: 600 }}
+                    >
+                      the-visual-archive.com ↗
+                    </a>
                   </div>
                   <iframe
                     src="https://www.the-visual-archive.com"
@@ -712,42 +749,89 @@ export default function Page() {
             <div className="flex items-center gap-3">
               {/* Minimized/open windows first, tray at the far right */}
               <div className="flex items-center gap-2">
-                {Object.keys(windows).filter((k) => !["ads","instaAd","newsletter"].includes(k)).map((k) => {
-                  const key = k as WindowKey;
-                  const w = windows[key];
-                  if (!w.open) return null;
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => {
-                        if (w.minimized) bringToFront(key);
-                        else toggleMinimize(key);
-                      }}
-                      className={`px-2 py-1 rounded bg-white/10 text-white/90 text-xs border border-white/10`}
-                      title={key}
-                    >
-                      {key}
-                    </button>
-                  );
-                })}
+                {Object.keys(windows)
+                  .filter((k) => !["ads", "instaAd", "newsletter"].includes(k))
+                  .map((k) => {
+                    const key = k as WindowKey;
+                    const w = windows[key];
+                    if (!w.open) return null;
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          if (w.minimized) bringToFront(key);
+                          else toggleMinimize(key);
+                        }}
+                        className={`px-2 py-1 rounded bg-white/10 text-white/90 text-xs border border-white/10`}
+                        title={key}
+                      >
+                        {key}
+                      </button>
+                    );
+                  })}
               </div>
               {/* Indicators tray (clock/date/weather + static wifi/battery) pinned to the right */}
               <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-md border border-white/5 text-white text-sm">
                 {/* WiFi indicator */}
-                <span className="inline-flex items-center" title="Wi‑Fi Connected">
+                <span
+                  className="inline-flex items-center"
+                  title="Wi‑Fi Connected"
+                >
                   <svg width="16" height="12" viewBox="0 0 16 12" aria-hidden>
-                    <path d="M1 4c4-4 10-4 14 0" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.4"/>
-                    <path d="M3 6c3-3 7-3 10 0" stroke="currentColor" strokeWidth="1.2" fill="none" opacity="0.7"/>
-                    <path d="M5 8c2-2 4-2 6 0" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                    <path
+                      d="M1 4c4-4 10-4 14 0"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      fill="none"
+                      opacity="0.4"
+                    />
+                    <path
+                      d="M3 6c3-3 7-3 10 0"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      fill="none"
+                      opacity="0.7"
+                    />
+                    <path
+                      d="M5 8c2-2 4-2 6 0"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
                     <circle cx="8" cy="10" r="1" fill="currentColor" />
                   </svg>
                 </span>
                 {/* Battery indicator */}
                 <span className="inline-flex items-center" title="Battery 78%">
                   <svg width="22" height="12" viewBox="0 0 22 12" aria-hidden>
-                    <rect x="1" y="2" width="18" height="8" rx="2" ry="2" stroke="currentColor" fill="none" strokeWidth="1" />
-                    <rect x="2.5" y="3.5" width="13.5" height="5" rx="1" fill="currentColor" opacity="0.85"/>
-                    <rect x="19.5" y="4" width="2" height="4" rx="1" fill="currentColor" />
+                    <rect
+                      x="1"
+                      y="2"
+                      width="18"
+                      height="8"
+                      rx="2"
+                      ry="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeWidth="1"
+                    />
+                    <rect
+                      x="2.5"
+                      y="3.5"
+                      width="13.5"
+                      height="5"
+                      rx="1"
+                      fill="currentColor"
+                      opacity="0.85"
+                    />
+                    <rect
+                      x="19.5"
+                      y="4"
+                      width="2"
+                      height="4"
+                      rx="1"
+                      fill="currentColor"
+                    />
                   </svg>
                   <span className="ml-1 text-xs">78%</span>
                 </span>

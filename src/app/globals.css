@@ -237,6 +237,24 @@ div {
   .bsod-flicker {
     animation: none;
   }
+
+  /* Improve touch targets on mobile */
+  button,
+  .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better mobile scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Improve text readability on mobile */
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
 }
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {

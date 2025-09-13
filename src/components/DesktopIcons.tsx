@@ -47,7 +47,7 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       label: "Meet Marketing Baddies in Your Area",
       iconSrc: "/images/icons/about.svg",
       x: 24,
-      y: 256,
+      y: 336,
     },
     {
       key: "faq",

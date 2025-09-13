@@ -22,7 +22,7 @@ export function MTVWindow() {
   const handleVideoError = () => {
     if (currentSrcIndex < allSrcs.length - 1) {
       // Try next video source
-      setCurrentSrcIndex(prev => prev + 1);
+      setCurrentSrcIndex((prev) => prev + 1);
       setError(false);
       setReady(false);
     } else {
@@ -59,7 +59,9 @@ export function MTVWindow() {
           gap: 10,
         }}
       >
-        <span style={{ fontWeight: 800, letterSpacing: 0.5 }}>MTV 00s — Non‑Stop Y2K</span>
+        <span style={{ fontWeight: 800, letterSpacing: 0.5 }}>
+          MTV 00s — Non‑Stop Y2K
+        </span>
         <span style={{ marginLeft: "auto", fontSize: 12, opacity: 0.85 }}>
           Archive.org stream
         </span>
@@ -121,7 +123,8 @@ export function MTVWindow() {
             <div style={{ fontSize: 24, marginBottom: 10 }}>📺</div>
             <div>MTV Video Unavailable</div>
             <div style={{ fontSize: 12, marginTop: 10, opacity: 0.7 }}>
-              The video stream may be temporarily unavailable.<br />
+              The video stream may be temporarily unavailable.
+              <br />
               Click retry to try alternative sources.
             </div>
             <button
@@ -148,10 +151,23 @@ export function MTVWindow() {
             </button>
           </div>
         )}
-        <div style={{ position: "absolute", bottom: 10, left: 10, display: "flex", gap: 8 }}>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 10,
+            left: 10,
+            display: "flex",
+            gap: 8,
+          }}
+        >
           <button
             onClick={() => setMuted((m) => !m)}
-            style={{ padding: "6px 10px", background: "#ffffff22", border: "1px solid #ffffff33", borderRadius: 6 }}
+            style={{
+              padding: "6px 10px",
+              background: "#ffffff22",
+              border: "1px solid #ffffff33",
+              borderRadius: 6,
+            }}
           >
             {muted ? "Unmute" : "Mute"}
           </button>

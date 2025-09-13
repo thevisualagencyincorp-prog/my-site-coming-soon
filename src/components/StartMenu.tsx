@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 export type WindowKey =
   | "mash"
   | "aol"
@@ -91,6 +93,15 @@ export function StartMenu({
   onOpenWindow,
   onResetLayout,
 }: StartMenuProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   if (!open) return null;
 
   // Group menu items by category
@@ -105,8 +116,16 @@ export function StartMenu({
 
   return (
     <div
-      className="fixed z-[100] left-2 right-2 sm:left-4 sm:right-auto bottom-16 sm:bottom-16 w-auto sm:w-80 rounded-2xl bg-gradient-to-br from-indigo-800/30 to-purple-600/30 shadow-2xl border border-white/20 backdrop-blur-lg animate-fade-in overflow-hidden"
-      style={{ minHeight: 300, maxHeight: "70vh", overflowY: "auto" }}
+      className={`fixed z-[100] rounded-2xl bg-gradient-to-br from-indigo-800/30 to-purple-600/30 shadow-2xl border border-white/20 backdrop-blur-lg animate-fade-in overflow-hidden ${
+        isMobile
+          ? "left-2 right-2 bottom-12"
+          : "left-4 right-auto bottom-16 w-80"
+      }`}
+      style={{
+        minHeight: isMobile ? 250 : 300,
+        maxHeight: isMobile ? "60vh" : "70vh",
+        overflowY: "auto",
+      }}
       tabIndex={-1}
       role="menu"
       aria-label="Start Menu"
@@ -114,9 +133,14 @@ export function StartMenu({
     >
       {/* subtle glow overlay */}
       <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(60%_60%_at_20%_0%,rgba(255,255,255,0.35),transparent_60%)]" />
-      <div className="relative p-4" onClick={(e) => e.stopPropagation()}>
+      <div
+        className={`relative ${isMobile ? "p-3" : "p-4"}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div
-          className="mb-3 text-lg font-bold text-white dark:text-white"
+          className={`mb-3 font-bold text-white dark:text-white ${
+            isMobile ? "text-base" : "text-lg"
+          }`}
           style={{ fontFamily: "Tahoma, Geneva, Verdana, sans-serif" }}
         >
           THE AGENCY OS™
@@ -126,7 +150,9 @@ export function StartMenu({
         <input
           type="text"
           placeholder="Search apps..."
-          className="w-full mb-4 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/10 text-sm outline-none"
+          className={`w-full mb-4 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/10 text-sm outline-none ${
+            isMobile ? "text-base py-3" : ""
+          }`}
           onChange={(e) => {
             const q = e.currentTarget.value.toLowerCase();
             const el = e.currentTarget.closest('[role="menu"]');
@@ -144,16 +170,18 @@ export function StartMenu({
         />
 
         {Object.entries(groupedItems).map(([category, items]) => (
-          <div key={category} className="mb-4">
+          <div key={category} className={isMobile ? "mb-6" : "mb-4"}>
             <div className="text-sm font-semibold text-white mb-2 uppercase tracking-wide">
               {category}
             </div>
-            <ul className="space-y-1">
+            <ul className={isMobile ? "space-y-2" : "space-y-1"}>
               {items.map((item) => (
                 <li key={item.key} data-menu-item data-label={item.label}>
                   <button
                     role="menuitem"
-                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-transform duration-150 border border-white/10 hover:border-white/20 hover:scale-[1.01] active:scale-[0.99]"
+                    className={`flex items-center gap-3 w-full rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium transition-transform duration-150 border border-white/10 hover:border-white/20 hover:scale-[1.01] active:scale-[0.99] ${
+                      isMobile ? "px-4 py-3 text-base" : "px-3 py-2 text-sm"
+                    }`}
                     onClick={(e) => {
                       e.stopPropagation();
                       onOpenWindow(item.key);
