@@ -33,3 +33,4 @@ export { MTVWindow } from "./MTVWindow";
 export { BookWindow } from "./BookWindow";
 export { DesktopIcons } from "./DesktopIcons";
 export { SocialAdMakerWindow } from "./SocialAdMakerWindow";
+export { VideoLibraryWindow } from "./VideoLibraryWindow";

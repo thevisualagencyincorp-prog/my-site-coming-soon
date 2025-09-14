@@ -3,8 +3,6 @@ import { useState, useRef, useEffect } from "react";
 
 export function SkeletonDanceWindow() {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [volume, setVolume] = useState(50);
-  const [muted, setMuted] = useState(true);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [ready, setReady] = useState(false);
@@ -19,6 +17,8 @@ export function SkeletonDanceWindow() {
       tags: ["Viral", "Animation", "Dance"],
       views: "12.5K",
       likes: "8.2K",
+      videoUrl:
+        "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4",
     },
     {
       id: 2,
@@ -29,6 +29,7 @@ export function SkeletonDanceWindow() {
       tags: ["Behind the Scenes", "Team", "Culture"],
       views: "5.8K",
       likes: "3.1K",
+      videoUrl: "/videos/agency-bts.mp4", // Placeholder - would need actual video
     },
     {
       id: 3,
@@ -39,14 +40,101 @@ export function SkeletonDanceWindow() {
       tags: ["Process", "Design", "Development"],
       views: "9.2K",
       likes: "6.7K",
+      videoUrl: "/videos/creative-process.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 4,
+      title: "Brand Identity: Tech Startup",
+      duration: "5:20",
+      description: "Complete brand transformation for a fintech company",
+      thumbnail: "🚀",
+      tags: ["Branding", "Logo Design", "Identity"],
+      views: "15.3K",
+      likes: "12.1K",
+      videoUrl: "/videos/brand-identity.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 5,
+      title: "Website Redesign: E-commerce",
+      duration: "6:15",
+      description: "UX/UI overhaul that increased conversions by 40%",
+      thumbnail: "🛒",
+      tags: ["Web Design", "UX/UI", "E-commerce"],
+      views: "8.7K",
+      likes: "7.2K",
+      videoUrl: "/videos/website-redesign.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 6,
+      title: "Social Media Campaign",
+      duration: "4:30",
+      description: "Viral marketing campaign for a lifestyle brand",
+      thumbnail: "📱",
+      tags: ["Social Media", "Marketing", "Campaign"],
+      views: "22.1K",
+      likes: "18.5K",
+      videoUrl: "/videos/social-campaign.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 7,
+      title: "Mobile App Development",
+      duration: "7:45",
+      description: "From concept to launch: fitness tracking app",
+      thumbnail: "📱",
+      tags: ["Mobile", "Development", "App"],
+      views: "11.4K",
+      likes: "9.8K",
+      videoUrl: "/videos/mobile-app.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 8,
+      title: "Motion Graphics: Product Demo",
+      duration: "3:20",
+      description: "Animated explainer video for SaaS platform",
+      thumbnail: "🎥",
+      tags: ["Motion Graphics", "Animation", "Demo"],
+      views: "14.6K",
+      likes: "11.3K",
+      videoUrl: "/videos/motion-graphics.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 9,
+      title: "Photography: Corporate Headshots",
+      duration: "2:50",
+      description: "Professional headshot session for executive team",
+      thumbnail: "📸",
+      tags: ["Photography", "Corporate", "Headshots"],
+      views: "6.9K",
+      likes: "5.4K",
+      videoUrl: "/videos/photography.mp4", // Placeholder - would need actual video
+    },
+    {
+      id: 10,
+      title: "Content Strategy Workshop",
+      duration: "8:10",
+      description: "How we developed a 12-month content calendar",
+      thumbnail: "📝",
+      tags: ["Content", "Strategy", "Workshop"],
+      views: "7.8K",
+      likes: "6.1K",
+      videoUrl: "/videos/content-strategy.mp4", // Placeholder - would need actual video
     },
   ];
 
   const currentVideoData = videoLibrary[currentVideo];
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Nudge autoplay on mount in case the browser hesitates
-  // (allowed because we start muted)
+  // Handle video switching
+  const switchVideo = (index: number) => {
+    setCurrentVideo(index);
+    setIsPlaying(false);
+    setReady(false);
+    if (videoRef.current) {
+      videoRef.current.load();
+    }
+  };
+
+  // Auto-play on mount
   useEffect(() => {
     const t = setTimeout(() => {
       try {
@@ -55,6 +143,14 @@ export function SkeletonDanceWindow() {
     }, 200);
     return () => clearTimeout(t);
   }, []);
+
+  // Reload video when currentVideo changes
+  useEffect(() => {
+    if (videoRef.current) {
+      setReady(false);
+      videoRef.current.load();
+    }
+  }, [currentVideo]);
 
   return (
     <div
@@ -70,8 +166,6 @@ export function SkeletonDanceWindow() {
         overflow: "hidden",
       }}
     >
-      {/* Title moved to window chrome */}
-
       {/* Toolbar */}
       <div
         style={{
@@ -96,8 +190,44 @@ export function SkeletonDanceWindow() {
         >
           📋 Playlist
         </button>
+        <button
+          onClick={() => switchVideo(Math.max(0, currentVideo - 1))}
+          disabled={currentVideo === 0}
+          style={{
+            padding: "4px 8px",
+            background: "#fff",
+            border: "1px solid #cbd5ea",
+            borderRadius: "4px",
+            cursor: currentVideo === 0 ? "not-allowed" : "pointer",
+            fontSize: "12px",
+            opacity: currentVideo === 0 ? 0.5 : 1,
+          }}
+        >
+          ⏮️ Prev
+        </button>
+        <button
+          onClick={() =>
+            switchVideo(Math.min(videoLibrary.length - 1, currentVideo + 1))
+          }
+          disabled={currentVideo === videoLibrary.length - 1}
+          style={{
+            padding: "4px 8px",
+            background: "#fff",
+            border: "1px solid #cbd5ea",
+            borderRadius: "4px",
+            cursor:
+              currentVideo === videoLibrary.length - 1
+                ? "not-allowed"
+                : "pointer",
+            fontSize: "12px",
+            opacity: currentVideo === videoLibrary.length - 1 ? 0.5 : 1,
+          }}
+        >
+          Next ⏭️
+        </button>
         <span style={{ fontSize: "12px", color: "#6c7c9b" }}>
-          {currentVideoData.title} • {currentVideoData.duration}
+          {currentVideoData.title} • {currentVideoData.duration} •{" "}
+          {currentVideo + 1}/{videoLibrary.length}
         </span>
       </div>
 
@@ -199,6 +329,11 @@ export function SkeletonDanceWindow() {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
+                      // Epilepsy-friendly filters: reduce contrast, brightness, and saturation
+                      filter:
+                        "brightness(0.7) contrast(0.6) saturate(0.5) blur(0.3px)",
+                      // Additional safety: limit animation intensity
+                      animation: "none",
                     }}
                     poster="/images/Background:night.png"
                     onLoadedData={() => setReady(true)}
@@ -206,17 +341,18 @@ export function SkeletonDanceWindow() {
                     onPause={() => setIsPlaying(false)}
                     onPlay={() => setIsPlaying(true)}
                   >
-                    {process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL && (
-                      <source
-                        src={process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL}
-                        type="video/mp4"
-                      />
-                    )}
-                    <source src="/videos/skeleton.mp4" type="video/mp4" />
-                    <source
-                      src="https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
-                      type="video/mp4"
-                    />
+                    <source src={currentVideoData.videoUrl} type="video/mp4" />
+                    {/* Fallback sources for skeleton dance */}
+                    {currentVideo === 0 &&
+                      !currentVideoData.videoUrl.includes("archive.org") && (
+                        <>
+                          <source src="/videos/skeleton.mp4" type="video/mp4" />
+                          <source
+                            src="https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
+                            type="video/mp4"
+                          />
+                        </>
+                      )}
                   </video>
                 </div>
                 {!ready && (
@@ -239,7 +375,7 @@ export function SkeletonDanceWindow() {
                   <div style={{ position: "absolute", right: 10, bottom: 10 }}>
                     <a
                       href={
-                        process.env.NEXT_PUBLIC_SKELETON_VIDEO_URL ||
+                        currentVideoData.videoUrl ||
                         "https://archive.org/download/the-skeleton-dance_1929/the-skeleton-dance_1929.mp4"
                       }
                       target="_blank"
@@ -258,7 +394,7 @@ export function SkeletonDanceWindow() {
                     </a>
                   </div>
                 )}
-                {/* No controls overlay; system volume applies */}
+                {/* System volume controls video playback */}
               </div>
             )}
           </div>
@@ -335,10 +471,7 @@ export function SkeletonDanceWindow() {
               {videoLibrary.map((video, index) => (
                 <div
                   key={video.id}
-                  onClick={() => {
-                    setCurrentVideo(index);
-                    setIsPlaying(false);
-                  }}
+                  onClick={() => switchVideo(index)}
                   style={{
                     padding: "12px",
                     borderBottom: "1px solid #f0f0f0",
@@ -392,21 +525,6 @@ export function SkeletonDanceWindow() {
           }
           50% {
             transform: scale(1.05);
-          }
-        }
-        @keyframes dance {
-          0%,
-          100% {
-            transform: scale(1) rotate(0deg);
-          }
-          25% {
-            transform: scale(1.1) rotate(5deg);
-          }
-          50% {
-            transform: scale(1.2) rotate(-5deg);
-          }
-          75% {
-            transform: scale(1.1) rotate(3deg);
           }
         }
       `}</style>

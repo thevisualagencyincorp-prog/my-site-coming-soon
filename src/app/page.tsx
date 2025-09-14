@@ -1,13 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import Head from "next/head";
 import { TopBar } from "@/components/TopBar";
 import {
   DesktopWindow,
-  DigitalClockOnlyDate,
-  DigitalClockOnlyTime,
-  WeatherWidgetTaskbar,
   DesktopIcons,
   LoadingScreen,
   StartMenu,
@@ -33,6 +29,7 @@ import {
   MTVWindow,
   BookWindow,
   SocialAdMakerWindow,
+  VideoLibraryWindow,
 } from "@/components";
 import type { WindowKey } from "@/components/StartMenu";
 
@@ -247,6 +244,14 @@ export default function Page() {
         z: 0,
         pos: { x: 220, y: 220 },
         size: { w: 560, h: 360 },
+      },
+      videoLibrary: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 200, y: 200 },
+        size: { w: 800, h: 600 },
       },
     })
   );
@@ -642,98 +647,10 @@ export default function Page() {
         description:
           "Learn about our Instagram advertising services and social media marketing expertise for your brand.",
       },
-      archive: {
-        title: "Project Archive | Portfolio | The Agency OS™",
-        description:
-          "Browse our project archive showcasing web development, app development, and branding success stories.",
-      },
-      mtv: {
-        title: "MTV Style Experience | Entertainment | The Agency OS™",
-        description:
-          "Enjoy our MTV-inspired interactive experience while discovering our creative digital agency services.",
-      },
-      book: {
-        title: "Digital Agency Guide | Resources | The Agency OS™",
-        description:
-          "Read our comprehensive guide to web development, app development, and digital marketing strategies.",
-      },
-      socialAdMaker: {
-        title: "Social Ad Maker | Marketing Tools | The Agency OS™",
-        description:
-          "Create stunning social media ads with our interactive ad maker tool and digital marketing expertise.",
-      },
     };
-
-    const activeKey = activeWindow[0] as keyof typeof serviceMetaTags;
-    const metaTag = serviceMetaTags[activeKey];
-
-    if (metaTag) {
-      document.title = metaTag.title;
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute("content", metaTag.description);
-      }
-    }
-  }, [windows]);
 
   return (
     <>
-      <Head>
-        <title>
-          The Agency OS™ — Creative Digital Agency | Web Design & Branding
-          Experts
-        </title>
-        <meta
-          name="description"
-          content="Award-winning creative digital agency specializing in web development, branding, marketing, and innovative digital solutions. Retro desktop experience meets modern expertise."
-        />
-        <meta
-          name="keywords"
-          content="creative digital agency, web development agency, branding agency, website design, digital marketing agency, creative agency, web design company, brand identity design"
-        />
-        <meta name="author" content="The Agency OS™" />
-        <meta name="robots" content="index, follow" />
-        <meta
-          name="googlebot"
-          content="index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"
-        />
-        <meta
-          property="og:title"
-          content="The Agency OS™ — Creative Digital Agency | Web Design & Branding Experts"
-        />
-        <meta
-          property="og:description"
-          content="Award-winning creative digital agency specializing in web development, branding, marketing, and innovative digital solutions."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://the-agency-os.example.com" />
-        <meta
-          property="og:image"
-          content="https://the-agency-os.example.com/images/og.jpg"
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="The Agency OS™" />
-        <meta property="og:locale" content="en_US" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="The Agency OS™ — Creative Digital Agency | Web Design & Branding Experts"
-        />
-        <meta
-          name="twitter:description"
-          content="Award-winning creative digital agency specializing in web development, branding, marketing, and innovative digital solutions."
-        />
-        <meta
-          name="twitter:image"
-          content="https://the-agency-os.example.com/images/og.jpg"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="canonical" href="https://the-agency-os.example.com" />
-        <link rel="icon" href="/images/fcon.webp" />
-        <link rel="apple-touch-icon" href="/images/fcon.webp" />
-      </Head>
-
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
       <TopBar />
@@ -771,6 +688,8 @@ export default function Page() {
                 ? "Notes"
                 : key === "aol"
                 ? "AOL Instant Messenger"
+                : key === "videoLibrary"
+                ? "Video Library"
                 : key,
             iconSrc: "/images/folder.webp",
             initialPosition: w.pos,
@@ -841,6 +760,9 @@ export default function Page() {
               break;
             case "mtv":
               content = <MTVWindow />;
+              break;
+            case "videoLibrary":
+              content = <VideoLibraryWindow />;
               break;
             case "mysteryClub":
               content = <MysteryMurderClubWaitlistWindow />;

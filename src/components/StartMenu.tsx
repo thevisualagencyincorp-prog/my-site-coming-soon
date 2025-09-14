@@ -26,7 +26,8 @@ export type WindowKey =
   | "instaAd"
   | "mtv"
   | "adMaker"
-  | "book";
+  | "book"
+  | "videoLibrary";
 
 interface StartMenuProps {
   open: boolean;
@@ -85,6 +86,12 @@ const menuItems: {
   },
   { key: "mysteryClub", label: "Mystery Club", icon: "🕵️‍♀️", category: "Events" },
   { key: "coffeeClub", label: "Coffee Club", icon: "☕", category: "Events" },
+  {
+    key: "videoLibrary",
+    label: "Video Library",
+    icon: "🎬",
+    category: "Studio",
+  },
 ];
 
 export function StartMenu({

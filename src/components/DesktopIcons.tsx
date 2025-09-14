@@ -85,6 +85,13 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       y: 96,
     },
     { key: "trash", label: "Trash", iconSrc: "/window.svg", x: 216, y: 176 },
+    {
+      key: "videoLibrary",
+      label: "Video Library",
+      iconSrc: "/images/icons/folder.svg",
+      x: 216,
+      y: 256,
+    },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -314,7 +321,9 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
               key={item.key}
               data-win-key={item.key}
               onClick={() => onOpen(item.key)}
-              onMouseDown={(e) => startDrag(e, item.key)}
+              onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) =>
+                startDrag(e, item.key)
+              }
               className="group flex flex-col items-center w-20 focus:outline-none"
               style={{
                 position: "absolute",
@@ -350,7 +359,9 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
             key={trashItem.key}
             data-win-key={trashItem.key}
             onClick={() => onOpen(trashItem.key)}
-            onMouseDown={(e) => startDrag(e, trashItem.key)}
+            onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) =>
+              startDrag(e, trashItem.key)
+            }
             className="group flex flex-col items-center w-20 focus:outline-none"
             style={{
               position: "fixed",
