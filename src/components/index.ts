@@ -27,7 +27,7 @@ export { NewsletterWindow } from "./NewsletterWindow";
 export { MysteryMurderClubWaitlistWindow } from "./MysteryMurderClubWaitlistWindow";
 export { CoffeeClubWaitlistWindow } from "./CoffeeClubWaitlistWindow";
 export { RetroAdWindow } from "./RetroAdWindow";
-export { InstagramAdWindow } from "./InstagramAdWindow";
+export { Instagram_Ad as InstagramAdWindow } from "./InstagramAdWindow";
 export { ArchiveWindow } from "./ArchiveWindow";
 export { MTVWindow } from "./MTVWindow";
 export { BookWindow } from "./BookWindow";

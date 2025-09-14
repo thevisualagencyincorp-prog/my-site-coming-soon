@@ -30,9 +30,6 @@ import {
   BookWindow,
   SocialAdMakerWindow,
   VideoLibraryWindow,
-  DigitalClockOnlyTime,
-  DigitalClockOnlyDate,
-  WeatherWidgetTaskbar,
 } from "@/components";
 import type { WindowKey } from "@/components/StartMenu";
 
@@ -500,7 +497,7 @@ export default function Page() {
     return () => window.clearTimeout(t);
   }, [isLoading]);
 
-  // Auto day/night background selection (live switch at 06:00 and 19:00)
+  // Auto day/night background selection (live switch at 07:00 and 19:00)
   const [bgImage, setBgImage] = useState("/images/Background:day.png");
   useEffect(() => {
     const setByClock = () => {
@@ -539,7 +536,6 @@ export default function Page() {
     const openWindows = Object.entries(windows).filter(
       ([_, w]) => w.open && !w.minimized
     );
-
     if (openWindows.length === 0) {
       // Reset to default when no windows are open
       document.title =
@@ -558,6 +554,8 @@ export default function Page() {
     const activeWindow = openWindows.reduce((max, [key, window]) =>
       window.z > max[1].z ? [key, window] : max
     );
+
+    // Update title and description based on active window
     const serviceMetaTags = {
       about: {
         title: "About The Agency OS™ | Creative Digital Agency Services",
@@ -650,10 +648,9 @@ export default function Page() {
           "Learn about our Instagram advertising services and social media marketing expertise for your brand.",
       },
     };
-  }, [windows]);
 
   return (
-    <div>
+    <>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
       <TopBar />
@@ -985,6 +982,6 @@ export default function Page() {
           onOpenWindow={(k) => openWindow(k as WindowKey)}
         />
       </main>
-    </div>
+    </>
   );
 }
