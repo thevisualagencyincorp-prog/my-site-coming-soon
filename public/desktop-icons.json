@@ -2,28 +2,28 @@
   {
     "key": "aol",
     "label": "AOL Chat",
-    "iconSrc": "/images/icons/aol.svg",
+    "iconSrc": "/brand/icons/aol.svg",
     "x": 24,
     "y": 72
   },
   {
     "key": "mash",
     "label": "MASH",
-    "iconSrc": "/images/icons/mash.svg",
+    "iconSrc": "/brand/icons/mash.svg",
     "x": 24,
     "y": 144
   },
   {
     "key": "about",
     "label": "Meet Marketing Baddies in Your Area",
-    "iconSrc": "/images/icons/about.svg",
+    "iconSrc": "/brand/icons/about.svg",
     "x": 24,
     "y": 216
   },
   {
     "key": "notes",
     "label": "Notes",
-    "iconSrc": "/images/icons/notes.svg",
+    "iconSrc": "/brand/icons/notes.svg",
     "x": 24,
     "y": 288
   },
@@ -51,14 +51,14 @@
   {
     "key": "mysteryClub",
     "label": "Mystery Club",
-    "iconSrc": "/images/icons/mystery.svg",
+    "iconSrc": "/brand/icons/mystery.svg",
     "x": 216,
     "y": 144
   },
   {
     "key": "coffeeClub",
     "label": "Coffee Club",
-    "iconSrc": "/images/icons/coffee.svg",
+    "iconSrc": "/brand/icons/coffee.svg",
     "x": 216,
     "y": 216
   },

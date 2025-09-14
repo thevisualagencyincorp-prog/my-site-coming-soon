@@ -84,7 +84,13 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       x: 216,
       y: 96,
     },
-    { key: "trash", label: "Trash", iconSrc: "/window.svg", x: 216, y: 176 },
+    {
+      key: "trash",
+      label: "Trash",
+      iconSrc: "/images/icons/trash.svg",
+      x: 216,
+      y: 176,
+    },
     {
       key: "videoLibrary",
       label: "Video Library",
