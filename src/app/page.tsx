@@ -8,8 +8,9 @@ import {
   LoadingScreen,
   StartMenu,
   AOLMessenger,
-  MASHGame,
+  Game,
   AboutWindow,
+  MySpaceWindow,
   FAQWindow,
   CreativeWizard,
   MetricsWindow,
@@ -103,6 +104,14 @@ export default function Page() {
         z: 0,
         pos: { x: 140, y: 140 },
         size: { w: 480, h: 360 },
+      },
+      myspace: {
+        open: false,
+        minimized: false,
+        maximized: false,
+        z: 0,
+        pos: { x: 160, y: 160 },
+        size: { w: 520, h: 480 },
       },
       creative: {
         open: false,
@@ -564,6 +573,11 @@ export default function Page() {
         description:
           "Meet our award-winning creative digital agency in Kern County, CA. We specialize in web development, app development, branding, photo/videography, and comprehensive social media management serving Tehachapi, Lancaster, Bakersfield, Bear Valley Springs, Stallion Springs, Sand Canyon, and beyond.",
       },
+      myspace: {
+        title: "MySpace Profile | The Agency OS™ Creative Digital Agency",
+        description:
+          "Check out our MySpace-style profile featuring our creative services, fun facts, and ways to connect. Award-winning digital agency specializing in web development, app development, branding, and photo/videography services.",
+      },
       faq: {
         title: "FAQ | Digital Agency Services & Process | The Agency OS™",
         description:
@@ -666,179 +680,195 @@ export default function Page() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           transition: "background-image 400ms ease-in-out",
+          position: "relative",
         }}
         className="min-h-screen bg-black text-white"
       >
+        {/* Subtle overlay for better text contrast */}
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-blue-900/10 pointer-events-none"
+          style={{ zIndex: 1 }}
+        ></div>
         {/* Desktop icons/folders */}
-        <DesktopIcons onOpen={(k) => openWindow(k)} />
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <DesktopIcons onOpen={(k) => openWindow(k)} />
+        </div>
 
         {/* Render windows from manager */}
+        <div style={{ position: "relative", zIndex: 10 }}>
+          {(Object.keys(windows) as WindowKey[]).map((key) => {
+            const w = windows[key];
+            if (!w.open) return null;
+            // Map key to component
+            const common = {
+              title:
+                key === "bsod"
+                  ? "Blue Screen Prank"
+                  : key === "skeleton"
+                  ? "Skeleton Dance Clip"
+                  : key === "faq"
+                  ? "FAQ"
+                  : key === "notes"
+                  ? "Notes"
+                  : key === "aol"
+                  ? "AOL Instant Messenger"
+                  : key === "videoLibrary"
+                  ? "Video Library"
+                  : key,
+              iconSrc: "/images/folder.webp",
+              initialPosition: w.pos,
+              width: w.size.w,
+              height: w.size.h,
+              zIndex: w.z || 1000,
+              minimized: w.minimized,
+              maximized: w.maximized,
+              onClick: () => bringToFront(key),
+              onClose: () => closeWindow(key),
+              onMinimize: () => toggleMinimize(key),
+              onMaximize: () => toggleMaximize(key),
+              onLayoutChange: (layout: WindowLayout) =>
+                updateLayout(key, layout),
+              // No auto-dock for popups
+              autoDock: false,
+            };
 
-        {/* Dynamic windows opened via StartMenu */}
-        {(Object.keys(windows) as WindowKey[]).map((key) => {
-          const w = windows[key];
-          if (!w.open) return null;
-          // Map key to component
-          const common = {
-            title:
-              key === "bsod"
-                ? "Blue Screen Prank"
-                : key === "skeleton"
-                ? "Skeleton Dance Clip"
-                : key === "faq"
-                ? "FAQ"
-                : key === "notes"
-                ? "Notes"
-                : key === "aol"
-                ? "AOL Instant Messenger"
-                : key === "videoLibrary"
-                ? "Video Library"
-                : key,
-            iconSrc: "/images/folder.webp",
-            initialPosition: w.pos,
-            width: w.size.w,
-            height: w.size.h,
-            zIndex: w.z || 1000,
-            minimized: w.minimized,
-            maximized: w.maximized,
-            onClick: () => bringToFront(key),
-            onClose: () => closeWindow(key),
-            onMinimize: () => toggleMinimize(key),
-            onMaximize: () => toggleMaximize(key),
-            onLayoutChange: (layout: WindowLayout) => updateLayout(key, layout),
-            // No auto-dock for popups
-            autoDock: false,
-          };
-
-          let content = null;
-          switch (key) {
-            case "mash":
-              content = <MASHGame />;
-              break;
-            case "aol":
-              content = <AOLMessenger />;
-              break;
-            case "ads":
-              content = <RetroAdWindow />;
-              break;
-            case "virus":
-              content = <VirusAlertWindow />;
-              break;
-            case "contact":
-            case "about":
-              content = <AboutWindow />;
-              break;
-            case "faq":
-              content = <FAQWindow />;
-              break;
-            case "creative":
-              content = <CreativeWizard />;
-              break;
-            case "metrics":
-              content = <MetricsWindow />;
-              break;
-            case "skeleton":
-              content = <SkeletonDanceWindow />;
-              break;
-            case "cat":
-              content = <FunnyCatWindow />;
-              break;
-            case "bsod":
-              content = <BSODWindow />;
-              break;
-            case "notes":
-              content = <StickyNotesWindow />;
-              break;
-            case "clippy":
-              content = <ClippyWindow />;
-              break;
-            case "vibeCheck":
-              content = <VibeCheckWindow />;
-              break;
-            case "newsletter":
-              content = <NewsletterWindow />;
-              break;
-            case "book":
-              content = <BookWindow />;
-              break;
-            case "mtv":
-              content = <MTVWindow />;
-              break;
-            case "videoLibrary":
-              content = <VideoLibraryWindow />;
-              break;
-            case "mysteryClub":
-              content = <MysteryMurderClubWaitlistWindow />;
-              break;
-            case "coffeeClub":
-              content = <CoffeeClubWaitlistWindow />;
-              break;
-            case "instaAd":
-              content = <InstagramAdWindow />;
-              break;
-            case "portfolio":
-              content = (
-                <div
-                  style={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+            let content = null;
+            switch (key) {
+              case "mash":
+                content = <Game />;
+                break;
+              case "aol":
+                content = <AOLMessenger />;
+                break;
+              case "ads":
+                content = <RetroAdWindow />;
+                break;
+              case "virus":
+                content = <VirusAlertWindow />;
+                break;
+              case "contact":
+                content = <CreativeWizard />;
+                break;
+              case "about":
+                content = (
+                  <AboutWindow onOpenContact={() => openWindow("contact")} />
+                );
+                break;
+              case "myspace":
+                content = <MySpaceWindow />;
+                break;
+              case "faq":
+                content = <FAQWindow />;
+                break;
+              case "creative":
+                content = <CreativeWizard />;
+                break;
+              case "metrics":
+                content = <MetricsWindow />;
+                break;
+              case "skeleton":
+                content = <SkeletonDanceWindow />;
+                break;
+              case "cat":
+                content = <FunnyCatWindow />;
+                break;
+              case "bsod":
+                content = <BSODWindow />;
+                break;
+              case "notes":
+                content = <StickyNotesWindow />;
+                break;
+              case "clippy":
+                content = <ClippyWindow />;
+                break;
+              case "vibeCheck":
+                content = <VibeCheckWindow />;
+                break;
+              case "newsletter":
+                content = <NewsletterWindow />;
+                break;
+              case "book":
+                content = <BookWindow />;
+                break;
+              case "mtv":
+                content = <MTVWindow />;
+                break;
+              case "videoLibrary":
+                content = <VideoLibraryWindow />;
+                break;
+              case "mysteryClub":
+                content = <MysteryMurderClubWaitlistWindow />;
+                break;
+              case "coffeeClub":
+                content = <CoffeeClubWaitlistWindow />;
+                break;
+              case "instaAd":
+                content = <InstagramAdWindow />;
+                break;
+              case "portfolio":
+                content = (
                   <div
                     style={{
-                      padding: 8,
-                      background: "#f9fafb",
-                      borderBottom: "1px solid #e5e7eb",
-                      fontSize: 12,
-                      color: "#374151",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
-                    If the portfolio doesn’t load in this window, open it in a
-                    new tab:{" "}
-                    <a
-                      href="https://www.the-visual-archive.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: "#2563eb", fontWeight: 600 }}
+                    <div
+                      style={{
+                        padding: 8,
+                        background: "#f9fafb",
+                        borderBottom: "1px solid #e5e7eb",
+                        fontSize: 12,
+                        color: "#374151",
+                      }}
                     >
-                      the-visual-archive.com ↗
-                    </a>
+                      If the portfolio doesn’t load in this window, open it in a
+                      new tab:{" "}
+                      <a
+                        href="https://www.the-visual-archive.com"
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: "#2563eb", fontWeight: 600 }}
+                      >
+                        the-visual-archive.com ↗
+                      </a>
+                    </div>
+                    <iframe
+                      src="https://www.the-visual-archive.com"
+                      style={{ width: "100%", height: "100%", border: 0 }}
+                      title="The Visual Archive"
+                    />
                   </div>
-                  <iframe
-                    src="https://www.the-visual-archive.com"
-                    style={{ width: "100%", height: "100%", border: 0 }}
-                    title="The Visual Archive"
-                  />
-                </div>
-              );
-              break;
-            case "adMaker":
-              content = <SocialAdMakerWindow />;
-              break;
-            case "trash":
-              content = <ArchiveWindow />;
-              break;
-            default:
-              content = <div style={{ padding: 12 }}>Nothing here yet.</div>;
-          }
+                );
+                break;
+              case "adMaker":
+                content = <SocialAdMakerWindow />;
+                break;
+              case "trash":
+                content = <ArchiveWindow />;
+                break;
+              default:
+                content = <div style={{ padding: 12 }}>Nothing here yet.</div>;
+            }
 
-          if (key === "clippy") {
-            // Render Clippy as overlay assistant without a window
-            return <ClippyWindow key="clippy" />;
-          }
+            if (key === "clippy") {
+              // Render Clippy as overlay assistant without a window
+              return <ClippyWindow key="clippy" />;
+            }
 
-          if (key === "bsod") {
-            // Render Blue Screen Prank as fullscreen overlay (not a window)
-            return <BSODWindow key="bsod" />;
-          }
+            if (key === "bsod") {
+              // Render Blue Screen Prank as fullscreen overlay (not a window)
+              return <BSODWindow key="bsod" />;
+            }
 
-          return (
-            <DesktopWindow key={key} {...common}>
-              {content}
-            </DesktopWindow>
-          );
-        })}
+            return (
+              <DesktopWindow key={key} {...common}>
+                {content}
+              </DesktopWindow>
+            );
+          })}
+        </div>
 
         {/* Taskbar */}
         <div

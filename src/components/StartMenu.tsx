@@ -9,6 +9,7 @@ export type WindowKey =
   | "contact"
   | "faq"
   | "about"
+  | "myspace"
   | "creative"
   | "metrics"
   | "skeleton"
@@ -53,6 +54,7 @@ const menuItems: {
   },
   { key: "faq", label: "Help & Tips", icon: "❓", category: "Support" },
   { key: "about", label: "Studio Info", icon: "👥", category: "About" },
+  { key: "myspace", label: "MySpace Profile", icon: "🎨", category: "About" },
   { key: "creative", label: "Creative Lab", icon: "🎨", category: "Tools" },
   { key: "metrics", label: "Studio Metrics", icon: "📊", category: "Studio" },
   { key: "skeleton", label: "Dance Off", icon: "💀", category: "Fun" },

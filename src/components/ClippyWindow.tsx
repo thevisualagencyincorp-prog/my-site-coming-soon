@@ -121,17 +121,52 @@ export function ClippyWindow() {
     }
   }, [imgLoaded]);
 
-  // When no windows are open, return to home position
+  // When windows are opened/closed, position Clippy accordingly
   useEffect(() => {
     const handler = (e: Event) => {
       const ce = e as CustomEvent<number>;
       const count = (ce && ce.detail) ?? 0;
-      if (typeof count === "number" && count <= 0) {
-        setPosition((prev) =>
-          prev.x === home.x && prev.y === home.y
-            ? prev
-            : { x: home.x, y: home.y }
-        );
+      if (typeof count === "number") {
+        if (count > 0) {
+          // Windows are open - position Clippy to the side of the active window
+          setTimeout(() => {
+            const activeWindow = document.querySelector(
+              '.desktop-window[style*="z-index"]'
+            ) as HTMLElement;
+            if (activeWindow) {
+              const rect = activeWindow.getBoundingClientRect();
+              const clippyWidth = 120; // Approximate Clippy width
+              const clippyHeight = 120; // Approximate Clippy height
+
+              // Position to the right of the window, or left if not enough space
+              let newX = rect.right + 20;
+              let newY = rect.top + (rect.height - clippyHeight) / 2;
+
+              if (newX + clippyWidth > window.innerWidth) {
+                newX = rect.left - clippyWidth - 20;
+              }
+
+              // Keep within viewport bounds
+              newX = Math.max(
+                0,
+                Math.min(newX, window.innerWidth - clippyWidth)
+              );
+              newY = Math.max(
+                0,
+                Math.min(newY, window.innerHeight - clippyHeight)
+              );
+
+              setPosition({ x: newX, y: newY });
+            }
+          }, 300); // Delay to allow window to fully open
+        } else {
+          // No windows open - return to home position near icons
+          setPosition((prev) =>
+            prev.x === home.x && prev.y === home.y
+              ? prev
+              : { x: home.x, y: home.y }
+          );
+        }
       }
     };
     window.addEventListener("windowsOpenCount", handler as EventListener);
@@ -417,6 +452,43 @@ export function ClippyWindow() {
               setTypedIndex(0);
               setIsTyping(true);
               setCurrentMessage((p) => (p + 1) % messages.length);
+
+              // If windows are open, move Clippy forward toward the active window
+              const openWindows = document.querySelectorAll(
+                '.desktop-window:not([style*="display: none"])'
+              );
+              if (openWindows.length > 0) {
+                const activeWindow =
+                  (document.querySelector(
+                    '.desktop-window[style*="z-index"]'
+                  ) as HTMLElement) || (openWindows[0] as HTMLElement);
+                if (activeWindow) {
+                  const rect = activeWindow.getBoundingClientRect();
+                  const clippyWidth = isMobile ? 96 : 120;
+                  const clippyHeight = isMobile ? 96 : 120;
+
+                  // Move closer to the window (forward position)
+                  let newX = rect.left + (rect.width - clippyWidth) / 2;
+                  let newY = rect.bottom - clippyHeight - 10;
+
+                  // If too close to bottom, adjust
+                  if (newY + clippyHeight > window.innerHeight - 60) {
+                    newY = rect.top - clippyHeight - 10;
+                  }
+
+                  // Keep within viewport bounds
+                  newX = Math.max(
+                    0,
+                    Math.min(newX, window.innerWidth - clippyWidth)
+                  );
+                  newY = Math.max(
+                    0,
+                    Math.min(newY, window.innerHeight - clippyHeight)
+                  );
+
+                  setPosition({ x: newX, y: newY });
+                }
+              }
             }}
           >
             {/* Processed Clippy image with transparent background */}

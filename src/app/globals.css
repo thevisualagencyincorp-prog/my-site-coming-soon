@@ -39,6 +39,18 @@ body {
   letter-spacing: 0.5px;
   line-height: 1.4;
   transition: 400ms ease-in-out, color 400ms ease-in-out;
+  /* Add subtle texture */
+  background-image: radial-gradient(
+      circle at 25% 25%,
+      rgba(59, 130, 246, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(147, 51, 234, 0.03) 0%,
+      transparent 50%
+    );
+  background-attachment: fixed;
 }
 
 /* Scumner.world inspired typography */
@@ -98,24 +110,59 @@ div {
 }
 
 @keyframes textGlow {
-  0% {
-    background-position: 0% 50%;
-  }
+  0%,
   100% {
-    background-position: 100% 50%;
+    text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8),
+      0 0 30px rgba(59, 130, 246, 0.6);
   }
 }
 
-@keyframes holographic {
-  0% {
-    background-position: 0% 50%;
+@keyframes subtlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
   50% {
-    background-position: 100% 50%;
+    transform: scale(1.02);
+    opacity: 0.95;
   }
-  100% {
-    background-position: 0% 50%;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
   }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Elevated hover effects */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Improved focus states */
+.focus-ring:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 @keyframes textGlow {
@@ -271,15 +318,15 @@ div {
 /* Clippy Animation Keyframes */
 @keyframes bounceIn {
   0% {
-    transform: translateY(150%) scale(0.6);
+    transform: translateY(50%) scale(0.8);
     opacity: 0;
   }
   60% {
-    transform: translateY(-20px) scale(1.05);
+    transform: translateY(-5px) scale(1.02);
     opacity: 1;
   }
   80% {
-    transform: translateY(10px) scale(0.97);
+    transform: translateY(2px) scale(0.99);
   }
   100% {
     transform: translateY(0) scale(1);
@@ -292,13 +339,13 @@ div {
     transform: rotate(0deg) scale(1);
   }
   25% {
-    transform: rotate(3deg) scale(1.05);
+    transform: rotate(1deg) scale(1.01);
   }
   50% {
-    transform: rotate(-3deg) scale(1.05);
+    transform: rotate(-1deg) scale(1.01);
   }
   75% {
-    transform: rotate(2deg) scale(1.02);
+    transform: rotate(0.5deg) scale(1.005);
   }
 }
 

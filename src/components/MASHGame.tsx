@@ -8,7 +8,7 @@ type Elimination = {
   [key: string]: string;
 };
 
-const MASHGame: React.FC = () => {
+const Game: React.FC = () => {
   const [gameState, setGameState] = useState<"setup" | "playing" | "results">(
     "setup"
   );
@@ -254,12 +254,12 @@ const MASHGame: React.FC = () => {
         }
         
         .handwritten-input {
-          font-family: 'Permanent Marker', cursive;
+          font-family: 'Caveat', cursive;
           background: rgba(255, 255, 255, 0.8);
           border: 2px solid #3b82f6;
           border-radius: 8px;
           color: #374151;
-          font-size: 16px;
+          font-size: 18px;
           line-height: 1.6;
           padding: 12px 16px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -275,8 +275,10 @@ const MASHGame: React.FC = () => {
         }
         
         .handwritten-input::placeholder {
+          font-family: 'Caveat', cursive;
           color: #9ca3af;
           opacity: 0.8;
+          font-size: 16px;
         }
         
         .doodle-arrow {
@@ -604,4 +606,4 @@ Struggling"
   );
 };
 
-export default MASHGame;
+export { Game };

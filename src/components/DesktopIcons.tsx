@@ -17,7 +17,7 @@ interface DesktopIconsProps {
 }
 
 export function DesktopIcons({ onOpen }: DesktopIconsProps) {
-  const CURRENT_LAYOUT_VERSION = "2025-09-12-main-v2";
+  const CURRENT_LAYOUT_VERSION = "2025-09-14-neat-3row-layout";
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const initialIcons: IconItem[] = [
@@ -32,43 +32,50 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       key: "mash",
       label: "MASH",
       iconSrc: "/images/icons/mash.svg",
-      x: 24,
-      y: 176,
+      x: 120,
+      y: 96,
     },
     {
       key: "cat",
       label: "Cats",
       iconSrc: "/images/icons/cat.svg",
-      x: 24,
-      y: 256,
+      x: 216,
+      y: 96,
     },
     {
       key: "about",
       label: "Meet Marketing Baddies in Your Area",
       iconSrc: "/images/icons/about.svg",
       x: 24,
-      y: 336,
+      y: 176,
+    },
+    {
+      key: "myspace",
+      label: "MySpace Profile",
+      iconSrc: "/images/icons/about.svg", // Using about icon for now, could create a custom one later
+      x: 312,
+      y: 176,
     },
     {
       key: "faq",
       label: "Help & Tips",
       iconSrc: "/images/icons/faq.svg",
-      x: 24,
-      y: 336,
+      x: 120,
+      y: 176,
     },
     {
       key: "notes",
       label: "Sticky Notes",
       iconSrc: "/images/icons/notes.svg",
-      x: 120,
-      y: 96,
+      x: 216,
+      y: 176,
     },
     {
       key: "mysteryClub",
       label: "Mystery Club",
       iconSrc: "/images/icons/mystery.svg",
-      x: 120,
-      y: 176,
+      x: 24,
+      y: 256,
     },
     {
       key: "coffeeClub",
@@ -82,21 +89,21 @@ export function DesktopIcons({ onOpen }: DesktopIconsProps) {
       label: "Portfolio",
       iconSrc: "/globe.svg",
       x: 216,
-      y: 96,
+      y: 256,
     },
     {
       key: "trash",
       label: "Trash",
       iconSrc: "/images/icons/trash.svg",
-      x: 216,
-      y: 176,
+      x: 24,
+      y: 336,
     },
     {
       key: "videoLibrary",
       label: "Video Library",
       iconSrc: "/images/icons/folder.svg",
-      x: 216,
-      y: 256,
+      x: 120,
+      y: 336,
     },
   ];
 

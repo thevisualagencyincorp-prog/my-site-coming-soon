@@ -44,7 +44,21 @@ export function DesktopWindow({
   maximized = false,
   autoDock = false,
 }: DesktopWindowProps) {
-  const [pos, setPos] = useState(initialPosition);
+  const [pos, setPos] = useState(() => {
+    if (typeof window !== "undefined") {
+      return {
+        x: Math.max(
+          50,
+          (window.innerWidth - (typeof width === "number" ? width : 420)) / 2
+        ),
+        y: Math.max(
+          50,
+          (window.innerHeight - (typeof height === "number" ? height : 320)) / 2
+        ),
+      };
+    }
+    return initialPosition;
+  });
   const [dragging, setDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
   const [resizing, setResizing] = useState(false);
@@ -57,9 +71,37 @@ export function DesktopWindow({
     startTop: 0,
     dir: "se" as "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw",
   });
-  const [size, setSize] = useState({
-    width: typeof width === "number" ? width : 420,
-    height: typeof height === "number" ? height : 320,
+  const [size, setSize] = useState(() => {
+    if (typeof window !== "undefined") {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // Responsive sizing based on screen size
+      let defaultWidth = typeof width === "number" ? width : 420;
+      let defaultHeight = typeof height === "number" ? height : 320;
+
+      if (vw < 640) {
+        // Mobile
+        defaultWidth = Math.min(defaultWidth, vw - 40);
+        defaultHeight = Math.min(defaultHeight, vh - 120);
+      } else if (vw < 1024) {
+        // Tablet
+        defaultWidth = Math.min(defaultWidth, vw - 80);
+        defaultHeight = Math.min(defaultHeight, vh - 140);
+      } else {
+        // Desktop
+        defaultWidth = Math.min(defaultWidth, vw - 100);
+        defaultHeight = Math.min(defaultHeight, vh - 160);
+      }
+
+      return {
+        width: defaultWidth,
+        height: defaultHeight,
+      };
+    }
+    return {
+      width: typeof width === "number" ? width : 420,
+      height: typeof height === "number" ? height : 320,
+    };
   });
   // Parent controls min/max state; this component only reports actions
   const [currentZIndex, setCurrentZIndex] = useState(zIndex);
@@ -97,7 +139,8 @@ export function DesktopWindow({
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const maxX = Math.max(0, vw - rect.width);
-    const maxY = Math.max(0, vh - TASKBAR_HEIGHT - rect.height);
+    // Keep windows mid-screen by limiting bottom positioning
+    const maxY = Math.max(0, vh - TASKBAR_HEIGHT - rect.height - 100);
     return {
       x: Math.min(Math.max(0, next.x), maxX),
       y: Math.min(Math.max(0, next.y), maxY),
@@ -123,13 +166,60 @@ export function DesktopWindow({
     setTimeout(() => onClose && onClose(), 180);
   };
 
-  // Reset position when un-maximizing
+  // Responsive sizing and content adaptation
   useEffect(() => {
-    // When a window is restored from maximized state, reset to initial position
-    if (!maximized) {
-      setPos(initialPosition);
-    }
-  }, [maximized, initialPosition]);
+    const updateSize = () => {
+      if (typeof window === "undefined") return;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const el = windowRef.current;
+      if (!el) return;
+
+      // Get content dimensions
+      const content = el.querySelector('[data-role="content"]');
+      const contentRect = content?.getBoundingClientRect();
+
+      let newWidth = size.width;
+      let newHeight = size.height;
+
+      // Adapt to screen size
+      if (vw < 640) {
+        // Mobile
+        newWidth = Math.min(newWidth, vw - 40);
+        newHeight = Math.min(newHeight, vh - 120);
+      } else if (vw < 1024) {
+        // Tablet
+        newWidth = Math.min(newWidth, vw - 80);
+        newHeight = Math.min(newHeight, vh - 140);
+      } else {
+        // Desktop
+        newWidth = Math.min(newWidth, vw - 100);
+        newHeight = Math.min(newHeight, vh - 160);
+      }
+
+      // Adapt to content if it's larger than current size
+      if (contentRect) {
+        newWidth = Math.max(
+          newWidth,
+          Math.min(contentRect.width + 40, vw - 40)
+        );
+        newHeight = Math.max(
+          newHeight,
+          Math.min(contentRect.height + 80, vh - 120)
+        );
+      }
+
+      setSize({ width: newWidth, height: newHeight });
+    };
+
+    // Update on window resize
+    window.addEventListener("resize", updateSize);
+    // Initial update
+    updateSize();
+
+    return () => window.removeEventListener("resize", updateSize);
+  }, [size.width, size.height]);
 
   useEffect(() => {
     // end appear animation shortly after mount
@@ -255,8 +345,9 @@ export function DesktopWindow({
     if (Math.abs(x - 0) < MAGNET_THRESHOLD) x = 0;
     if (Math.abs(x + rect.width - vw) < MAGNET_THRESHOLD) x = vw - rect.width;
     if (Math.abs(y - 0) < MAGNET_THRESHOLD) y = 0;
-    if (Math.abs(y + rect.height - (vh - TASKBAR_HEIGHT)) < MAGNET_THRESHOLD)
-      y = vh - TASKBAR_HEIGHT - rect.height;
+    // Remove bottom snapping to keep windows mid-screen
+    // if (Math.abs(y + rect.height - (vh - TASKBAR_HEIGHT)) < MAGNET_THRESHOLD)
+    //   y = vh - TASKBAR_HEIGHT - rect.height;
 
     // other windows
     const nodes = Array.from(
@@ -281,17 +372,18 @@ export function DesktopWindow({
         overlapsVert(top, bottom, r.top, r.bottom)
       )
         x = r.left - rect.width;
+      // Remove vertical snapping to bottom to keep windows mid-screen
       // snap vertically (our top to their bottom, our bottom to their top)
-      if (
-        Math.abs(top - r.bottom) < MAGNET_THRESHOLD &&
-        overlapsHoriz(left, right, r.left, r.right)
-      )
-        y = r.bottom;
-      if (
-        Math.abs(bottom - r.top) < MAGNET_THRESHOLD &&
-        overlapsHoriz(left, right, r.left, r.right)
-      )
-        y = r.top - rect.height;
+      // if (
+      //   Math.abs(top - r.bottom) < MAGNET_THRESHOLD &&
+      //   overlapsHoriz(left, right, r.left, r.right)
+      // )
+      //   y = r.bottom;
+      // if (
+      //   Math.abs(bottom - r.top) < MAGNET_THRESHOLD &&
+      //   overlapsHoriz(left, right, r.left, r.right)
+      // )
+      //   y = r.top - rect.height;
     }
     return clampToViewport({ x, y });
   };
@@ -460,6 +552,7 @@ export function DesktopWindow({
       {/* Content */}
       <div
         className="flex-1 overflow-auto bg-white"
+        data-role="content"
         style={{
           height: maximized
             ? "calc(100vh - 40px)"
